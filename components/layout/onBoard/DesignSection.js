@@ -4,7 +4,7 @@ import Alpha from "@/components/ui/Alpha";
 const DesignSection = () => {
   return (
     <section
-      className="bg-gray-100 flex w-4/12 flex-col justify-between bg-cover p-12 relative overflow-hidden"
+      className="bg-white/80 shadow flex w-4/12 flex-col justify-between bg-cover p-12 relative overflow-hidden"
       style={{
         backgroundImage: "url(/backgrounds/background-grid.svg)",
         backgroundSize: "cover",
@@ -20,7 +20,7 @@ const DesignSection = () => {
           alt="Fusion Logo"
         />
 
-        <span className="text-2xl tracking-wide"> Fusion</span>
+        <span className="text-2xl tracking-wide font-bold"> Fusion</span>
       </div>
 
       <div className="-translate-x-3 translate-y-5">
