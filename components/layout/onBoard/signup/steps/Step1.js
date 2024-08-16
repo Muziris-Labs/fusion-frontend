@@ -75,21 +75,17 @@ const Step1 = () => {
       title="Choose your Fusion Domain"
       description="Choose your domain name to create your wallet."
     >
-      <label
-        htmlFor="register-domain"
-        className="mt-8 font-outfit text-sm text-gray-600"
-      >
-        Your Fusion Domain
-      </label>
-
-      <div className="mt-2 flex w-full">
+      <div className="mt-10 flex w-full">
         <Input
-          id="register-domain"
-          label="Choose your domain"
+          label="Your Fusion Domain"
           size="lg"
-          className="rounded-r-none font-outfit"
+          className={"rounded-xl rounded-r-none font-outfit"}
           labelProps={{
-            className: "after:rounded-tr-none font-outfit ",
+            className:
+              "peer-placeholder-shown:mt-[5px] peer-focus:before:w-1 before:w-1 peer-placeholder-shown:before:w-3 peer-focus:mt-0 after:rounded-tr-none font-outfit before:border-none",
+          }}
+          containerProps={{
+            className: "h-14",
           }}
           ref={inputRef}
           value={domain}
@@ -130,7 +126,7 @@ const Step1 = () => {
       )}
 
       <Button
-        className="mt-8 w-fit font-outfit font-normal normal-case"
+        className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           dispatch(setStep(1));
         }}

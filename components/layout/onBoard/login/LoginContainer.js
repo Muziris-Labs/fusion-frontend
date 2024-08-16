@@ -5,25 +5,20 @@ import OnBoardSection from "../OnBoardSection";
 
 const LoginContainer = () => {
   return (
-    <OnBoardSection
-      heading="Access your Account"
-      paragaph="Fill your Fusion Domain name to Login."
-    >
-      <p className="mt-8 font-noto text-sm text-text-gray">
-        Your Fusion Domain
-      </p>
+    <OnBoardSection heading="Sign in to Fusion" paragaph="">
+      <div className="flex flex-col items-center">
+        <LoginForm />
 
-      <LoginForm />
-
-      <p className="mt-3 text-xs text-black">
-        Don't have an account?{" "}
-        <Link
-          className="bg-gradient-primary-light font-semibold gradient-text hover:cursor-pointer"
-          href="/signUp"
-        >
-          Sign Up
-        </Link>
-      </p>
+        <p className="mt-3 text-xs text-black">
+          Don't have an account?{" "}
+          <Link
+            className="bg-gradient-primary-light font-semibold gradient-text hover:cursor-pointer"
+            href="/signup"
+          >
+            Sign Up
+          </Link>
+        </p>
+      </div>
     </OnBoardSection>
   );
 };

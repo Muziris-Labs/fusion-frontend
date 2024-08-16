@@ -84,47 +84,53 @@ const LoginForm = () => {
 
   return (
     <>
-      <div className="mt-2 flex w-full">
-        <Input
-          label="Domain"
-          size="lg"
-          className={"rounded-r-none font-noto"}
-          labelProps={{
-            className: "after:rounded-tr-none font-noto",
-          }}
-          ref={inputRef}
-          value={domain}
-          onChange={(e) => handleName(e)}
-        />
+      <div className="w-full">
+        <div className="mt-10 flex w-full">
+          <Input
+            label="Your Fusion Domain"
+            size="lg"
+            className={"rounded-xl rounded-r-none font-outfit"}
+            labelProps={{
+              className:
+                "peer-placeholder-shown:mt-[5px] peer-focus:before:w-1 before:w-1 peer-placeholder-shown:before:w-3 peer-focus:mt-0 after:rounded-tr-none font-outfit before:border-none",
+            }}
+            containerProps={{
+              className: "h-14",
+            }}
+            ref={inputRef}
+            value={domain}
+            onChange={(e) => handleName(e)}
+          />
 
-        <Button
-          ripple={false}
-          variant="text"
-          color="blue-gray"
-          className={
-            "flex items-center rounded-l-none border border-l-0 border-blue-gray-200 bg-gray-100/60 px-3 py-0 font-noto text-sm font-normal normal-case"
-          }
-        >
-          .fusion.id
-        </Button>
+          <Button
+            ripple={false}
+            variant="text"
+            color="blue-gray"
+            className={
+              "flex items-center rounded-xl rounded-l-none border border-l-0 border-blue-gray-200 bg-gray-100/60 px-5 py-0 font-noto text-sm font-normal normal-case"
+            }
+          >
+            .fusion.id
+          </Button>
+        </div>
+
+        {isLoading && domain.length > 3 && (
+          <p className="mt-2 flex text-sm text-text-gray">
+            <Loader2 size={20} className="mr-1 inline animate-spin " />
+            Checking availability...
+          </p>
+        )}
+
+        {!isLoading && !isUsed && domain.length > 3 && (
+          <p className="mt-2 flex text-sm text-red-500">
+            <Info size={20} className="mr-1 inline" />
+            This domain is not registered.
+          </p>
+        )}
       </div>
 
-      {isLoading && domain.length > 3 && (
-        <p className="mt-2 flex text-sm text-text-gray">
-          <Loader2 size={20} className="mr-1 inline animate-spin " />
-          Checking availability...
-        </p>
-      )}
-
-      {!isLoading && !isUsed && domain.length > 3 && (
-        <p className="mt-2 flex text-sm text-red-500">
-          <Info size={20} className="mr-1 inline" />
-          This domain is not registered.
-        </p>
-      )}
-
       <Button
-        className="mt-8 w-fit font-noto font-normal normal-case"
+        className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           router.push(`/home?domain=${domain?.toLowerCase()}`);
         }}

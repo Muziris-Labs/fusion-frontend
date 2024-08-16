@@ -26,29 +26,8 @@ const Step3 = () => {
       title="Setup your new Wallet"
       description="Verify your Email to Deploy your wallet."
     >
-      <label
-        htmlFor="register-email"
-        className="mt-8 font-outfit text-sm text-gray-600"
-      >
-        Your Email Address
-      </label>
-
-      <div className="mt-2 flex w-full">
-        <Input
-          size="lg"
-          id="register-email"
-          label="abc@gmail.com"
-          className="font-outfit"
-          labelProps={{
-            className: "font-outfit",
-          }}
-          value={email}
-          onChange={(e) => dispatch(setEmail(e.target.value))}
-        />
-      </div>
-
       <Button
-        className="mt-8 flex h-10 w-32 items-center justify-center font-outfit font-normal normal-case"
+        className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
         onClick={() => handleEmail(setIsLoading)}
         disabled={isLoading || !email}
       >

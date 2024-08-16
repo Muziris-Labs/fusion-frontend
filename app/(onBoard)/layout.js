@@ -1,22 +1,21 @@
 import DesignSection from "@/components/layout/onBoard/DesignSection";
 import MainSection from "@/components/layout/onBoard/MainSection";
-import BackgroundAnimation from "@/components/ui/BackgroundAnimation";
 
 export const metadata = {
-  title: "Valerium | OnBoard",
-  description: "Valerium - ZK-based Smart Contract Wallet | OnBoard Page",
+  title: "Onboard | Fusion",
+  description: "Fusion Wallet : Zk-based Multi-Chain Smart Contract Wallet",
 };
 
 const LoginLayout = ({ children }) => {
   return (
     <main className="h-screen w-screen flex bg-white font-noto">
-      <BackgroundAnimation />
-
       <DesignSection />
 
       <MainSection>
         <div className="flex h-full w-full items-center justify-center">
-          <div className="w-[70%] flex gap-20">{children}</div>
+          <div className="w-[80%] h-full justify-center flex flex-col lg:items-start items-center">
+            {children}
+          </div>
         </div>
       </MainSection>
     </main>

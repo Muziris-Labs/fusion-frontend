@@ -30,56 +30,14 @@ const Step2 = () => {
   return (
     <StepContainer
       title="Setup your new Wallet"
-      description="Give your Password or Passkey to add Authentication to your wallet."
+      description="Add a passkey to secure your wallet"
     >
-      <div className="mt-2">
-        <Input
-          label="*******"
-          size="lg"
-          className={"font-outfit"}
-          type="password"
-          value={password}
-          disabled={passkey ? true : false}
-          onChange={(e) => handlePassword(e)}
-        />
-
-        <p className="mt-2 flex text-sm text-gray-500">
-          <Info size={20} className="mr-1 inline" />
-          Use at least 8 characters, one uppercase, one lowercase and one
-          number.
-        </p>
-      </div>
-
-      <OrDivider />
-
       <Button
         color="white"
-        className="mt-4 flex h-24 w-full rounded-xl border-px border-black bg-white px-3"
+        className="mt-10 flex h-40 w-full rounded-full border-px items-center justify-center border-black border-[1px] bg-white px-3"
         onClick={() => handlePasskey(setIsLoading)}
       >
-        <div className="flex h-full w-16 items-center justify-center rounded-lg bg-black/90">
-          {passkey ? (
-            <Check className="h-5 w-5 text-white" />
-          ) : isLoading ? (
-            <Loader2Icon className="h-5 w-5 animate-spin text-white" />
-          ) : (
-            <Fingerprint className="h-5 w-5 text-white" />
-          )}
-        </div>
-
-        <div className="ml-3 flex h-full w-56 flex-col justify-center text-start font-outfit normal-case">
-          <p className="text-xl">
-            {passkey
-              ? "Passkey Added"
-              : isLoading
-              ? "Adding Passkey"
-              : "Add Passkey"}
-          </p>
-
-          <p className="mt-1 w-72 text-xs font-normal text-gray-500">
-            This will be used to execute transactions
-          </p>
-        </div>
+        <Fingerprint size={80} className="mr-3" />
       </Button>
 
       {passkey && (
@@ -94,7 +52,7 @@ const Step2 = () => {
       )}
 
       <Button
-        className="mt-8 w-fit font-outfit font-normal normal-case"
+        className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           dispatch(setStep(2));
         }}

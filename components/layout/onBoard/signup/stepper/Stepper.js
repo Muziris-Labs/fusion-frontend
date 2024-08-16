@@ -9,33 +9,19 @@ export default function Steps() {
   const step = useSelector((state) => state.signup.step);
 
   return (
-    <div className="relative flex items-center">
-      <div className="absolute w-[300px] -translate-x-1/2">
+    <div className="relative flex w-[450px] items-center justify-center">
+      <div className="w-[100px] flex justify-center">
         <Stepper
           activeStep={step}
-          className="rotate-90"
-          lineClassName="bg-gray-400"
+          className=""
+          lineClassName="bg-transparent"
+          activeLineClassName="bg-transparent"
         >
-          <Step className="relative h-8 w-8 bg-gray-400">
-            <UserRound className="h-4 w-4 -rotate-90" />
-            <div className="absolute mt-52 w-40 -rotate-90 text-right font-noto text-sm font-light text-black">
-              Add Domain
-            </div>
-          </Step>
+          <Step className="relative h-4 w-4 bg-gray-400"></Step>
 
-          <Step className="relative h-8 w-8 bg-gray-400">
-            <Lock className="h-4 w-4 -rotate-90" />
-            <div className="absolute mt-52 w-40 -rotate-90 text-right font-noto text-sm font-light text-black">
-              Add Auth
-            </div>
-          </Step>
+          <Step className="relative h-4 w-4 bg-gray-400"></Step>
 
-          <Step className="relative h-8 w-8 bg-gray-400">
-            <Mail className="h-4 w-4 -rotate-90" />
-            <div className="absolute mt-52 w-40 -rotate-90 text-right font-noto text-sm font-light text-black">
-              Add Email
-            </div>
-          </Step>
+          <Step className="relative h-4 w-4 bg-gray-400"></Step>
         </Stepper>
       </div>
     </div>

@@ -14,11 +14,11 @@ const SignUp = () => {
 
   return (
     <>
-      <Steps />
       {step === 0 && <Step1 />}
       {step === 1 && <Step2 />}
       {step === 2 && <Step3 />}
       {step === 3 && <Step4 />}
+      <Steps />
     </>
   );
 };
