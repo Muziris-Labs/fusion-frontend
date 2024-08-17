@@ -6,23 +6,20 @@ import { Input, Button } from "@material-tailwind/react";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-// import useSignup from "@/hooks/useSignup";
-
 import { setDomain, setStep } from "@/redux/slice/SignupSlice";
 
 import StepContainer from "./StepContainer";
+import useWallet from "@/hooks/useWallet";
+import { ethers } from "ethers";
 
 const Step1 = () => {
   const inputRef = useRef();
 
   const dispatch = useDispatch();
-
-  // const { isValidValerium } = useSignup();
-
+  const { getFusion } = useWallet();
   const [isUsed, setIsUsed] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  0;
   const domain = useSelector((state) => state.signup.domain);
 
   var timeout = null;
@@ -39,13 +36,19 @@ const Step1 = () => {
     }
   };
 
-  const checkValerium = async () => {
+  const checkFusion = async () => {
     if (domain.length < 3) return;
     if (domain.length > 20) return;
 
-    const isUsed = await isValidValerium(domain?.toLowerCase());
+    const address = await getFusion(domain.toLowerCase());
 
-    setIsUsed(isUsed);
+    if (address === ethers.constants.AddressZero) {
+      setIsUsed(false);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsUsed(true);
     setIsLoading(false);
   };
 
@@ -66,7 +69,7 @@ const Step1 = () => {
     if (isTyping) {
       setIsLoading(true);
     } else {
-      checkValerium();
+      checkFusion();
     }
   }, [isTyping, domain]);
 

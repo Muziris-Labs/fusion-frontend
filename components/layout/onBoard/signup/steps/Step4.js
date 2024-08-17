@@ -26,7 +26,7 @@ export default function Step4() {
   const domain = useSelector((state) => state.signup.domain)?.toLowerCase();
 
   return (
-    <div className="flex flex-col z-10 sm:p-8 w-[450px] rounded-xl">
+    <div className="flex flex-col z-10 px-4 sm:px-8 py-8 sm:w-[450px] rounded-xl ">
       <h2 className="font-semibold text-3xl">
         {isSuccess
           ? "Wallet Deployed"
@@ -46,7 +46,7 @@ export default function Step4() {
       {!isLoading && !isSuccess && (
         <>
           <Button
-            className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
+            className="mt-8 w-full p-5 font-semibold flex items-center justify-center rounded-full text-sm font-outfit normal-case"
             onClick={() =>
               deployWallet(setIsLoading, setIsSuccess, setMessage, code)
             }

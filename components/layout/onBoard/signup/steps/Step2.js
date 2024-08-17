@@ -5,27 +5,15 @@ import { Check, Fingerprint, Info, Loader2Icon } from "lucide-react";
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-// import useSignup from "@/hooks/useSignup";
-
-import { setPasskey, setPassword, setStep } from "@/redux/slice/SignupSlice";
-
+import { setPasskey, setStep } from "@/redux/slice/SignupSlice";
 import StepContainer from "./StepContainer";
-import OrDivider from "@/components/ui/OrDivider";
+import useSignup from "@/hooks/useSignup";
 
 const Step2 = () => {
   const dispatch = useDispatch();
-
-  // const { handlePasskey } = useSignup();
-
+  const { handlePasskey } = useSignup();
   const [isLoading, setIsLoading] = useState(false);
-
-  const password = useSelector((state) => state.signup.password);
   const passkey = useSelector((state) => state.signup.passkey);
-
-  const handlePassword = (e) => {
-    dispatch(setPassword(e.target.value));
-  };
 
   return (
     <StepContainer
@@ -35,16 +23,34 @@ const Step2 = () => {
       <Button
         color="white"
         className="mt-10 flex h-40 w-full rounded-full border-px items-center justify-center border-black border-[1px] bg-white px-3"
-        onClick={() => handlePasskey(setIsLoading)}
+        onClick={async () => {
+          if (passkey) return;
+
+          setIsLoading(true);
+          await handlePasskey()
+            .then(() => {
+              setIsLoading(false);
+            })
+            .catch((e) => {
+              console.log(e);
+              setIsLoading(false);
+            });
+        }}
       >
-        <Fingerprint size={80} className="mr-3" />
+        {passkey ? (
+          <Check className="text-green-500" size={80} />
+        ) : isLoading ? (
+          <Loader2Icon className="animate-spin" size={80} />
+        ) : (
+          <Fingerprint className="text-black" size={80} />
+        )}
       </Button>
 
       {passkey && (
         <p
-          className="mt-2 text-xs text-gray-500 hover:cursor-pointer hover:underline"
+          className="mt-2 text-center w-full text-xs text-gray-500 hover:cursor-pointer hover:underline"
           onClick={() => {
-            dispatch(setPasskey(""));
+            dispatch(setPasskey(null));
           }}
         >
           Clear Passkey
@@ -56,7 +62,7 @@ const Step2 = () => {
         onClick={() => {
           dispatch(setStep(2));
         }}
-        disabled={(passkey ? false : password.length < 8) || isLoading}
+        disabled={!passkey || isLoading}
       >
         Continue
       </Button>

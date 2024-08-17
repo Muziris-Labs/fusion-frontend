@@ -2,12 +2,10 @@
 
 import { Info, Loader2 } from "lucide-react";
 import { Input, Button } from "@material-tailwind/react";
-
-// import { ethers } from "ethers";
+import { ethers } from "ethers";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
-
-// import useWallet from "@/hooks/useWallet";
+import useWallet from "@/hooks/useWallet";
 
 const LoginForm = () => {
   const inputRef = useRef();
@@ -20,7 +18,7 @@ const LoginForm = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // const { getFusion } = useWallet();
+  const { getFusion } = useWallet();
 
   var timeout = null;
 

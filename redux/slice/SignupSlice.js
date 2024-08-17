@@ -6,10 +6,9 @@ const signupSlice = createSlice({
   initialState: {
     step: 0,
     domain: "",
-    password: "",
-    passkey: "",
-    email: "",
-    recoveryAddress: "",
+    passkey: null,
+    email: null,
+    user: null,
   },
 
   reducers: {
@@ -21,10 +20,6 @@ const signupSlice = createSlice({
       state.domain = action.payload;
     },
 
-    setPassword: (state, action) => {
-      state.password = action.payload;
-    },
-
     setPasskey: (state, action) => {
       state.passkey = action.payload;
     },
@@ -33,21 +28,20 @@ const signupSlice = createSlice({
       state.email = action.payload;
     },
 
-    setRecoveryAddress: (state, action) => {
-      state.recoveryAddress = action.payload;
-    },
-
     clearPasskey: (state) => {
       state.passkey = "";
     },
 
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+
     clearAll: (state) => {
       state.step = 0;
-      state.domain = "";
-      state.password = "";
-      state.passkey = "";
-      state.email = "";
-      state.recoveryAddress = "";
+      state.domain = null;
+      state.passkey = null;
+      state.email = null;
+      state.user = null;
     },
   },
 });
@@ -55,14 +49,11 @@ const signupSlice = createSlice({
 export const {
   setStep,
   setDomain,
-  setPassword,
   setPasskey,
   setEmail,
-  setRecoveryAddress,
-  setTxHash,
-  setRecoveryHash,
   clearPasskey,
   clearAll,
+  setUser,
 } = signupSlice.actions;
 
 export default signupSlice.reducer;
