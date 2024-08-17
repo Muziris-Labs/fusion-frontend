@@ -7,18 +7,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 
-// import useSignup from "@/hooks/useSignup";
-
 import { clearAll, setStep } from "@/redux/slice/SignupSlice";
+import useSignup from "@/hooks/useSignup";
 
 export default function Step4() {
   const router = useRouter();
 
   const dispatch = useDispatch();
 
-  // const { deployWallet } = useSignup();
-
-  const [code, setCode] = useState("");
+  const { deployWallet } = useSignup();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -47,10 +44,7 @@ export default function Step4() {
         <>
           <Button
             className="mt-8 w-full p-5 font-semibold flex items-center justify-center rounded-full text-sm font-outfit normal-case"
-            onClick={() =>
-              deployWallet(setIsLoading, setIsSuccess, setMessage, code)
-            }
-            disabled={code.length !== 6}
+            onClick={() => deployWallet(setIsLoading, setIsSuccess, setMessage)}
           >
             Deploy Wallet
           </Button>
@@ -68,7 +62,7 @@ export default function Step4() {
       )}
 
       {isLoading && (
-        <p className="mt-10 flex text-sm text-gray-500">
+        <p className="mt-10 justify-center flex text-sm text-gray-500">
           <Loader2 size={20} className="mr-1 inline animate-spin " />
           {message}
         </p>

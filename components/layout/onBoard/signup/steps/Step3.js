@@ -33,6 +33,7 @@ const Step3 = () => {
             width={50}
             height={40}
             className="rounded-full"
+            alt="profilepic"
           />
           <div className="flex flex-col justify-between ">
             <p className="font-semibold text-lg">{user.nickname}</p>

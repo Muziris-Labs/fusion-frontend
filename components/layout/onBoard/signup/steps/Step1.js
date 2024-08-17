@@ -107,7 +107,7 @@ const Step1 = () => {
         </Button>
       </div>
 
-      {isLoading && domain.length > 3 && (
+      {isLoading && domain && domain.length > 3 && (
         <p className="mt-2 flex text-sm text-gray-500">
           <Loader2 size={20} className="mr-1 inline animate-spin " />
           Checking availability...
@@ -121,7 +121,7 @@ const Step1 = () => {
         </p>
       )}
 
-      {!isLoading && !isUsed && domain.length > 3 && (
+      {!isLoading && !isUsed && domain && domain.length > 3 && (
         <p className="mt-2 flex text-sm text-green-500">
           <Info size={20} className="mr-1 inline" />
           This domain is available.
