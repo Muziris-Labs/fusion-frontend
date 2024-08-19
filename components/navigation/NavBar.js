@@ -1,5 +1,6 @@
 import React from "react";
 import Logo from "./Logo";
+
 import ProfileButton from "./profile/ProfileButton";
 
 const NavBar = () => {
