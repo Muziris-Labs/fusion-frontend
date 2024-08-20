@@ -3,31 +3,26 @@ import { ChevronRight } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 
+import DashboardTable from "./DashboardTable";
 import FusionCard from "@/components/ui/FusionCard";
 
-const DashboardGraph = () => {
-  const percentage = 34;
-
+const DashboardHistory = () => {
   return (
-    <FusionCard>
+    <FusionCard className="p-6">
       <div className="flex justify-between">
-        <div className="space-y-2">
-          <h2>Ethereum Graph</h2>
-
-          <p className="text-2xl font-semibold">
-            <span className="text-4xl">{percentage}</span>%
-          </p>
-        </div>
+        <h2>Payment History</h2>
 
         <Link
-          href="/profile"
+          href="/transactions"
           className="rounded-full bg-gray-300 self-start p-2.5 transition-all select-none hover:bg-gray-400 active:bg-gray-400/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
         >
           <ChevronRight size={20} />
         </Link>
       </div>
+
+      <DashboardTable />
     </FusionCard>
   );
 };
 
-export default DashboardGraph;
+export default DashboardHistory;

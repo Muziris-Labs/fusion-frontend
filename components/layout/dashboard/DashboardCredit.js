@@ -11,11 +11,11 @@ const DashboardCredit = () => {
   const InDollarPrice = price * 1;
 
   return (
-    <FusionCard className="flex justify-between rounded-b-none">
-      <div className="space-y-2">
+    <FusionCard className="flex justify-between rounded-b-none p-6">
+      <div className="space-y-2.5">
         <h2>Active Credit</h2>
 
-        <div>
+        <div className="space-y-1">
           <p className="text-4xl font-semibold">
             {price.toFixed(1)}{" "}
             <span className="uppercase text-2xl font-normal">{token}</span>
