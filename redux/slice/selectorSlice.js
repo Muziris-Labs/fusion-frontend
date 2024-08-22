@@ -12,7 +12,7 @@ const selectorSlice = createSlice({
         convert_id: "1027",
         usd_id: "2781",
         decimals: 18,
-        logo: "/eth-logo.svg",
+        logo: "/tokens/eth-logo.svg",
       },
 
       {
@@ -22,7 +22,7 @@ const selectorSlice = createSlice({
         convert_id: "1027",
         usd_id: "2781",
         decimals: 18,
-        logo: "/eth-logo.svg",
+        logo: "/tokens/eth-logo.svg",
       },
       ,
       null,

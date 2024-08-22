@@ -8,7 +8,7 @@ const ProfileMenu = () => {
     <MenuHandler>
       <Button
         color="white"
-        className="flex gap-2 items-center justify-start px-3 py-2 bg-gray-100 w-fit rounded-full"
+        className="flex gap-2 items-center justify-start px-3 py-2 bg-white w-fit rounded-full"
       >
         <Image src="/fusion-logo.svg" alt="logo" width={32} height={32} />
 

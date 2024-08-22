@@ -21,8 +21,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${outfit.className} w-screen overflow-x-hidden`}>
-        {/* <BackgroundAnimation /> */}
+      <body
+        className={`${outfit.className} w-screen overflow-x-hidden bg-gray-50`}
+      >
+        <BackgroundAnimation />
 
         <ReduxProvider>
           <Toaster />

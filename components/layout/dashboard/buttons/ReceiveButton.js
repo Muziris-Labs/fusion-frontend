@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
-
 import { Button } from "@material-tailwind/react";
 import { ArrowBigDown } from "lucide-react";
 
+import React from "react";
+import { useRouter } from "next/navigation";
+
 const ReceiveButton = () => {
+  const router = useRouter();
   return (
     <Button
       size="lg"
