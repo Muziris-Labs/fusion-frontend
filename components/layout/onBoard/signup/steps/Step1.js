@@ -134,6 +134,7 @@ const Step1 = () => {
           dispatch(setStep(1));
         }}
         disabled={
+          !domain ||
           domain.length <= 3 ||
           domain.length > 20 ||
           isUsed ||
