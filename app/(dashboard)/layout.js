@@ -1,13 +1,16 @@
 import React from "react";
 
 import NavBar from "@/components/navigation/NavBar";
+import WalletProvider from "@/provider/WalletProvider";
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="relative p-4 z-10 min-h-screen">
-      <NavBar />
-      {children}
-    </div>
+    <WalletProvider>
+      <div className="relative m-4 z-10">
+        <NavBar />
+        {children}
+      </div>
+    </WalletProvider>
   );
 };
 
