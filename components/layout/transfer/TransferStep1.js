@@ -187,9 +187,9 @@ const TransferStep1 = () => {
           }}
         />
 
-        <div className="absolute top-[0.91rem] right-2">
+        <div className="absolute top-1/2 -translate-y-1/2 right-2">
           <Button
-            className="rounded-lg text-[0.6rem] flex items-center justify-center font-normal p-2"
+            className="rounded-lg text-[0.6rem] flex items-center justify-center font-normal px-3 py-2"
             onClick={() => {
               if (!tokenBalance) return;
               dispatch(

@@ -6,7 +6,7 @@ import WalletProvider from "@/provider/WalletProvider";
 const DashboardLayout = ({ children }) => {
   return (
     <WalletProvider>
-      <div className="relative m-4 z-10">
+      <div className="relative p-4 z-10 min-h-screen">
         <NavBar />
         {children}
       </div>
