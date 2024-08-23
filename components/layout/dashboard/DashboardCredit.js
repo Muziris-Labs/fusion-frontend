@@ -1,27 +1,55 @@
+"use client";
+
 import { ChevronRight } from "lucide-react";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 
 import FusionCard from "@/components/ui/FusionCard";
+import { useSelector } from "react-redux";
+import { calculateTotalBalance, usdToEth } from "@/utils/conversionUtils";
+import formatAmount from "@/utils/formatAmount";
 
 const DashboardCredit = () => {
-  const price = 100;
-  const token = "USDT";
-  const InDollarPrice = price * 1;
+  const token = "USD";
+
+  const [totalEthBalance, setTotalEthBalance] = React.useState(0);
+  const [totalBalance, setTotalBalance] = React.useState(0);
+
+  const tokenBalanceData = useSelector((state) => state.user.tokenBalanceData);
+  const tokenConversionData = useSelector(
+    (state) => state.user.tokenConversionData
+  );
+
+  useEffect(() => {
+    if (tokenBalanceData && tokenConversionData) {
+      const totalBalance = calculateTotalBalance(
+        tokenConversionData,
+        tokenBalanceData
+      );
+
+      setTotalBalance(totalBalance);
+
+      const totalEthBalance = usdToEth(totalBalance, tokenConversionData);
+
+      setTotalEthBalance(totalEthBalance);
+    }
+  }, [tokenBalanceData, tokenConversionData]);
 
   return (
-    <FusionCard className="flex justify-between rounded-b-none p-6">
+    <FusionCard className="flex justify-between flex-none p-6">
       <div className="space-y-2.5">
         <h2>Active Credit</h2>
 
         <div className="space-y-1">
           <p className="text-4xl font-semibold">
-            {price.toFixed(1)}{" "}
+            {formatAmount(totalBalance, 2)}{" "}
             <span className="uppercase text-2xl font-normal">{token}</span>
           </p>
 
-          <p className="text-sm text-gray-700">$ {InDollarPrice.toFixed(2)}</p>
+          <p className="text-sm text-gray-700">
+            {formatAmount(totalEthBalance)} ETH
+          </p>
         </div>
       </div>
 

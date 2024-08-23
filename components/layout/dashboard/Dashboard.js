@@ -10,11 +10,11 @@ const Dashboard = () => {
     <section className="flex gap-5 justify-center">
       <div className="flex-1">
         <div className="h-full w-full flex flex-col gap-y-4">
-          <div className="space-y-1">
-            <DashboardCredit />
+          <DashboardCredit />
+          <div className="space-y-1 flex-1 flex flex-col">
+            <DashboardProfile />
             <DashboardButtons />
           </div>
-          <DashboardProfile />
         </div>
       </div>
 
