@@ -1,13 +1,10 @@
 import React from "react";
-import Logo from "./Logo";
-
-import ProfileButton from "./profile/ProfileButton";
+import NavMenu from "./NavMenu";
 
 const NavBar = () => {
   return (
-    <nav className="flex justify-between">
-      <Logo />
-      <ProfileButton />
+    <nav className="flex justify-center p-2">
+      <NavMenu />
     </nav>
   );
 };

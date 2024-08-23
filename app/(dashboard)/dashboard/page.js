@@ -5,7 +5,7 @@ import DashboardHistory from "@/components/layout/dashboard/transactions/Dashboa
 
 const DashboardPage = () => {
   return (
-    <div className="mt-12 max-w-4xl mx-auto space-y-5">
+    <div className="mt-5 max-w-4xl mx-auto space-y-5">
       <Dashboard />
       <DashboardHistory />
     </div>

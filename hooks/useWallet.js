@@ -21,7 +21,7 @@ export default function useWallet() {
 
   const getDomain = () => {
     const domain = searchParams.get("domain");
-    return domain;
+    return domain.toLowerCase();
   };
 
   const getFusion = async (domain) => {
@@ -163,7 +163,6 @@ export default function useWallet() {
       if (response.data.success) {
         dispatch(setMarketData(response.data.data));
       }
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -293,11 +292,11 @@ export default function useWallet() {
         WsProvider.on("block", async () => {
           const newBalance = Number(await WsProvider.getBalance(walletAddress));
 
-          console.log(newBalance);
-
           if (!tokenBalanceData) {
             return;
           }
+
+          let isChanged = false;
 
           const updatedBalanceData = tokenBalanceData.map((chainData) => {
             if (chainData.chainId === chain.chainId) {
@@ -308,6 +307,7 @@ export default function useWallet() {
                     tokenData.address === ethers.constants.AddressZero &&
                     tokenData.balance !== newBalance
                   ) {
+                    isChanged = true;
                     return {
                       ...tokenData,
                       balance: newBalance,
@@ -322,11 +322,10 @@ export default function useWallet() {
             }
           });
 
-          tokenBalanceData = updatedBalanceData;
-
-          console.log(tokenBalanceData, updatedBalanceData);
-
-          dispatch(setTokenBalanceData(tokenBalanceData));
+          if (isChanged) {
+            tokenBalanceData = updatedBalanceData;
+            dispatch(setTokenBalanceData(tokenBalanceData));
+          }
         });
 
         const tokens = chain.tokens;

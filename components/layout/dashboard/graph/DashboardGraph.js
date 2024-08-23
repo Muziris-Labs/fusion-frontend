@@ -4,9 +4,12 @@ import dynamic from "next/dynamic";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const chartConfig = {
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
+const defaultConfig = {
   type: "line",
-  height: 240,
+  height: 260,
   series: [
     {
       name: "Price",
@@ -34,40 +37,23 @@ const chartConfig = {
       size: 0,
     },
     xaxis: {
+      labels: {
+        show: false,
+      },
       axisTicks: {
         show: false,
       },
       axisBorder: {
         show: false,
       },
-      labels: {
-        style: {
-          colors: "#616161",
-          fontSize: "12px",
-          fontFamily: "inherit",
-          fontWeight: 400,
-        },
+      categories: [],
+      tooltip: {
+        enabled: false,
       },
-      categories: [
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
     },
     yaxis: {
       labels: {
-        style: {
-          colors: "#616161",
-          fontSize: "12px",
-          fontFamily: "inherit",
-          fontWeight: 400,
-        },
+        show: false,
       },
     },
     grid: {
@@ -76,7 +62,7 @@ const chartConfig = {
       strokeDashArray: 5,
       xaxis: {
         lines: {
-          show: true,
+          show: false,
         },
       },
       padding: {
@@ -89,10 +75,40 @@ const chartConfig = {
     },
     tooltip: {
       theme: "dark",
+      style: {
+        colors: "#616161",
+        fontSize: "12px",
+        fontFamily: "inherit",
+        fontWeight: 400,
+      },
     },
   },
 };
 
 export default function Example() {
-  return <Chart {...chartConfig} />;
+  const [chartConfig, setChartConfig] = useState(null);
+  const marketData = useSelector((state) => state.user.marketData);
+
+  useEffect(() => {
+    if (marketData) {
+      setChartConfig({
+        ...defaultConfig,
+        series: [
+          {
+            name: "Price",
+            data: marketData.map((data) => data.closing_price),
+          },
+        ],
+        options: {
+          ...defaultConfig.options,
+          xaxis: {
+            ...defaultConfig.options.xaxis,
+            categories: marketData.map((data) => data.date),
+          },
+        },
+      });
+    }
+  }, [marketData]);
+
+  return chartConfig && <Chart {...chartConfig} />;
 }

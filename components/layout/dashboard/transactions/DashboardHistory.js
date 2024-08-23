@@ -10,7 +10,7 @@ const DashboardHistory = () => {
   return (
     <FusionCard className="p-6">
       <div className="flex justify-between">
-        <h2>Payment History</h2>
+        <h2>Recent Payments</h2>
 
         <Link
           href="/transactions"

@@ -9,7 +9,7 @@ const TransactionHeading = () => {
         <th className="px-4 py-2 text-left">Status</th>
         <th className="px-4 py-2 text-left">Amount</th>
         <th className="px-4 py-2 text-left">To/From</th>
-        <th className="px-4 py-2 text-left">Visit</th>
+        <th className="px-4 py-2 text-left">Actions</th>
       </tr>
     </thead>
   );

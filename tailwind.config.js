@@ -34,6 +34,10 @@ module.exports = withMT({
       colors: {
         "dark-tertiary": "#262626",
       },
+
+      animation: {
+        "spin-slow": "spin 3s linear infinite",
+      },
     },
   },
 
