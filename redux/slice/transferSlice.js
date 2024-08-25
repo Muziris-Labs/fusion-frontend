@@ -9,6 +9,9 @@ const transferSlice = createSlice({
     recipient: "",
     gasless: false,
     gasAmount: null,
+    selectedChain: null,
+    selectedToken: null,
+    chainFilter: null,
   },
 
   reducers: {
@@ -31,10 +34,26 @@ const transferSlice = createSlice({
     setGasAmount: (state, action) => {
       state.gasAmount = action.payload;
     },
+
+    setToken: (state, action) => {
+      state.selectedToken = action.payload.token;
+      state.selectedChain = action.payload.chain;
+    },
+
+    setChainFilter: (state, action) => {
+      state.chainFilter = action.payload;
+    },
   },
 });
 
-export const { setStep, setAmount, setRecipient, setGasless, setGasAmount } =
-  transferSlice.actions;
+export const {
+  setStep,
+  setAmount,
+  setRecipient,
+  setGasless,
+  setGasAmount,
+  setToken,
+  setChainFilter,
+} = transferSlice.actions;
 
 export default transferSlice.reducer;
