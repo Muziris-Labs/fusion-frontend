@@ -11,10 +11,10 @@ const NavItem = ({ href, label }) => {
   const domain = getDomain();
 
   return (
-    <li>
+    <li className="w-14">
       <Link
         href={`${href}?domain=${domain}`}
-        className="w-14 text-center text-gray-600 hover:text-black transition-colors duration-300"
+        className="text-center text-gray-600 hover:text-black transition-colors duration-300"
       >
         {label}
       </Link>

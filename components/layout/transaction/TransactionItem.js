@@ -5,16 +5,18 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "sonner";
+import { ethers } from "ethers";
+import { useSelector } from "react-redux";
+
+import FusionTooltip from "@/components/ui/FusionTooltip";
+
+import config from "@/lib/config";
 
 import formatDate from "@/utils/formatDate";
 import formatTime from "@/utils/formatTime";
-import CopyToClipboard from "@/utils/CopyToClipboard";
-import FusionTooltip from "@/components/ui/FusionTooltip";
-import { useSelector } from "react-redux";
-import config from "@/lib/config";
-import { ethers } from "ethers";
-import { toast } from "sonner";
 import formatAmount from "@/utils/formatAmount";
+import CopyToClipboard from "@/utils/CopyToClipboard";
 
 const TransactionItem = ({ transaction }) => {
   const walletAddress = useSelector((state) => state.user.walletAddress);
@@ -34,21 +36,23 @@ const TransactionItem = ({ transaction }) => {
     currentChain &&
     currentToken && (
       <tr className="border-t hover:bg-gray-50">
-        <td className="px-4 py-2 flex items-center w-40 relative">
-          <Image
-            width={40}
-            height={40}
-            src={currentToken.logo}
-            alt={transaction.hash}
-            className="w-10 h-10 mr-2"
-          />
-          <Image
-            width={18}
-            height={18}
-            src={currentChain.logo}
-            alt={transaction.hash}
-            className="absolute bottom-1 left-11"
-          />
+        <td className="px-4 py-2 flex items-center w-40 gap-1 relative">
+          <div>
+            <Image
+              width={40}
+              height={40}
+              src={currentToken.logo}
+              alt={transaction.hash}
+              className="w-10 h-10 mr-2"
+            />
+            <Image
+              width={18}
+              height={18}
+              src={currentChain.logo}
+              alt={transaction.hash}
+              className="absolute bottom-1 left-11"
+            />
+          </div>
 
           <div className="w-24 flex flex-col">
             <FusionTooltip label={currentToken.symbol} />
@@ -108,6 +112,7 @@ const TransactionItem = ({ transaction }) => {
             >
               <SquareArrowOutUpRight size={15} />
             </Link>
+
             <div
               className="text-gray-700 hover:cursor-pointer"
               onClick={() => {

@@ -1,18 +1,21 @@
 "use client";
 
 import React from "react";
-import TransactionList from "../../transaction/TransactionList";
-import TransactionHeading from "../../transaction/TransactionHeading";
 import { useSelector } from "react-redux";
 
-const DashboardTable = () => {
+import TransactionList from "../../transaction/TransactionList";
+import TransactionHeading from "../../transaction/TransactionHeading";
+
+const DashboardTable = ({ size = 3 }) => {
   const history = useSelector((state) => state.user.history);
+
+  const transactions = history.slice(0, size);
 
   return (
     <div className="min-h-[200px]">
       <table className="min-w-full mt-4">
         <TransactionHeading />
-        <TransactionList transactions={history} />
+        <TransactionList transactions={transactions} />
       </table>
     </div>
   );
