@@ -35,24 +35,22 @@ const TransactionItem = ({ transaction }) => {
     walletAddress &&
     currentChain &&
     currentToken && (
-      <tr className="border-t hover:bg-gray-50">
-        <td className="px-4 py-2 flex items-center w-40 gap-1 relative">
-          <div>
-            <Image
-              width={40}
-              height={40}
-              src={currentToken.logo}
-              alt={transaction.hash}
-              className="w-10 h-10 mr-2"
-            />
-            <Image
-              width={18}
-              height={18}
-              src={currentChain.logo}
-              alt={transaction.hash}
-              className="absolute bottom-1 left-11"
-            />
-          </div>
+      <tr className="border-t hover:bg-gray-50 my-1">
+        <td className="px-4 py-2 flex items-center w-40relative">
+          <Image
+            width={40}
+            height={40}
+            src={currentToken.logo}
+            alt={transaction.hash}
+            className="w-10 h-10 mr-2"
+          />
+          <Image
+            width={18}
+            height={18}
+            src={currentChain.logo}
+            alt={transaction.hash}
+            className="absolute bottom-1 left-11"
+          />
 
           <div className="w-24 flex flex-col">
             <FusionTooltip label={currentToken.symbol} />
