@@ -15,9 +15,9 @@ const TransferStepper = () => {
       className="w-fit gap-2 mx-auto"
       activeLineClassName="bg-transparent"
     >
-      <Step className="relative h-2 w-20 bg-gray-400 cursor-pointer"></Step>
+      <Step className="relative h-3 w-3 bg-gray-400 cursor-pointer"></Step>
 
-      <Step className="relative h-2 w-20 bg-gray-400 cursor-pointer"></Step>
+      <Step className="relative h-3 w-3 bg-gray-400 cursor-pointer"></Step>
     </Stepper>
   );
 };

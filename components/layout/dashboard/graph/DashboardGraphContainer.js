@@ -15,6 +15,7 @@ const DashboardGraphContainer = () => {
 
   React.useEffect(() => {
     setActive(true);
+
     if (marketData) {
       const differene =
         marketData[0].closing_price -
