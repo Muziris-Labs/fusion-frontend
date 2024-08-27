@@ -1,199 +1,157 @@
 "use client";
 
-import { Button, Input } from "@material-tailwind/react";
+import {
+  setAmount as setFinalAmount,
+  setStep,
+} from "@/redux/slice/transferSlice";
+import { Button } from "@material-tailwind/react";
+import { ArrowUpDown, Minus, Plus } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
-import { ethers } from "ethers";
-import { useRef, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ChevronRight, Info, Loader2 } from "lucide-react";
-
-import { setAmount, setRecipient, setStep } from "@/redux/slice/transferSlice";
-
-const TransferStep1 = () => {
+export default function TransferStep1() {
+  const [amount, setAmount] = useState("0.0");
   const dispatch = useDispatch();
-
-  var inputTimeout = null;
-
-  const inputRef = useRef(null);
-
+  const selectedToken = useSelector((state) => state.transfer.selectedToken);
+  const selectedChain = useSelector((state) => state.transfer.selectedChain);
   const [isValid, setIsValid] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const recipient = useSelector((state) => state.transfer.recipient);
-  const [selectedToken] = useSelector((state) => state.selector.token);
-  const walletAddress = useSelector((state) => state.user.walletAddress);
   const tokenBalanceData = useSelector((state) => state.user.tokenBalanceData);
+  const tokenConversionData = useSelector(
+    (state) => state.user.tokenConversionData
+  );
+  const currentBalanceData = tokenBalanceData?.find(
+    (B) => B.chainId === selectedChain?.chainId
+  );
+  const currentBalance = currentBalanceData?.chainData.find(
+    (B) => B.address === selectedToken?.address
+  )?.balance;
+  const [toggle, setToggle] = useState(false);
 
-  const tokenBalance = tokenBalanceData?.find((token) => {
-    return token.address === selectedToken.address;
-  });
+  const currentConversionData = tokenConversionData?.find(
+    (C) => C.chainId === selectedChain?.chainId
+  );
 
-  const amount = useSelector((state) => state.transfer.amount);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    if (!inputRef.current) return;
-
-    inputRef.current.addEventListener("keydown", function () {
-      clearTimeout(inputTimeout);
-
-      inputTimeout = setTimeout(() => {
-        setIsTyping(false);
-      }, 1000);
-
-      setIsTyping(true);
-    });
-
-    return () => {
-      clearTimeout(inputTimeout);
-      abortController.abort();
-    };
-  }, []);
+  const currentConversion = currentConversionData?.chainData.find(
+    (C) => C.address === selectedToken?.address
+  )?.value;
 
   useEffect(() => {
-    if (isTyping) {
-      setIsLoading(true);
-    } else {
-      checkFusion();
+    if (selectedToken && selectedChain) {
+      checkAmount();
     }
-  }, [isTyping, recipient]);
+  }, [
+    currentBalance,
+    currentConversion,
+    toggle,
+    amount,
+    selectedChain,
+    selectedToken,
+  ]);
 
-  const checkFusion = async () => {
-    setIsLoading(true);
-
-    if (!recipient) {
-      setIsValid(false);
-      setIsLoading(false);
-      return;
-    }
-
-    if (recipient.startsWith("0x") && recipient.length === 42) {
-      if (walletAddress === recipient) {
+  const checkAmount = () => {
+    if (currentBalance && currentConversion) {
+      if (
+        toggle &&
+        Number(amount) <= currentBalance / 10 ** selectedToken.decimals
+      ) {
+        dispatch(setFinalAmount(Number(amount)));
+        setIsValid(true);
+      } else if (
+        !toggle &&
+        Number(amount) <=
+          (currentBalance / 10 ** selectedToken.decimals) * currentConversion
+      ) {
+        dispatch(setFinalAmount(Number(amount) / currentConversion));
+        setIsValid(true);
+      } else {
         setIsValid(false);
-        setIsLoading(false);
-        return;
+        dispatch(setFinalAmount(0));
       }
-
-      setIsValid(true);
-      setIsLoading(false);
-      return;
-    }
-
-    if (!recipient.includes(".fusion.id") && recipient.length >= 6) {
+    } else {
       setIsValid(false);
-      setIsLoading(false);
-      return;
+      dispatch(setFinalAmount(0));
     }
-
-    if (recipient.length < 6) {
-      setIsValid(false);
-      setIsLoading(false);
-      return;
-    }
-
-    if (
-      recipient.split(".fusion.id")[0]?.toLowerCase() === domain?.toLowerCase()
-    ) {
-      setIsValid(false);
-      setIsLoading(false);
-      return;
-    }
-
-    const address = await getFusion(
-      recipient.split(".fusion.id")[0]?.toLowerCase()
-    );
-
-    if (address === ethers.constants.AddressZero) {
-      setIsValid(false);
-      setIsLoading(false);
-      return;
-    }
-
-    dispatch(setRecipient(address));
-    setIsValid(true);
-    setIsLoading(false);
   };
 
   return (
-    <>
-      <div>
-        <Input
-          label="Enter Recipient"
-          placeholder="vitalik.fusion.id"
-          className="font-outfit placeholder:opacity-100"
-          containerProps={{
-            className: "mt-2",
-          }}
-          size="lg"
-          shrink={true}
-          value={recipient}
-          onChange={(e) => {
-            dispatch(setRecipient(e.target.value));
-          }}
-          ref={inputRef}
-        />
-
-        <div className="w-full">
-          {!recipient && (
-            <div className={"mt-2 text-xs flex items-center text-gray-600"}>
-              <Info size={14} className="inline mr-1" />
-              Enter a valid Fusion domain or an arbitrary address.
-            </div>
-          )}
-
-          {isLoading && recipient && (
-            <div className={"mt-2 flex items-center "}>
-              <Loader2 className="animate-spin -mt-0.5 mr-2" size={14} />
-              <span className="text-xs">Checking domain...</span>
-            </div>
-          )}
-
-          {!isLoading && recipient && !isValid && (
-            <div className={"mt-2 text-xs flex text-red-500 "}>
-              <Info size={14} className="inline mt-0.5 mr-1" />
-              Fusion domain or address is invalid.
-            </div>
-          )}
-
-          {!isLoading && recipient && isValid && (
-            <div className={"mt-2 text-xs flex text-green-500 "}>
-              <Info size={14} className="inline mt-0.5 mr-1" />
-              The Address is valid.
-            </div>
-          )}
-        </div>
+    <section className="flex flex-col h-full gap-10 justify-between items-center">
+      <div className="flex flex-col gap-1 w-full">
+        <h1 className="text-2xl font-semibold">Enter Amount</h1>
+        <p className="text-sm text-gray-500">
+          Enter the amount you want to transfer
+        </p>
       </div>
 
-      <div className="relative w-full">
-        <Input
-          label="Enter Amount"
-          placeholder="0"
-          className="font-outfit placeholder:opacity-100 pr-16"
-          containerProps={{
-            className: "min-w-0",
-          }}
-          size="lg"
-          shrink={true}
-          value={amount}
-          onChange={(e) => {
-            const decimalRegex = /^[0-9]*\.?[0-9]*$/;
-            if (e.target.value.match(decimalRegex)) {
-              dispatch(setAmount(e.target.value));
-            }
-          }}
-        />
-
-        <div className="absolute top-1/2 -translate-y-1/2 right-2">
+      <div className="flex flex-col items-center gap-2 mt-14">
+        <div className="w-full flex justify-between items-center gap-2">
           <Button
-            className="rounded-lg text-[0.6rem] flex items-center justify-center font-normal px-3 py-2"
+            className="rounded-full w-8 h-8 flex justify-center items-center p-0"
             onClick={() => {
-              if (!tokenBalance) return;
-              dispatch(
-                setAmount(tokenBalance?.balance / 10 ** tokenBalance?.decimals)
-              );
+              if (amount > 0) {
+                setAmount(Number(amount) - 1);
+              }
             }}
+          >
+            <Minus size={16} className="" />
+          </Button>
+          <input
+            className="w-3/4 text-center text-7xl outline-none"
+            value={amount}
+            onChange={(e) => {
+              const decimalRegex = /^[0-9]*\.?[0-9]*$/;
+              if (e.target.value.match(decimalRegex)) {
+                setAmount(e.target.value);
+              }
+            }}
+            style={{
+              color: isValid ? "black" : "red",
+            }}
+          ></input>
+          <Button
+            className="rounded-full w-8 h-8 flex justify-center items-center p-0"
+            onClick={() => {
+              setAmount(Number(amount) + 1);
+            }}
+          >
+            <Plus size={16} className="" />
+          </Button>
+        </div>
+        <p className="text-2xl font-bold">
+          {!toggle ? "USD" : selectedToken?.symbol}
+        </p>
+        <div className="flex w-full items-center justify-center gap-2">
+          <Button
+            className="border-[1px] w-14 border-black justify-center flex items-center font-normal gap-2 px-3 py-2 normal-case"
+            color="white"
+            onClick={() => {
+              setToggle(!toggle);
+            }}
+            disabled={!selectedToken || !selectedChain}
+          >
+            <ArrowUpDown size={16} className="" />
+          </Button>
+          <Button
+            className="border-[1px] w-14 justify-center border-black flex items-center font-normal gap-2 px-3 py-2 normal-case"
+            color="white"
+            onClick={() => {
+              if (currentBalance) {
+                setAmount(
+                  toggle
+                    ? (currentBalance / 10 ** selectedToken.decimals).toFixed(5)
+                    : (
+                        (currentBalance / 10 ** selectedToken.decimals) *
+                        currentConversion
+                      ).toFixed(5)
+                );
+              }
+            }}
+            disabled={
+              !selectedToken ||
+              !selectedChain ||
+              !currentBalance ||
+              !currentConversion
+            }
           >
             MAX
           </Button>
@@ -201,24 +159,14 @@ const TransferStep1 = () => {
       </div>
 
       <Button
-        color="black"
-        size="sm"
-        className="rounded-lg font-outfit normal-case w-full py-3 mt-1 font-light flex items-center justify-center"
+        className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           dispatch(setStep(1));
         }}
-        disabled={
-          !isValid ||
-          !recipient ||
-          !amount ||
-          amount > tokenBalance?.balance / 10 ** tokenBalance?.decimals
-        }
+        disabled={!selectedToken || !selectedChain || !isValid || amount <= 0}
       >
         Next
-        <ChevronRight size={16} className="-mr-2 ml-2" />
       </Button>
-    </>
+    </section>
   );
-};
-
-export default TransferStep1;
+}

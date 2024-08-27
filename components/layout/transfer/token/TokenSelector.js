@@ -4,10 +4,12 @@ import config from "@/lib/config";
 import Tokens from "./Tokens";
 
 export default function TokenSelector({
-  selectedChain,
-  selectedToken,
-  setToken,
+  selectedChain = null,
+  selectedToken = null,
+  setToken = null,
   chainFilter,
+  activeStep = 0,
+  selectionStep = 0,
 }) {
   return config.chains.map((chain) =>
     chainFilter === null || chainFilter === chain.chainId ? (
@@ -22,6 +24,7 @@ export default function TokenSelector({
               selectedToken={selectedToken}
               selectedChain={selectedChain}
               setToken={setToken}
+              disabled={activeStep !== selectionStep}
             />
           ))}
         </div>

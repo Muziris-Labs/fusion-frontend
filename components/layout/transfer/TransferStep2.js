@@ -1,266 +1,181 @@
 "use client";
 
-import { Button } from "@material-tailwind/react";
-import { Check, ChevronLeft, Loader2 } from "lucide-react";
+import { Button, Input } from "@material-tailwind/react";
 
-import { toast } from "sonner";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Info, Loader2 } from "lucide-react";
 
-import TokenSelector from "@/components/ui/TokenSelector";
+import { setRecipient, setStep } from "@/redux/slice/transferSlice";
+import useWallet from "@/hooks/useWallet";
 
-// import useWallet from "@/hooks/useWallet";
-// import useChange from "@/hooks/useChange";
-
-// import {
-//   setEmail,
-//   setGasAmount,
-//   setGasless,
-//   setRecoveryHash,
-//   setStep,
-// } from "@/redux/slice/changeSlice";
-// import {
-//   setRecoveryProof,
-//   toggleRecoveryDrawer,
-// } from "@/redux/slice/proofSlice";
-
-const Step2 = () => {
-  const router = useRouter();
+const TransferStep2 = () => {
   const dispatch = useDispatch();
 
+  var inputTimeout = null;
+
+  const inputRef = useRef(null);
+
+  const [isValid, setIsValid] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const walletAddress = useSelector((state) => state.user.walletAddress);
+  const recipient = useSelector((state) => state.transfer.recipient);
+  const { getDomain, getFusion } = useWallet();
+  const domain = getDomain();
 
-  // const domain = getDomain();
-  // const { getDomain } = useWallet();
-  // const { estimateGas, changeRecovery } = useChange();
+  useEffect(() => {
+    const abortController = new AbortController();
 
-  // const type = useSelector((state) => state.proof.type);
-  // const email = useSelector((state) => state.change.email);
-  // const gasless = useSelector((state) => state.change.gasless);
-  // const gasAmount = useSelector((state) => state.change.gasAmount);
-  const [, gasToken] = useSelector((state) => state.selector.token);
-  // const currentChain = useSelector((state) => state.chain.currentChain);
-  // const walletAddress = useSelector((state) => state.user.walletAddress);
-  // const recoveryHash = useSelector((state) => state.change.recoveryHash);
-  // const recoveryProof = useSelector((state) => state.proof.recoveryProof);
+    if (!inputRef.current) return;
 
-  var timeout = null;
+    inputRef.current.addEventListener("keydown", function () {
+      clearTimeout(inputTimeout);
 
-  const handleEstimateGas = async () => {
-    await estimateGas();
+      inputTimeout = setTimeout(() => {
+        setIsTyping(false);
+      }, 1000);
+
+      setIsTyping(true);
+    });
+
+    return () => {
+      clearTimeout(inputTimeout);
+      abortController.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isTyping) {
+      setIsLoading(true);
+    } else {
+      checkFusion();
+    }
+  }, [isTyping, recipient]);
+
+  const checkFusion = async () => {
+    setIsLoading(true);
+
+    if (!recipient) {
+      setIsValid(false);
+      setIsLoading(false);
+      return;
+    }
+
+    if (recipient.startsWith("0x") && recipient.length === 42) {
+      if (walletAddress === recipient) {
+        setIsValid(false);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsValid(true);
+      setIsLoading(false);
+      return;
+    }
+
+    if (!recipient.includes(".fusion.id") && recipient.length >= 6) {
+      setIsValid(false);
+      setIsLoading(false);
+      return;
+    }
+
+    if (recipient.length < 6) {
+      setIsValid(false);
+      setIsLoading(false);
+      return;
+    }
+
+    if (
+      recipient.split(".fusion.id")[0]?.toLowerCase() === domain?.toLowerCase()
+    ) {
+      setIsValid(false);
+      setIsLoading(false);
+      return;
+    }
+
+    const address = await getFusion(
+      recipient.split(".fusion.id")[0]?.toLowerCase()
+    );
+
+    if (address === ethers.constants.AddressZero) {
+      setIsValid(false);
+      setIsLoading(false);
+      return;
+    }
+
+    dispatch(setRecipient(address));
+    setIsValid(true);
     setIsLoading(false);
   };
 
-  const handleExecute = async () => {
-    toast.promise(
-      () =>
-        changeRecovery(
-          currentChain,
-          gasToken,
-          type,
-          email,
-          recoveryHash,
-          recoveryProof,
-          walletAddress,
-          domain,
-          gasless
-        ),
-      {
-        loading: "Processing...",
-      }
-    );
-
-    dispatch(setRecoveryProof(null));
-    dispatch(setStep(0));
-    dispatch(setRecoveryHash(null));
-    dispatch(setEmail(null));
-
-    router.push("/settings?domain=" + domain);
-  };
-
-  // useEffect(() => {
-  //   const abortController = new AbortController();
-
-  //   if (gasToken && walletAddress && recoveryProof) {
-  //     clearTimeout(timeout);
-  //     setIsLoading(true);
-
-  //     timeout = setTimeout(() => {
-  //       handleEstimateGas(abortController.signal);
-  //     }, 1000);
-  //   } else {
-  //     dispatch(setGasAmount(null));
-  //   }
-
-  //   return () => {
-  //     abortController.abort();
-  //     clearTimeout(timeout);
-  //   };
-  // }, [gasToken, walletAddress, gasless, recoveryProof, currentChain]);
-
   return (
     <>
-      <div className="bg-gray-100 w-full rounded-lg flex flex-col gap-2 p-4">
-        <div className="flex justify-between items-center w-full">
-          <p className="text-sm font-base text-gray-800">Operation</p>
-          <p className="text-xs font-semibold text-gray-800">Change Recovery</p>
+      <section className="flex flex-col h-full w-full gap-10 justify-between items-center">
+        <div className="flex flex-col gap-1 w-full">
+          <h1 className="text-2xl font-semibold">Enter Recipient</h1>
+          <p className="text-sm text-gray-500">
+            Enter the recipient you want to transfer to
+          </p>
         </div>
-
-        <div className="flex justify-between items-center w-full">
-          <p className="text-sm font-base text-gray-800">Network Fees</p>
-
-          {/* <div className="text-xs font-semibold text-gray-800 flex items-center">
-            {" "}
-            {isLoading ? (
-              <Loader2 size={14} className="animate-spin mr-2" />
-            ) : gasAmount ? (
-              (gasAmount / 10 ** 18).toFixed(5)
-            ) : (
-              "-"
-            )}{" "}
-            {gasless ? (
-              <div
-                className="w-5 h-5"
-                style={{
-                  backgroundColor: "black",
-                  maskImage: "url(/tokens/gas-logo.svg)",
-                  maskSize: "cover",
-                }}
-              ></div>
-            ) : (
-              gasToken?.name
-            )}
-          </div> */}
-        </div>
-      </div>
-
-      <div className="flex gap-2 w-full -mb-1 mt-1">
-        <Button
-          size="sm"
-          className="w-full flex items-center justify-center font-outfit text-xs font-normal rounded-lg py-3 "
-          style={
-            {
-              // backgroundColor: !gasless ? "black" : "#eeeeee",
-              // color: !gasless ? "white" : "black",
-            }
-          }
-          onClick={() => {
-            dispatch(setGasless(false));
-          }}
-        >
-          <p>Gas</p>
-        </Button>
-
-        <Button
-          size="sm"
-          className="w-full flex items-center justify-center font-outfit text-xs font-normal rounded-lg py-3 "
-          style={
-            {
-              // backgroundColor: gasless ? "black" : "#eeeeee",
-              // color: gasless ? "white" : "black",
-            }
-          }
-          onClick={() => {
-            dispatch(setGasless(true));
-          }}
-        >
-          <p>Gasless</p>
-          <div
-            className="w-5 h-5"
+        <div className="w-full">
+          <Input
+            variant="static"
+            placeholder="vitalik.fusion.id"
             style={{
-              // backgroundColor: gasless ? "#FFD700" : "gray",
-              maskImage: "url(/tokens/gas-logo.svg)",
-              maskSize: "cover",
+              fontSize: "1.15rem",
             }}
-          ></div>
-        </Button>
-      </div>
+            className="pb-3"
+            value={recipient}
+            onChange={(e) => {
+              dispatch(setRecipient(e.target.value));
+            }}
+            ref={inputRef}
+          />
+          <div className="w-full">
+            {!recipient && (
+              <div className={"mt-2 text-xs flex items-center text-gray-600"}>
+                <Info size={14} className="inline mr-1" />
+                Enter a valid Fusion domain or an arbitrary address.
+              </div>
+            )}
 
-      {/* {!gasless && (
-        <>
-          <div className="flex w-full items-center justify-center space-x-4">
-            <div className="mt-2 h-0.5 w-full bg-gray-400"></div>
-            <p className="mt-2 text-xs text-gray-600 whitespace-nowrap">
-              Pay Gas with
-            </p>
-            <div className="mt-2 h-0.5 w-full bg-gray-400"></div>
+            {isLoading && recipient && (
+              <div className={"mt-2 flex items-center "}>
+                <Loader2 className="animate-spin -mt-0.5 mr-2" size={14} />
+                <span className="text-xs">Checking domain...</span>
+              </div>
+            )}
+
+            {!isLoading && recipient && !isValid && (
+              <div className={"mt-2 text-xs flex text-red-500 "}>
+                <Info size={14} className="inline mt-0.5 mr-1" />
+                Fusion domain or address is invalid.
+              </div>
+            )}
+
+            {!isLoading && recipient && isValid && (
+              <div className={"mt-2 text-xs flex text-green-500 "}>
+                <Info size={14} className="inline mt-0.5 mr-1" />
+                The Address is valid.
+              </div>
+            )}
           </div>
+        </div>
 
-          <TokenSelector index={1} />
-        </>
-      )} */}
-
-      {/* {gasless && (
-        <div className="bg-gray-200 w-full px-4 py-2.5 -mb-1 mt-3 rounded-lg relative overflow-hidden space-y-1">
-        <p className="text-lg font-medium z-20">About</p>
-
-        <p className="text-xs z-20 relative font-light">
-          Fusion Gas Credits are used to pay for transactions on any network
-          supported by Fusion. The credits are stored safely in Fusion
-          sub-chain.{" "}
-          <span
-            className="font-normal underline cursor-pointer hover:font-semibold"
-            onClick={() => {
-              router.push("/gas?domain=" + domain);
-              dispatch(setStep(0));
-            }}
-          >
-            Get more credits
-          </span>
-        </p>
-
-        <Image
-          src="/FusionGas.png"
-          alt="Fusion Gas"
-          width={400}
-          height={50}
-          className="absolute -top-12 -right-1/3 z-10 opacity-60"
-        />
-      </div>
-      )} */}
-
-      {/* {!recoveryProof && (
         <Button
-          color="black"
-          size="sm"
-          className="rounded-lg font-outfit normal-case w-full py-3 mt-2 font-light"
+          className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
           onClick={() => {
-            dispatch(toggleRecoveryDrawer());
+            dispatch(setStep(2));
           }}
-          disabled={!email}
+          disabled={!isValid}
         >
-          Generate ZK Proof
+          Next
         </Button>
-      )}
-
-      {recoveryProof && (
-        <Button
-          color="black"
-          size="sm"
-          className="rounded-lg font-outfit normal-case w-full py-3 mt-2 font-light flex items-center justify-center"
-          onClick={() => {
-            handleExecute();
-          }}
-          disabled={!email}
-        >
-          Confirm Transaction <Check size={16} className="ml-2 animate-pulse" />
-        </Button>
-      )} */}
-
-      <Button
-        size="sm"
-        className="rounded-lg font-outfit normal-case w-full py-3 bg-gray-600 font-light flex items-center justify-center"
-        onClick={() => {
-          dispatch(setStep(0));
-        }}
-      >
-        <ChevronLeft size={16} className="mr-2 -ml-2" />
-        Back
-      </Button>
+      </section>
     </>
   );
 };
 
-export default Step2;
+export default TransferStep2;

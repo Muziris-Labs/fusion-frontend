@@ -15,6 +15,7 @@ export default function TokenContainer() {
   const chainFilter = useSelector((state) => state.transfer.chainFilter);
   const selectedChain = useSelector((state) => state.transfer.selectedChain);
   const selectedToken = useSelector((state) => state.transfer.selectedToken);
+  const step = useSelector((state) => state.transfer.step);
 
   React.useEffect(() => {
     if (!divRef.current) return;
@@ -43,6 +44,8 @@ export default function TokenContainer() {
           selectedToken={selectedToken}
           setToken={setToken}
           chainFilter={chainFilter}
+          activeStep={step}
+          selectionStep={0}
         />
       </div>
       {isOverflowing && (

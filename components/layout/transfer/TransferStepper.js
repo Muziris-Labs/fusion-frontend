@@ -9,16 +9,20 @@ const TransferStepper = () => {
   const step = useSelector((state) => state.transfer.step);
 
   return (
-    <Stepper
-      activeStep={step}
-      lineClassName="bg-transparent"
-      className="w-fit gap-2 mx-auto"
-      activeLineClassName="bg-transparent"
-    >
-      <Step className="relative h-3 w-3 bg-gray-400 cursor-pointer"></Step>
+    <div className="w-[100px] mt-5 flex justify-center">
+      <Stepper
+        activeStep={step}
+        className=""
+        lineClassName="bg-transparent"
+        activeLineClassName="bg-transparent"
+      >
+        <Step className="relative h-4 w-4 bg-gray-400"></Step>
 
-      <Step className="relative h-3 w-3 bg-gray-400 cursor-pointer"></Step>
-    </Stepper>
+        <Step className="relative h-4 w-4 bg-gray-400"></Step>
+
+        <Step className="relative h-4 w-4 bg-gray-400"></Step>
+      </Stepper>
+    </div>
   );
 };
 
