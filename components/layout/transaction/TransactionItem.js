@@ -25,7 +25,7 @@ const TransactionItem = ({ transaction }) => {
   );
   const currentToken = transaction.tokenSymbol
     ? currentChain.tokens.find(
-        (token) => token.address === transaction.contractAddress
+        (token) => token.address.toLowerCase() === transaction.contractAddress
       )
     : currentChain.tokens.find(
         (token) => token.address === ethers.constants.AddressZero
@@ -36,7 +36,7 @@ const TransactionItem = ({ transaction }) => {
     currentChain &&
     currentToken && (
       <tr className="border-t hover:bg-gray-50 my-1">
-        <td className="px-4 py-2 flex items-center w-40 gap-1 relative">
+        <td className="px-4 py-2 pr-0 flex items-center w-40 gap-3 relative">
           <div className="relative">
             <Image
               width={40}
@@ -46,15 +46,15 @@ const TransactionItem = ({ transaction }) => {
               className="w-10 h-10 mr-2"
             />
             <Image
-              width={18}
-              height={18}
+              width={16}
+              height={16}
               src={currentChain.logo}
               alt={transaction.hash}
-              className="absolute bottom-0 right-0"
+              className="absolute -bottom-1 -right-1"
             />
           </div>
 
-          <div className="w-24 flex flex-col">
+          <div className="w-24 flex flex-col items-start">
             <FusionTooltip label={currentToken.symbol} />
 
             <p className="text-gray-500 text-sm truncate">
@@ -87,8 +87,10 @@ const TransactionItem = ({ transaction }) => {
         >
           {transaction.from === walletAddress.toLowerCase() ? "-" : "+"}{" "}
           {transaction.tokenDecimal
-            ? formatAmount(transaction.value) / Number(transaction.tokenDecimal)
-            : formatAmount(transaction.value) / 10 ** 18}{" "}
+            ? formatAmount(
+                transaction.value / 10 ** Number(currentToken.decimals)
+              )
+            : formatAmount(transaction.value / 10 ** 18)}{" "}
           {currentToken.symbol}
         </td>
 
