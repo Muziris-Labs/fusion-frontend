@@ -11,12 +11,14 @@ export default function WalletProvider({ children }) {
     loadMarketData,
     loadConversionData,
     listenForBalance,
+    setMailUser,
   } = useWallet();
 
   useEffect(() => {
     const domain = getDomain();
 
     if (domain) {
+      setMailUser();
       loadAddresses();
       loadTransactions();
       loadMarketData();

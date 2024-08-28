@@ -9,19 +9,48 @@ import {
   setMarketData,
   setTokenBalanceData,
   setTokenConversionData,
+  setWallet,
   setWalletAddress,
   setWalletAddresses,
 } from "@/redux/slice/UserSlice";
 import axios from "axios";
+import { Auth0Client } from "auth0-spa-js";
+import { setMailUser as setMUser } from "@/redux/slice/UserSlice";
 
 export default function useWallet() {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const history = useSelector((state) => state.user.history);
+  const wallet = useSelector((state) => state.user.wallet);
 
   const getDomain = () => {
     const domain = searchParams.get("domain");
     return domain.toLowerCase();
+  };
+
+  let active = false;
+
+  const setMailUser = async () => {
+    try {
+      const auth0 = new Auth0Client({
+        domain: process.env.NEXT_PUBLIC_AUTH0_DOMAIN,
+        client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
+        audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE,
+        scope: "read:current_user",
+      });
+
+      if (active) return;
+      active = true;
+      const token = await auth0.getTokenSilently();
+
+      if (token) {
+        const user = await auth0.getUser();
+
+        dispatch(setMUser(user));
+      }
+    } catch (error) {
+      return false;
+    }
   };
 
   const getFusion = async (domain) => {
@@ -41,6 +70,18 @@ export default function useWallet() {
       console.log(error);
       return ethers.constants.AddressZero;
     }
+  };
+
+  const initializeProofWallet = () => {
+    if (!wallet) {
+      const newWallet = ethers.Wallet.createRandom();
+
+      dispatch(setWallet(newWallet));
+
+      return newWallet;
+    }
+
+    return wallet;
   };
 
   const getFusionAddress = async (chain, domain) => {
@@ -383,6 +424,56 @@ export default function useWallet() {
     );
   };
 
+  const getNonce = async (currentChain) => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        currentChain.rpcUrl
+      );
+
+      const domain = getDomain();
+
+      const walletAddress = await getFusionAddress(currentChain, domain);
+
+      const Fusion = new ethers.Contract(
+        walletAddress,
+        currentChain.deployments.Fusion.abi,
+        provider
+      );
+
+      const nonce = await Fusion.getNonce();
+
+      return Number(nonce);
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
+  };
+
+  const getTxHash = async (currentChain) => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        currentChain.rpcUrl
+      );
+
+      const domain = getDomain();
+
+      const walletAddress = await getFusionAddress(currentChain, domain);
+
+      const Fusion = new ethers.Contract(
+        walletAddress,
+        currentChain.deployments.Fusion.abi,
+        provider
+      );
+
+      const txHash = await Fusion.TxHash();
+
+      return txHash;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   return {
     getFusion,
     getDomain,
@@ -393,5 +484,9 @@ export default function useWallet() {
     loadMarketData,
     loadConversionData,
     listenForBalance,
+    initializeProofWallet,
+    getNonce,
+    getTxHash,
+    setMailUser,
   };
 }

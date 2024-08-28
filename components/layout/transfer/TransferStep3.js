@@ -4,21 +4,24 @@ import shortenAddress from "@/utils/shortenAddress";
 import { Button, Tooltip } from "@material-tailwind/react";
 import { ArrowUpDown, Info } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import formatAmount from "@/utils/formatAmount";
-import { setStep } from "@/redux/slice/transferSlice";
-import { toggleProofDrawer } from "@/redux/slice/proofSlice";
+import { setGasAmount, setStep } from "@/redux/slice/transferSlice";
+import { setTxProof, toggleProofDrawer } from "@/redux/slice/proofSlice";
+import useExecute from "@/hooks/useExecute";
 
 export default function TransferStep3() {
   const recipient = useSelector((state) => state.transfer.recipient);
   const amount = useSelector((state) => state.transfer.amount);
   const selectedToken = useSelector((state) => state.transfer.selectedToken);
   const selectedChain = useSelector((state) => state.transfer.selectedChain);
+  const txProof = useSelector((state) => state.proof.txProof);
   const dispatch = useDispatch();
   const tokenConversionData = useSelector(
     (state) => state.user.tokenConversionData
   );
   const gasAmount = useSelector((state) => state.transfer.gasAmount);
+  const { estimateGas, execute } = useExecute();
 
   const [toggle, setToggle] = useState(false);
 
@@ -29,6 +32,14 @@ export default function TransferStep3() {
   const currentConversion = currentConversionData?.chainData.find(
     (C) => C.address === selectedToken?.address
   )?.value;
+
+  useEffect(() => {
+    if (txProof) {
+      estimateGas();
+    } else {
+      dispatch(setGasAmount(null));
+    }
+  }, [txProof]);
 
   return (
     <section className="flex flex-col h-full w-full gap-10 justify-between items-center">
@@ -85,19 +96,27 @@ export default function TransferStep3() {
         <Button
           className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
           onClick={() => {
-            dispatch(toggleProofDrawer());
+            if (!txProof) {
+              dispatch(toggleProofDrawer());
+            } else {
+              execute();
+            }
           }}
         >
-          Approve
+          {txProof ? "Confirm" : "Approve"}
         </Button>
         <Button
           className=" w-full p-5 font-semibold border-[1px] border-black rounded-full text-sm font-outfit normal-case"
           color="white"
           onClick={() => {
-            dispatch(setStep(0));
+            if (!txProof) {
+              dispatch(setStep(0));
+            } else {
+              dispatch(setTxProof(null));
+            }
           }}
         >
-          Back
+          {txProof ? "Reject" : "Back"}
         </Button>
       </div>
     </section>

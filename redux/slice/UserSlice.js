@@ -13,6 +13,8 @@ const userSlice = createSlice({
     history: [],
     wsProvider: null,
     marketData: null,
+    wallet: null,
+    mailUser: null,
   },
 
   reducers: {
@@ -51,6 +53,14 @@ const userSlice = createSlice({
     setMarketData: (state, action) => {
       state.marketData = action.payload;
     },
+
+    setWallet: (state, action) => {
+      state.wallet = action.payload;
+    },
+
+    setMailUser: (state, action) => {
+      state.mailUser = action.payload;
+    },
   },
 });
 
@@ -64,6 +74,8 @@ export const {
   setHistory,
   setWsProvider,
   setMarketData,
+  setWallet,
+  setMailUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;
