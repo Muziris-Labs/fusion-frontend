@@ -37,7 +37,7 @@ const DashboardCredit = () => {
   }, [tokenBalanceData, tokenConversionData]);
 
   return (
-    <FusionCard className="flex justify-between flex-none p-6">
+    <FusionCard className={`flex justify-between flex-none p-6`}>
       <div className="space-y-2.5">
         <h2>Active Credit</h2>
 
