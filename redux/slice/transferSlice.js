@@ -43,6 +43,16 @@ const transferSlice = createSlice({
     setChainFilter: (state, action) => {
       state.chainFilter = action.payload;
     },
+
+    clearAll: (state, action) => {
+      state.step = 0;
+      state.amount = "0.0";
+      state.recipient = "";
+      state.gasless = false;
+      state.gasAmount = null;
+      state.selectedChain = null;
+      state.selectedToken = null;
+    },
   },
 });
 
@@ -54,6 +64,7 @@ export const {
   setGasAmount,
   setToken,
   setChainFilter,
+  clearAll,
 } = transferSlice.actions;
 
 export default transferSlice.reducer;

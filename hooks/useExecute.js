@@ -1,26 +1,27 @@
 "use client";
 
-import { setGasAmount } from "@/redux/slice/transferSlice";
+import { clearAll, setGasAmount } from "@/redux/slice/transferSlice";
 import { useDispatch } from "react-redux";
 import useWallet from "./useWallet";
 import { ethers } from "ethers";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { setIsRunning } from "@/redux/slice/TxSlice";
+import { useConfetti } from "@/components/ui/fireConfetti";
+import { toast } from "sonner";
+import { clearTxProof } from "@/redux/slice/proofSlice";
 
 export default function useExecute() {
   const dispatch = useDispatch();
-  const {
-    getDomain,
-    initializeProofWallet,
-    getNonce,
-    getFusionAddress,
-  } = useWallet();
+  const { getDomain, initializeProofWallet, getNonce, getFusionAddress } =
+    useWallet();
   const domain = getDomain();
   const selectedChain = useSelector((state) => state.transfer.selectedChain);
   const selectedToken = useSelector((state) => state.transfer.selectedToken);
   const recipient = useSelector((state) => state.transfer.recipient);
   const amount = useSelector((state) => state.transfer.amount);
   const txProof = useSelector((state) => state.proof.txProof);
+  const { fireMultiple } = useConfetti();
 
   const estimateGas = async () => {
     try {
@@ -34,8 +35,8 @@ export default function useExecute() {
 
       let txData;
       if (
-        !selectedChain.address ||
-        selectedChain.address === ethers.constants.AddressZero
+        !selectedToken.address ||
+        selectedToken.address === ethers.constants.AddressZero
       ) {
         txData = {
           to: recipient,
@@ -124,15 +125,29 @@ export default function useExecute() {
         signature: signature,
       };
 
-      const payloadResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/estimate/native/` +
-          selectedChain.chainId,
-        {
-          forwardRequest,
-        }
-      );
+      if (selectedToken.address === ethers.constants.AddressZero) {
+        const payloadResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/estimate/native/` +
+            selectedChain.chainId,
+          {
+            forwardRequest,
+          }
+        );
 
-      console.log(payloadResponse.data);
+        dispatch(setGasAmount(payloadResponse.data.estimateFees));
+      } else {
+        const payloadResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/estimate/erc20/` +
+            selectedChain.chainId +
+            "/" +
+            selectedToken.address,
+          {
+            forwardRequest,
+          }
+        );
+
+        dispatch(setGasAmount(payloadResponse.data.estimateFees));
+      }
     } catch (error) {
       dispatch(setGasAmount(null));
       console.error(error);
@@ -141,6 +156,8 @@ export default function useExecute() {
 
   const execute = async () => {
     try {
+      dispatch(setIsRunning(true));
+
       const wallet = initializeProofWallet();
 
       const fusionAddress = await getFusionAddress(selectedChain, domain);
@@ -151,8 +168,8 @@ export default function useExecute() {
 
       let txData;
       if (
-        !selectedChain.address ||
-        selectedChain.address === ethers.constants.AddressZero
+        !selectedToken.address ||
+        selectedToken.address === ethers.constants.AddressZero
       ) {
         txData = {
           to: recipient,
@@ -241,18 +258,48 @@ export default function useExecute() {
         signature: signature,
       };
 
-      const payloadResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/native/` +
-          selectedChain.chainId,
-        {
-          forwardRequest,
-        }
-      );
+      if (selectedToken.address === ethers.constants.AddressZero) {
+        const payloadResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/native/` +
+            selectedChain.chainId,
+          {
+            forwardRequest,
+          }
+        );
 
-      console.log(payloadResponse.data);
+        if (payloadResponse.data.success) {
+          fireMultiple();
+          toast.success("Transaction Successful");
+          dispatch(clearAll());
+          dispatch(clearTxProof());
+        } else {
+          toast.error("Transaction Failed");
+        }
+      } else {
+        const payloadResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/erc20/` +
+            selectedChain.chainId +
+            "/" +
+            selectedToken.address,
+          {
+            forwardRequest,
+          }
+        );
+
+        if (payloadResponse.data.success) {
+          fireMultiple();
+          toast.success("Transaction Successful");
+          dispatch(clearAll());
+          dispatch(clearTxProof());
+        } else {
+          toast.error("Transaction Failed");
+        }
+      }
     } catch (error) {
-      dispatch(setGasAmount(null));
       console.error(error);
+      toast.error("Transaction Failed");
+    } finally {
+      dispatch(setIsRunning(false));
     }
   };
 

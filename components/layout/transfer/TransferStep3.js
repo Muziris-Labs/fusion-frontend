@@ -2,7 +2,7 @@
 
 import shortenAddress from "@/utils/shortenAddress";
 import { Button, Tooltip } from "@material-tailwind/react";
-import { ArrowUpDown, Info } from "lucide-react";
+import { ArrowUpDown, Info, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import formatAmount from "@/utils/formatAmount";
@@ -20,9 +20,10 @@ export default function TransferStep3() {
   const tokenConversionData = useSelector(
     (state) => state.user.tokenConversionData
   );
+  const [isLoading, setIsLoading] = useState(false);
   const gasAmount = useSelector((state) => state.transfer.gasAmount);
   const { estimateGas, execute } = useExecute();
-
+  const isRunning = useSelector((state) => state.tx.isRunning);
   const [toggle, setToggle] = useState(false);
 
   const currentConversionData = tokenConversionData?.find(
@@ -33,9 +34,15 @@ export default function TransferStep3() {
     (C) => C.address === selectedToken?.address
   )?.value;
 
+  const estimate = async () => {
+    setIsLoading(true);
+    await estimateGas();
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     if (txProof) {
-      estimateGas();
+      estimate();
     } else {
       dispatch(setGasAmount(null));
     }
@@ -66,9 +73,20 @@ export default function TransferStep3() {
             {toggle ? selectedToken.symbol : "USD"}
           </p>
           <div className="flex gap-2 items-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 flex items-center gap-2">
               {" "}
-              + {gasAmount ? formatAmount(Number(gasAmount), 2) : "≈"}{" "}
+              +{" "}
+              {isLoading ? (
+                <Loader2 size={12} className="animate-spin" />
+              ) : gasAmount ? (
+                toggle ? (
+                  formatAmount(Number(gasAmount / 10 ** 18), 6)
+                ) : (
+                  (Number(gasAmount / 10 ** 18) * currentConversion).toFixed(6)
+                )
+              ) : (
+                "≈"
+              )}{" "}
               {toggle ? selectedToken.symbol : "USD"}
             </p>
             <Tooltip
@@ -102,6 +120,7 @@ export default function TransferStep3() {
               execute();
             }
           }}
+          disabled={txProof ? !gasAmount : isRunning}
         >
           {txProof ? "Confirm" : "Approve"}
         </Button>
@@ -115,6 +134,7 @@ export default function TransferStep3() {
               dispatch(setTxProof(null));
             }
           }}
+          disabled={isRunning}
         >
           {txProof ? "Reject" : "Back"}
         </Button>

@@ -26,6 +26,10 @@ const proofSlice = createSlice({
     setMessage: (state, action) => {
       state.message = action.payload;
     },
+
+    clearTxProof: (state) => {
+      state.txProof = null;
+    },
   },
 });
 
@@ -34,6 +38,7 @@ export const {
   toggleProofDrawer,
   setLoading,
   setMessage,
+  clearTxProof,
 } = proofSlice.actions;
 
 export default proofSlice.reducer;

@@ -71,8 +71,8 @@ export default function useProof() {
 
       let txData;
       if (
-        !selectedChain.address ||
-        selectedChain.address === ethers.constants.AddressZero
+        !selectedToken.address ||
+        selectedToken.address === ethers.constants.AddressZero
       ) {
         txData = {
           to: recipient,
@@ -177,8 +177,8 @@ export default function useProof() {
 
       let txData;
       if (
-        !selectedChain.address ||
-        selectedChain.address === ethers.constants.AddressZero
+        !selectedToken.address ||
+        selectedToken.address === ethers.constants.AddressZero
       ) {
         txData = {
           to: recipient,
