@@ -1,13 +1,16 @@
+"use client";
+
 import React from "react";
+
+import { Button } from "@material-tailwind/react";
 
 import FusionCard from "@/components/ui/FusionCard";
 import DashboardCredit from "@/components/layout/dashboard/DashboardCredit";
 
-import SettingsChains from "@/components/layout/dashboard/settings/SettingsChains";
-import ChangePasskeyBtn from "@/components/layout/dashboard/settings/ChangePasskeyBtn";
 import SettingsQRContainer from "@/components/layout/dashboard/settings/SettingsQRContainer";
+import SettingsChains from "@/components/layout/dashboard/settings/SettingsChains";
 
-const SettingPage = () => {
+const ReceivePage = () => {
   return (
     <div className="mt-12 max-w-4xl mx-auto space-y-2">
       <div className="flex gap-5">
@@ -25,7 +28,9 @@ const SettingPage = () => {
               </p>
             </div>
 
-            <ChangePasskeyBtn />
+            <Button className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case">
+              Change
+            </Button>
           </FusionCard>
 
           <FusionCard className="p-6 shadow text-center space-y-5">
@@ -44,4 +49,4 @@ const SettingPage = () => {
   );
 };
 
-export default SettingPage;
+export default ReceivePage;

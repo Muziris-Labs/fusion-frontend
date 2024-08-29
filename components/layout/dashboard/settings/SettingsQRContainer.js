@@ -23,7 +23,7 @@ const SettingsQRContainer = () => {
   const walletAddress = useSelector((state) => state.user.walletAddress);
 
   return (
-    <FusionCard className="p-6 shadow text-center flex gap-5 items-center">
+    <FusionCard className="p-6 shadow text-center flex gap-3 items-center">
       <QRCodeGenerator value={walletAddress} />
       <img
         src={qrcode.getImage()}
