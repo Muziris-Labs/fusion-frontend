@@ -1,20 +1,20 @@
-"use client";
-
 import React from "react";
-import { useSelector } from "react-redux";
 
 import SettingsProfile from "./SettingsProfile";
+import Image from "next/image";
 
 import FusionCard from "@/components/ui/FusionCard";
-import QRCodeGenerator from "@/components/ui/QrCodeGenerator";
 
 const SettingsQRContainer = () => {
-  const walletAddress = useSelector((state) => state.user.walletAddress);
-
   return (
-    <FusionCard className="p-6 shadow text-center flex gap-3 items-center">
-      <QRCodeGenerator value={walletAddress} />
-
+    <FusionCard className="p-6 shadow text-center flex flex-col gap-3 items-center overflow-hidden relative">
+      <Image
+        src="/fusion-logo.svg"
+        alt="Settings"
+        width={400}
+        height={400}
+        className="absolute -top-1/3 -right-1/3 opacity-5 z-0"
+      />
       <SettingsProfile />
     </FusionCard>
   );

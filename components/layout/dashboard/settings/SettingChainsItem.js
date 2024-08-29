@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 
 import { BookUser, Coins } from "lucide-react";
 import { Avatar, Tooltip } from "@material-tailwind/react";
@@ -6,6 +8,10 @@ import { Avatar, Tooltip } from "@material-tailwind/react";
 import Image from "next/image";
 
 import shortenAddress from "@/utils/shortenAddress";
+import { useSelector } from "react-redux";
+import { calculateChainBalance } from "@/utils/conversionUtils";
+import formatAmount from "@/utils/formatAmount";
+import { ethers } from "ethers";
 
 const TooltipContent = ({ logo, tokenName, address, balance }) => {
   return (
@@ -46,23 +52,58 @@ const TooltipContent = ({ logo, tokenName, address, balance }) => {
 };
 
 const SettingChainsItem = ({ chain }) => {
+  const tokenBalanceData = useSelector((state) => state.user.tokenBalanceData);
+  const tokenConversionData = useSelector(
+    (state) => state.user.tokenConversionData
+  );
+  const walletAddresses = useSelector((state) => state.user.walletAddresses);
+  const selectedAddress = walletAddresses?.find((A) => {
+    return A.chainId === chain.chainId;
+  });
+  const [totalBalance, setTotalBalance] = React.useState(0);
+
+  useEffect(() => {
+    if (tokenBalanceData && tokenConversionData) {
+      const balance = calculateChainBalance(
+        chain,
+        tokenConversionData,
+        tokenBalanceData
+      );
+
+      setTotalBalance(balance);
+    }
+  }, [tokenBalanceData, tokenConversionData]);
+
   return (
     <Tooltip
-      className="border border-blue-gray-50 bg-white text-black py-4 px-3 shadow-xl shadow-black/10 space-y-4 min-w-72 rounded-2xl"
+      className="border border-blue-gray-50 bg-white text-black p-4 shadow-xl shadow-black/10 space-y-4 min-w-72 rounded-2xl"
       content={
-        <TooltipContent
-          logo={"/fusion-logo.svg"}
-          tokenName={"OP Sepolia"}
-          address={"0x1234567890abcdef"}
-          balance={"2.33"}
-        />
+        selectedAddress ? (
+          <TooltipContent
+            logo={chain.logo}
+            tokenName={chain.name}
+            address={
+              selectedAddress?.address
+                ? selectedAddress.address
+                : ethers.constants.AddressZero
+            }
+            balance={
+              totalBalance ? "$ " + formatAmount(totalBalance, 2) : "$ 0.00"
+            }
+          />
+        ) : (
+          <p className="text-center">Not Deployed yet</p>
+        )
       }
     >
       <Avatar
         variant="circular"
         alt="user 1"
         className="border-2 border-white hover:z-10 focus:z-10"
-        src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+        src={chain.logo}
+        style={{
+          opacity: selectedAddress ? 1 : 0.5,
+        }}
       />
     </Tooltip>
   );

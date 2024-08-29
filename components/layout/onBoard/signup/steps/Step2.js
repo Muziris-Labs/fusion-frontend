@@ -36,6 +36,7 @@ const Step2 = () => {
               setIsLoading(false);
             });
         }}
+        disabled={isLoading}
       >
         {passkey ? (
           <Check className="text-green-500" size={80} />

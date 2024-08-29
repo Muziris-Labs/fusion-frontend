@@ -1,46 +1,40 @@
-import React, { useEffect, useRef } from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import QrCodeWithLogo from "qrcode-with-logos";
 
 const QRCodeGenerator = ({
   value = "https://github.com/zxpsuper",
-  size = 380,
-  logoSrc = "/fusion-logo.png",
+  size = 100,
 }) => {
-  const imageRef = useRef(null);
+  const [src, setSrc] = React.useState("");
 
   useEffect(() => {
-    const qrcode = new QrCodeWithLogo({
-      content: value,
-      width: size,
-      logo: {
-        src: logoSrc,
+    const qrcode = new QrCodeWithLogo(
+      {
+        content: value,
+        width: size,
+        dotsOptions: {
+          color: "#000",
+          type: "fluid",
+        },
+        cornersOptions: {
+          type: "circle",
+          color: "#000",
+        },
       },
-      dotsOptions: {
-        color: "#000",
-        type: "rounded",
-      },
-      cornersOptions: {
-        type: "circle",
-        color: "#000",
-      },
-    });
+      [value, size]
+    );
 
     const getImage = async () => {
-      if (imageRef.current) {
-        imageRef.current.src = (await qrcode.getCanvas()).toDataURL();
-      }
+      const src = (await qrcode.getCanvas()).toDataURL();
+      setSrc(src);
     };
 
     getImage();
-  }, [value, size, logoSrc]);
+  }, [value, size]);
 
-  return (
-    <img
-      ref={imageRef}
-      alt="QR Code with Logo"
-      style={{ width: `164px`, height: `164px` }}
-    />
-  );
+  return src && <img src={src} alt="QR Code with Logo" style={{}} />;
 };
 
 export default QRCodeGenerator;
