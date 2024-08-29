@@ -1,33 +1,45 @@
-import React from "react";
-import { QRCodeSVG } from "qrcode.react";
+import React, { useEffect, useRef } from "react";
+import QrCodeWithLogo from "qrcode-with-logos";
 
 const QRCodeGenerator = ({
-  value,
-  size = 164,
-  level = "H",
-  bgColor = "transparent",
-  fgColor = "url(#gradient)",
+  value = "https://github.com/zxpsuper",
+  size = 380,
+  logoSrc = "/fusion-logo.png",
 }) => {
-  return (
-    <svg width={size} height={size}>
-      <defs>
-        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style={{ stopColor: "#555555", stopOpacity: 1 }} />
-          <stop
-            offset="100%"
-            style={{ stopColor: "#2a2a2a", stopOpacity: 1 }}
-          />
-        </linearGradient>
-      </defs>
+  const imageRef = useRef(null);
 
-      <QRCodeSVG
-        value={value}
-        level={level}
-        size={size}
-        bgColor={bgColor}
-        fgColor={fgColor}
-      />
-    </svg>
+  useEffect(() => {
+    const qrcode = new QrCodeWithLogo({
+      content: value,
+      width: size,
+      logo: {
+        src: logoSrc,
+      },
+      dotsOptions: {
+        color: "#000",
+        type: "rounded",
+      },
+      cornersOptions: {
+        type: "circle",
+        color: "#000",
+      },
+    });
+
+    const getImage = async () => {
+      if (imageRef.current) {
+        imageRef.current.src = (await qrcode.getCanvas()).toDataURL();
+      }
+    };
+
+    getImage();
+  }, [value, size, logoSrc]);
+
+  return (
+    <img
+      ref={imageRef}
+      alt="QR Code with Logo"
+      style={{ width: `164px`, height: `164px` }}
+    />
   );
 };
 
