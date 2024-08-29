@@ -1,8 +1,7 @@
 import React from "react";
 import NavMenu from "./NavMenu";
 
-const NavBar = ({ searchParams }) => {
-  console.log("Nav: " + searchParams);
+const NavBar = () => {
   return (
     <nav className="flex justify-center p-2">
       <NavMenu />

@@ -45,7 +45,6 @@ const SettingsProfile = () => {
         <Link
           href={`/transfer?domain=${domain}`}
           className="bg-gray-100 rounded-l-full border py-1.5 min-w-20 prevent-select"
-          fullWidth
         >
           Send
         </Link>
@@ -53,7 +52,6 @@ const SettingsProfile = () => {
         <Link
           href={`/receive?domain=${domain}`}
           className="bg-transparent rounded-r-full border py-1.5 min-w-20 prevent-select"
-          fullWidth
         >
           Receive
         </Link>
