@@ -9,7 +9,7 @@ import TokenSelector from "./token/TokenSelector";
 import { useSelector } from "react-redux";
 import { setChainFilter, setToken } from "@/redux/slice/transferSlice";
 
-export default function TokenContainer() {
+export default function TokenContainer({ height = "h-[450px]" }) {
   const divRef = React.useRef(null);
   const [isOverflowing, setIsOverflowing] = React.useState(false);
   const chainFilter = useSelector((state) => state.transfer.chainFilter);
@@ -28,7 +28,7 @@ export default function TokenContainer() {
   }, [config]);
 
   return (
-    <FusionCard className="flex flex-col gap-4 p-6 h-[450px] w-[355px] flex-none">
+    <FusionCard className={`flex flex-col gap-4 p-6 flex-none ${height}`}>
       <div className="flex w-full flex-wrap gap-2">
         <ChainSelector
           chainFilter={chainFilter}
