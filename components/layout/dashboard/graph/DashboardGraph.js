@@ -96,7 +96,7 @@ export default function Example() {
         series: [
           {
             name: "Price",
-            data: marketData.map((data) => data.closing_price),
+            data: marketData.map((data) => data.closing_price).reverse(),
           },
         ],
         options: {
