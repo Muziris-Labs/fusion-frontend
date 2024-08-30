@@ -135,6 +135,13 @@ export default function useWallet() {
 
       if (!domain) return;
 
+      const walletAddress = await getFusionAddress(baseConfig, domain);
+
+      if (walletAddress === ethers.constants.AddressZero) {
+        dispatch(setHistory([]));
+        return;
+      }
+
       let transaction = [];
 
       await Promise.all(
@@ -330,96 +337,104 @@ export default function useWallet() {
         const domain = getDomain();
         const walletAddress = await getFusionAddress(chain, domain);
 
-        WsProvider.on("block", async () => {
-          const newBalance = Number(await WsProvider.getBalance(walletAddress));
+        if (walletAddress !== ethers.constants.AddressZero) {
+          WsProvider.on("block", async () => {
+            const newBalance = Number(
+              await WsProvider.getBalance(walletAddress)
+            );
 
-          if (!tokenBalanceData) {
-            return;
-          }
-
-          let isChanged = false;
-
-          const updatedBalanceData = tokenBalanceData.map((chainData) => {
-            if (chainData.chainId === chain.chainId) {
-              return {
-                ...chainData,
-                chainData: chainData.chainData.map((tokenData) => {
-                  if (
-                    tokenData.address === ethers.constants.AddressZero &&
-                    tokenData.balance !== newBalance
-                  ) {
-                    isChanged = true;
-                    return {
-                      ...tokenData,
-                      balance: newBalance,
-                    };
-                  } else {
-                    return tokenData;
-                  }
-                }),
-              };
-            } else {
-              return chainData;
-            }
-          });
-
-          if (isChanged) {
-            tokenBalanceData = updatedBalanceData;
-            dispatch(setTokenBalanceData(tokenBalanceData));
-          }
-        });
-
-        const tokens = chain.tokens;
-
-        await Promise.all(
-          tokens.map(async (token) => {
-            if (
-              !token.address ||
-              token.address === ethers.constants.AddressZero
-            ) {
+            if (!tokenBalanceData) {
               return;
             }
 
-            const contract = new ethers.Contract(
-              token.address,
-              [
-                "function balanceOf(address) view returns (uint256)",
-                "event Transfer(address indexed from, address indexed to, uint256 value)",
-              ],
-              WsProvider
-            );
+            let isChanged = false;
 
-            contract.on("Transfer", async (from, to, value) => {
-              if (to === walletAddress || from === walletAddress) {
-                const currentBalance = await contract.balanceOf(walletAddress);
-
-                const updatedBalanceData = tokenBalanceData.map((chainData) => {
-                  if (chainData.chainId === chain.chainId) {
-                    return {
-                      ...chainData,
-                      chainData: chainData.chainData.map((tokenData) => {
-                        if (tokenData.address === token.address) {
-                          return {
-                            ...tokenData,
-                            balance: Number(currentBalance),
-                          };
-                        } else {
-                          return tokenData;
-                        }
-                      }),
-                    };
-                  } else {
-                    return chainData;
-                  }
-                });
-
-                tokenBalanceData = updatedBalanceData;
-
-                dispatch(setTokenBalanceData(tokenBalanceData));
+            const updatedBalanceData = tokenBalanceData.map((chainData) => {
+              if (chainData.chainId === chain.chainId) {
+                return {
+                  ...chainData,
+                  chainData: chainData.chainData.map((tokenData) => {
+                    if (
+                      tokenData.address === ethers.constants.AddressZero &&
+                      tokenData.balance !== newBalance
+                    ) {
+                      isChanged = true;
+                      return {
+                        ...tokenData,
+                        balance: newBalance,
+                      };
+                    } else {
+                      return tokenData;
+                    }
+                  }),
+                };
+              } else {
+                return chainData;
               }
             });
-          })
-        );
+
+            if (isChanged) {
+              tokenBalanceData = updatedBalanceData;
+              dispatch(setTokenBalanceData(tokenBalanceData));
+            }
+          });
+
+          const tokens = chain.tokens;
+
+          await Promise.all(
+            tokens.map(async (token) => {
+              if (
+                !token.address ||
+                token.address === ethers.constants.AddressZero
+              ) {
+                return;
+              }
+
+              const contract = new ethers.Contract(
+                token.address,
+                [
+                  "function balanceOf(address) view returns (uint256)",
+                  "event Transfer(address indexed from, address indexed to, uint256 value)",
+                ],
+                WsProvider
+              );
+
+              contract.on("Transfer", async (from, to, value) => {
+                if (to === walletAddress || from === walletAddress) {
+                  const currentBalance = await contract.balanceOf(
+                    walletAddress
+                  );
+
+                  const updatedBalanceData = tokenBalanceData.map(
+                    (chainData) => {
+                      if (chainData.chainId === chain.chainId) {
+                        return {
+                          ...chainData,
+                          chainData: chainData.chainData.map((tokenData) => {
+                            if (tokenData.address === token.address) {
+                              return {
+                                ...tokenData,
+                                balance: Number(currentBalance),
+                              };
+                            } else {
+                              return tokenData;
+                            }
+                          }),
+                        };
+                      } else {
+                        return chainData;
+                      }
+                    }
+                  );
+
+                  tokenBalanceData = updatedBalanceData;
+
+                  dispatch(setTokenBalanceData(tokenBalanceData));
+                }
+              });
+            })
+          );
+        }
       })
     );
   };

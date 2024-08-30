@@ -18,7 +18,13 @@ const DashboardTable = ({ size = 3 }) => {
   }
 
   return (
-    <div className="min-h-[200px] flex flex-col items-center justify-center">
+    <div
+      className="min-h-[200px] flex flex-col items-center"
+      style={{
+        justifyContent:
+          transactions && transactions.length > 0 ? "flex-start" : "center",
+      }}
+    >
       {transactions && transactions.length > 0 && (
         <table className="min-w-full mt-4">
           <TransactionHeading />

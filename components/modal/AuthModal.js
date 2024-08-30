@@ -43,7 +43,7 @@ export default function AuthModal() {
 
           <Button
             color="white"
-            className="mt-10 flex h-40 w-full rounded-full border-px items-center justify-center border-black border-[1px] bg-white px-3"
+            className="mt-7 flex h-40 w-full rounded-full border-px items-center justify-center border-black border-[1px] bg-white px-3"
             onClick={() => {
               generateProofWithPasskey();
             }}

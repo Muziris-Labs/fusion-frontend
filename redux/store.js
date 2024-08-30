@@ -11,6 +11,7 @@ import selectorSlice from "./slice/selectorSlice.js";
 import gasTokenSlice from "./slice/gasTokenSlice.js";
 import transferSlice from "./slice/transferSlice.js";
 import changeSlice from "./slice/changeSlice.js";
+import deploySlice from "./slice/deploySlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     gasToken: gasTokenSlice,
     transfer: transferSlice,
     change: changeSlice,
+    deploy: deploySlice,
   },
 
   middleware: (getDefaultMiddleware) =>

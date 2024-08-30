@@ -20,12 +20,12 @@ const TooltipContent = ({ logo, tokenName, address, balance }) => {
         <Image
           src={logo}
           alt={tokenName}
-          width={32}
-          height={32}
+          width={18}
+          height={18}
           className="rounded-full"
         />
 
-        <h3>{tokenName}</h3>
+        <h3 className="font-bold">{tokenName}</h3>
       </div>
 
       <div>
@@ -58,7 +58,9 @@ const SettingChainsItem = ({ chain }) => {
   );
   const walletAddresses = useSelector((state) => state.user.walletAddresses);
   const selectedAddress = walletAddresses?.find((A) => {
-    return A.chainId === chain.chainId;
+    return (
+      A.chainId === chain.chainId && A.address !== ethers.constants.AddressZero
+    );
   });
   const [totalBalance, setTotalBalance] = React.useState(0);
 
@@ -92,7 +94,7 @@ const SettingChainsItem = ({ chain }) => {
             }
           />
         ) : (
-          <p className="text-center">Not Deployed yet</p>
+          <p className="text-center font-base">Not Deployed yet</p>
         )
       }
     >
