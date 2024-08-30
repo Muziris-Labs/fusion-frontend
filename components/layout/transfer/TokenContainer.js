@@ -9,13 +9,15 @@ import TokenSelector from "./token/TokenSelector";
 import { useSelector } from "react-redux";
 import { setChainFilter, setToken } from "@/redux/slice/transferSlice";
 
-export default function TokenContainer({ height = "h-[450px]" }) {
+export default function TokenContainer({
+  height = "h-[450px]",
+  selectable = true,
+}) {
   const divRef = React.useRef(null);
   const [isOverflowing, setIsOverflowing] = React.useState(false);
   const chainFilter = useSelector((state) => state.transfer.chainFilter);
   const selectedChain = useSelector((state) => state.transfer.selectedChain);
   const selectedToken = useSelector((state) => state.transfer.selectedToken);
-  const step = useSelector((state) => state.transfer.step);
 
   React.useEffect(() => {
     if (!divRef.current) return;
@@ -40,11 +42,11 @@ export default function TokenContainer({ height = "h-[450px]" }) {
         ref={divRef}
       >
         <TokenSelector
-          selectedChain={selectedChain}
-          selectedToken={selectedToken}
-          setToken={setToken}
+          selectedChain={selectable ? selectedChain : null}
+          selectedToken={selectable ? selectedToken : null}
+          setToken={selectable ? setToken : null}
           chainFilter={chainFilter}
-          activeStep={step}
+          activeStep={0}
           selectionStep={0}
         />
       </div>

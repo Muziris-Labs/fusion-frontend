@@ -1,7 +1,9 @@
 "use client";
 
+import QRCodeGenerator from "@/components/ui/QrCodeGenerator";
 import useWallet from "@/hooks/useWallet";
-import { PowerIcon, UserIcon } from "lucide-react";
+import { Tooltip } from "@material-tailwind/react";
+import { PowerIcon, QrCodeIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -41,12 +43,22 @@ export default function DashboardProfile() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Link
-          href="/profile"
-          className="rounded-full border-[1px] bg-gray-300 self-start p-2.5 transition-all select-none hover:bg-gray-400 active:bg-gray-400/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+        <Tooltip
+          className="bg-white rounded-3xl border-black border-[1px]"
+          content={
+            walletAddress ? (
+              <QRCodeGenerator size={200} value={walletAddress} />
+            ) : (
+              ""
+            )
+          }
+          placement="bottom-end"
         >
-          <UserIcon size={20} />
-        </Link>
+          <div className="rounded-full hover:cursor-pointer border-[1px] bg-gray-300 self-start p-2.5 transition-all select-none hover:bg-gray-400 active:bg-gray-400/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+            <QrCodeIcon size={20} />
+          </div>
+        </Tooltip>
+
         <Link
           href="/"
           className="rounded-full bg-gray-300 border-red-500 border-[1px] self-start p-2.5 transition-all select-none hover:bg-white active:bg-gray-400/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"

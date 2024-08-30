@@ -47,7 +47,9 @@ const DashboardGraphContainer = () => {
           </div>
 
           <Link
-            href="/profile"
+            href="https://coinmarketcap.com/currencies/ethereum/"
+            target="_blank"
+            rel="noreferrer"
             className="rounded-full bg-gray-300 self-start p-2.5 transition-all select-none hover:bg-gray-400 active:bg-gray-400/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           >
             <ChevronRight size={20} />

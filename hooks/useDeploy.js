@@ -87,9 +87,7 @@ export default function useDeploy() {
         TxHash,
       ]);
 
-      const abiCoder = new ethers.utils.AbiCoder();
-
-      const deployData = abiCoder.encode(
+      const deployData = ethers.utils.solidityPack(
         ["string", "bytes", "uint16", "address"],
         [
           domain + ".fusion.id",
@@ -172,9 +170,7 @@ export default function useDeploy() {
         TxHash,
       ]);
 
-      const abiCoder = new ethers.utils.AbiCoder();
-
-      const deployData = abiCoder.encode(
+      const deployData = ethers.utils.solidityPack(
         ["string", "bytes", "uint16", "address"],
         [
           domain + ".fusion.id",
@@ -290,7 +286,6 @@ export default function useDeploy() {
     } catch (error) {
       console.log(error);
       toast.error("Failed to Deploy Wallet");
-    } finally {
       dispatch(setLoading(false));
     }
   };

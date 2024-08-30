@@ -9,6 +9,7 @@ import FusionCard from "@/components/ui/FusionCard";
 import { useSelector } from "react-redux";
 import { calculateTotalBalance, usdToEth } from "@/utils/conversionUtils";
 import formatAmount from "@/utils/formatAmount";
+import useWallet from "@/hooks/useWallet";
 
 const DashboardCredit = () => {
   const token = "USD";
@@ -21,6 +22,8 @@ const DashboardCredit = () => {
     (state) => state.user.tokenConversionData
   );
 
+  const { getDomain } = useWallet();
+  const domain = getDomain();
   useEffect(() => {
     if (tokenBalanceData && tokenConversionData) {
       const totalBalance = calculateTotalBalance(
@@ -54,7 +57,7 @@ const DashboardCredit = () => {
       </div>
 
       <Link
-        href="/profile"
+        href={`receive?domain=${domain}`}
         className="rounded-full bg-gray-300 self-start p-2.5 transition-all select-none hover:bg-gray-400 active:bg-gray-400/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       >
         <ChevronRight size={20} />

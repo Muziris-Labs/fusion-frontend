@@ -72,7 +72,7 @@ export default function Step4() {
         <Button
           className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
           onClick={() => {
-            router.push(`/home?domain=${domain}`);
+            router.push(`/dashboard?domain=${domain}`);
             dispatch(clearAll());
           }}
         >
