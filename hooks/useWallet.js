@@ -135,17 +135,16 @@ export default function useWallet() {
 
       if (!domain) return;
 
-      const walletAddress = await getFusionAddress(baseConfig, domain);
-
-      if (walletAddress === ethers.constants.AddressZero) {
-        dispatch(setHistory([]));
-        return;
-      }
-
       let transaction = [];
 
       await Promise.all(
         config.chains.map(async (chain) => {
+          const walletAddress = await getFusionAddress(chain, domain);
+
+          if (walletAddress === ethers.constants.AddressZero) {
+            return;
+          }
+
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/transactions/${
               chain.chainId

@@ -1,8 +1,5 @@
 import React from "react";
 
-import FusionCard from "@/components/ui/FusionCard";
-import DashboardCredit from "@/components/layout/dashboard/DashboardCredit";
-
 import ReceiveQRContainer from "@/components/layout/dashboard/receive/ReceiveQRContainer";
 import TokenContainer from "@/components/layout/transfer/TokenContainer";
 

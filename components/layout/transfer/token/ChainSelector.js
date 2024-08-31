@@ -19,7 +19,7 @@ export default function ChainSelector({ chainFilter, setChainFilter }) {
 
       {config.chains.map((chain) => (
         <Button
-          className="border-[1px] border-black flex items-center font-normal gap-2 px-3 py-2 normal-case"
+          className="border-[1px] border-black flex items-center font-normal gap-2 h-8 px-3 py-2 normal-case"
           color="white"
           onClick={() => dispatch(setChainFilter(chain.chainId))}
           key={chain.name}
