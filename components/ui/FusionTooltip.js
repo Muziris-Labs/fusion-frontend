@@ -12,7 +12,7 @@ const FusionTooltip = ({ label }) => {
         </div>
       }
     >
-      {label}
+      {label.length > 10 ? label.slice(0, 10) + "..." : label}
     </Tooltip>
   );
 };

@@ -261,28 +261,16 @@ export default function useDeploy() {
         throw new Error("Failed to Deploy Wallet");
       }
 
-      const wsProvider = new ethers.providers.WebSocketProvider(
-        selectedChain.wsUrl
-      );
-
-      const factory = new ethers.Contract(
-        selectedChain.deployments.FusionProxyFactory.address,
-        selectedChain.deployments.FusionProxyFactory.abi,
-        wsProvider
-      );
-
-      factory.on("ProxyCreation", async () => {
-        const fusionAddress = await getFusionAddress(
-          selectedChain,
-          domain + ".fusion.id"
-        );
+      setInterval(async () => {
+        const fusionAddress = await getFusionAddress(selectedChain, domain);
 
         if (fusionAddress !== ethers.constants.AddressZero) {
           fireMultiple();
-
+          dispatch(setLoading(false));
+          toast.success("Wallet Deployed Successfully");
           window.location.reload();
         }
-      });
+      }, 5000);
     } catch (error) {
       console.log(error);
       toast.error("Failed to Deploy Wallet");

@@ -7,6 +7,7 @@ import { PowerIcon, QrCodeIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 export default function DashboardProfile() {
   const { getDomain } = useWallet();
@@ -34,11 +35,25 @@ export default function DashboardProfile() {
               : "---"}
             .fusion.id
           </p>
-          <p className="text-sm">
-            {walletAddress
-              ? walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4)
-              : "---"}
-          </p>
+          <Tooltip
+            className="bg-white rounded-3xl border-black border-[1px]"
+            content={
+              walletAddress ? <p className="text-black">{walletAddress}</p> : ""
+            }
+            placement="bottom-start"
+          >
+            <p
+              className="text-sm hover:cursor-pointer"
+              onClick={() => {
+                toast.success("Copied to clipboard");
+                navigator.clipboard.writeText(walletAddress);
+              }}
+            >
+              {walletAddress
+                ? walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4)
+                : "---"}
+            </p>
+          </Tooltip>
         </div>
       </div>
 

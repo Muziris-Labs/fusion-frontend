@@ -13,8 +13,13 @@ import { clearTxProof } from "@/redux/slice/proofSlice";
 
 export default function useExecute() {
   const dispatch = useDispatch();
-  const { getDomain, initializeProofWallet, getNonce, getFusionAddress } =
-    useWallet();
+  const {
+    getDomain,
+    initializeProofWallet,
+    getNonce,
+    getFusionAddress,
+    reloadTransaction,
+  } = useWallet();
   const domain = getDomain();
   const selectedChain = useSelector((state) => state.transfer.selectedChain);
   const selectedToken = useSelector((state) => state.transfer.selectedToken);
@@ -272,6 +277,7 @@ export default function useExecute() {
           toast.success("Transaction Successful");
           dispatch(clearAll());
           dispatch(clearTxProof());
+          reloadTransaction(selectedChain.chainId);
         } else {
           toast.error("Transaction Failed");
         }
@@ -291,6 +297,7 @@ export default function useExecute() {
           toast.success("Transaction Successful");
           dispatch(clearAll());
           dispatch(clearTxProof());
+          reloadTransaction(selectedChain.chainId);
         } else {
           toast.error("Transaction Failed");
         }
