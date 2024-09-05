@@ -28,7 +28,7 @@ export default function useProof() {
 
   const getChallenge = async () => {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/challenge/${domain}.fusion.id`
+      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/challenge/${domain}.fusion.id`,
     );
 
     if (!res.data.success) throw new Error("Failed to Authenticate");
@@ -38,7 +38,7 @@ export default function useProof() {
 
   const getCredentials = async () => {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/credential/${domain}.fusion.id`
+      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/credential/${domain}.fusion.id`,
     );
 
     if (!res.data.success) throw new Error("Failed to Authenticate");
@@ -62,7 +62,7 @@ export default function useProof() {
           authenticatorType: "auto",
           userVerification: "required",
           timeout: 60000,
-        }
+        },
       );
 
       const wallet = await initializeProofWallet();
@@ -82,13 +82,13 @@ export default function useProof() {
         };
       } else {
         const provider = new ethers.providers.JsonRpcProvider(
-          selectedChain.rpcUrl
+          selectedChain.rpcUrl,
         );
 
         const erc20Contract = new ethers.Contract(
           selectedToken.address,
           ["function transfer(address to, uint256 value) returns (bool)"],
-          provider
+          provider,
         );
 
         txData = {
@@ -99,7 +99,7 @@ export default function useProof() {
             ethers.utils
               .parseUnits(
                 amount.toFixed(selectedToken.decimals),
-                selectedToken.decimals
+                selectedToken.decimals,
               )
               .toString(),
           ]),
@@ -111,10 +111,23 @@ export default function useProof() {
 
       const message = abiCoder.encode(
         ["address", "uint256", "bytes", "uint8", "uint256"],
-        [txData.to, txData.value, txData.data, txData.operation, nonce]
+        [txData.to, txData.value, txData.data, txData.operation, nonce],
       );
 
       const txHash = ethers.utils.keccak256(message);
+
+      const key = localStorage.getItem(`${domain}.fusion.id`);
+
+      const tokenResponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/token`,
+        {
+          key: key,
+        },
+      );
+
+      if (!tokenResponse.data.success) {
+        throw new Error("Failed to Authenticate");
+      }
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/sign`,
@@ -125,9 +138,9 @@ export default function useProof() {
         },
         {
           headers: {
-            "x-api-key": localStorage.getItem(`${domain}.fusion.id`),
+            "x-api-key": tokenResponse.data.token,
           },
-        }
+        },
       );
 
       if (!response.data.success) {
@@ -137,7 +150,7 @@ export default function useProof() {
       const signature = response.data.signature;
 
       const signerResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/signer`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/signer`,
       );
 
       if (!signerResponse.data.success) {
@@ -153,7 +166,7 @@ export default function useProof() {
         signature,
         wallet.address,
         signing_address,
-        selectedChain
+        selectedChain,
       );
 
       dispatch(setTxProof(proof));
@@ -188,13 +201,13 @@ export default function useProof() {
         };
       } else {
         const provider = new ethers.providers.JsonRpcProvider(
-          selectedChain.rpcUrl
+          selectedChain.rpcUrl,
         );
 
         const erc20Contract = new ethers.Contract(
           selectedToken.address,
           ["function transfer(address to, uint256 value) returns (bool)"],
-          provider
+          provider,
         );
 
         txData = {
@@ -205,7 +218,7 @@ export default function useProof() {
             ethers.utils
               .parseUnits(
                 amount.toFixed(selectedToken.decimals),
-                selectedToken.decimals
+                selectedToken.decimals,
               )
               .toString(),
           ]),
@@ -217,7 +230,7 @@ export default function useProof() {
 
       const message = abiCoder.encode(
         ["address", "uint256", "bytes", "uint8", "uint256"],
-        [txData.to, txData.value, txData.data, txData.operation, nonce]
+        [txData.to, txData.value, txData.data, txData.operation, nonce],
       );
 
       const txHash = ethers.utils.keccak256(message);
@@ -247,7 +260,7 @@ export default function useProof() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!response.data.success) {
@@ -257,7 +270,7 @@ export default function useProof() {
       const signature = response.data.signature;
 
       const signerResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/signer`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/signer`,
       );
 
       if (!signerResponse.data.success) {
@@ -273,7 +286,7 @@ export default function useProof() {
         signature,
         wallet.address,
         signing_address,
-        selectedChain
+        selectedChain,
       );
 
       dispatch(setTxProof(proof));
