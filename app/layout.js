@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${outfit.className} w-screen overflow-x-hidden bg-gray-50`}
       >
-        <BackgroundAnimation />
+        {/* <BackgroundAnimation /> */}
 
         <ReduxProvider>
           <Toaster />

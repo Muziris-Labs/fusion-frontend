@@ -4,18 +4,25 @@ import React from "react";
 import Link from "next/link";
 
 import useWallet from "@/hooks/useWallet";
+import { usePathname } from "next/navigation";
 
-const NavItem = ({ href, label }) => {
+const NavItem = ({ href, label, icon }) => {
   const { getDomain } = useWallet();
+
+  const pathname = usePathname();
 
   const domain = getDomain();
 
   return (
-    <li className="w-14 text-center">
+    <li className="text-left hover:text-black text-gray-600">
       <Link
         href={`${href}?domain=${domain}`}
-        className="text-center text-gray-600 hover:text-black transition-colors duration-300"
+        className="flex gap-4 items-center font-light transition-colors duration-300"
+        style={{
+          color: pathname === href ? "#6b46fe" : "inherit",
+        }}
       >
+        {icon}
         {label}
       </Link>
     </li>

@@ -32,7 +32,7 @@ const DashboardLayout = ({ children }) => {
         <DeployModal />
         <AuthModal />
         <TxLoadModal />
-        <div className="relative p-4 z-10 min-h-screen">
+        <div className="relative flex min-h-screen">
           <NavBar />
           {children}
         </div>

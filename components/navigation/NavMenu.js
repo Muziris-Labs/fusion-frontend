@@ -1,14 +1,12 @@
 import NavList from "./NavList";
-import NavLogo from "./NavLogo";
+import Socials from "./Socials";
 
 export default function NavMenu() {
   return (
-    <nav>
-      <NavList>
-        <li className="w-20 h-20 rounded-full hover:cursor-pointer bg-black flex items-center justify-center group">
-          <NavLogo />
-        </li>
-      </NavList>
-    </nav>
+    <div className="flex flex-col  border-[1px] border-black/10 border-y-0 border-l-0 h-full justify-between">
+      <NavList />
+
+      <Socials />
+    </div>
   );
 }

@@ -3,7 +3,7 @@ import NavMenu from "./NavMenu";
 
 const NavBar = () => {
   return (
-    <nav className="flex justify-center p-2">
+    <nav className="flex h-screen p-2 py-4">
       <NavMenu />
     </nav>
   );

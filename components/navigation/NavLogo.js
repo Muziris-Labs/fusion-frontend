@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 
 import useWallet from "@/hooks/useWallet";
-import Image from "next/image";
 
 const NavLogo = () => {
   const { getDomain } = useWallet();
@@ -13,13 +12,9 @@ const NavLogo = () => {
 
   return (
     <Link href={`/dashboard?domain=${domain}`}>
-      <Image
-        src="/fusion-logo.svg"
-        alt="logo"
-        width={75}
-        height={75}
-        className="invert group-hover:motion-safe:animate-spin-slow"
-      />
+      <div className="flex items-center gap-2 font-medium text-xl mb-5">
+        Fusion
+      </div>
     </Link>
   );
 };

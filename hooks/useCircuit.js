@@ -6,7 +6,6 @@ import { JSONRPCClient } from "json-rpc-2.0";
 import { Noir } from "@noir-lang/noir_js";
 import { BarretenbergBackend } from "@noir-lang/backend_barretenberg";
 import oracleProve from "@/lib/circuits/oracle_prove.json";
-import axios from "axios";
 
 export default function useCircuit() {
   const { getTxHash } = useWallet();
