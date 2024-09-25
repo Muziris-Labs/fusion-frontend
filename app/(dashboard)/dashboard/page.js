@@ -1,14 +1,13 @@
 import React from "react";
-
-import Dashboard from "@/components/layout/dashboard/Dashboard";
-import DashboardHistory from "@/components/layout/dashboard/transactions/DashboardHistory";
+import DashboardCredit from "@/components/layout/dashboard/DashboardCredit";
+import DashboardTokens from "@/components/layout/dashboard/DashboardTokens";
 
 const DashboardPage = () => {
   return (
-    <div className="mt-5 max-w-4xl mx-auto space-y-5">
-      <Dashboard />
-      <DashboardHistory />
-    </div>
+    <>
+      <DashboardCredit />
+      <DashboardTokens />
+    </>
   );
 };
 

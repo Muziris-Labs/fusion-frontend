@@ -27,7 +27,14 @@ export default function RootLayout({ children }) {
         {/* <BackgroundAnimation /> */}
 
         <ReduxProvider>
-          <Toaster />
+          <Toaster
+            position="bottom-center"
+            richColors
+            closeButton
+            toastOptions={{
+              className: "flex items-center justify-center",
+            }}
+          />
           {children}
         </ReduxProvider>
       </body>

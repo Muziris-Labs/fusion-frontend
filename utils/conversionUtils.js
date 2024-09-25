@@ -101,4 +101,34 @@ const usdToEth = (totalBalance, tokenConversionData) => {
   return totalBalance / conversionValue;
 };
 
-export { calculateTotalBalance, usdToEth, calculateChainBalance };
+const getEthTokenConversion = (tokenConversionData) => {
+  let ethToken = null;
+
+  config.chains.forEach((chain) => {
+    let token = chain.tokens.find((token) => token.symbol === "ETH");
+    if (token) {
+      ethToken = token;
+    }
+  });
+
+  if (!ethToken) return 0;
+
+  let conversionValue = 0;
+
+  tokenConversionData.forEach((chain) => {
+    chain.chainData.forEach((conversion) => {
+      if (conversion.address === ethToken.address) {
+        conversionValue = conversion.value;
+      }
+    });
+  });
+
+  return conversionValue;
+};
+
+export {
+  calculateTotalBalance,
+  usdToEth,
+  calculateChainBalance,
+  getEthTokenConversion,
+};

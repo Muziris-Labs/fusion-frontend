@@ -1,29 +1,31 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
-
 import React, { useEffect } from "react";
-import Link from "next/link";
-
-import FusionCard from "@/components/ui/FusionCard";
 import { useSelector } from "react-redux";
 import { calculateTotalBalance, usdToEth } from "@/utils/conversionUtils";
 import formatAmount from "@/utils/formatAmount";
 import useWallet from "@/hooks/useWallet";
+import Image from "next/image";
+import { Button, Tooltip } from "@material-tailwind/react";
+import { CircleFadingPlus, Copy, Forward, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const DashboardCredit = () => {
-  const token = "USD";
-
-  const [totalEthBalance, setTotalEthBalance] = React.useState(0);
-  const [totalBalance, setTotalBalance] = React.useState(0);
+  const [totalEthBalance, setTotalEthBalance] = React.useState(null);
+  const [totalBalance, setTotalBalance] = React.useState(null);
 
   const tokenBalanceData = useSelector((state) => state.user.tokenBalanceData);
   const tokenConversionData = useSelector(
     (state) => state.user.tokenConversionData
   );
 
+  const walletAddress = useSelector((state) => state.user.walletAddress);
+
   const { getDomain } = useWallet();
   const domain = getDomain();
+  const router = useRouter();
+
   useEffect(() => {
     if (tokenBalanceData && tokenConversionData) {
       const totalBalance = calculateTotalBalance(
@@ -40,29 +42,75 @@ const DashboardCredit = () => {
   }, [tokenBalanceData, tokenConversionData]);
 
   return (
-    <FusionCard className={`flex justify-between flex-none p-6`}>
-      <div className="space-y-2.5">
-        <h2>Active Credit</h2>
+    <div
+      className={`flex flex-col w-full flex-none border border-black/10 pb-8 border-t-0 border-x-0`}
+    >
+      <div className="flex flex-col w-full gap-2.5 ">
+        <h2 className="font-light">Portfolio Value</h2>
 
-        <div className="space-y-1">
-          <p className="text-4xl font-semibold">
-            {formatAmount(totalBalance, 2)}{" "}
-            <span className="uppercase text-2xl font-normal">{token}</span>
-          </p>
+        <div className="flex w-full justify-between items-center">
+          <div className="flex items-center gap-4">
+            <Image
+              src="/block/eth-block.svg"
+              width={30}
+              height={30}
+              alt="ETH"
+              className="mt-0.5 opacity-80"
+            />
+            <p className="text-5xl font-semibold text-black">
+              {totalEthBalance === null ? (
+                <Loader2 className="animate-spin" size={50} />
+              ) : (
+                formatAmount(totalEthBalance)
+              )}
+            </p>
+          </div>
 
-          <p className="text-sm text-gray-700">
-            {formatAmount(totalEthBalance)} ETH
-          </p>
+          <div className="flex gap-2 items-center">
+            <Tooltip placement="top" content="Coming Soon">
+              <Button
+                color="white"
+                className="bg-[#6b46fe]/10 text-[#6b46fe]/80 flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
+              >
+                <CircleFadingPlus size={16} />
+                Add Funds
+              </Button>
+            </Tooltip>
+
+            <Button
+              color="white"
+              className="bg-[#6b46fe]/70 text-white flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
+              onClick={() => {
+                router.push(`/transfer?domain=${domain}`);
+              }}
+            >
+              <Forward size={16} />
+              Send
+            </Button>
+
+            <Button
+              color="white"
+              className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl shadow-md p-3 px-4 normal-case font-normal text-sm text-gray-600"
+              onClick={() => {
+                navigator.clipboard.writeText(walletAddress);
+                toast.success("Address copied to clipboard");
+              }}
+            >
+              <Copy size={16} />
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <Link
-        href={`receive?domain=${domain}`}
-        className="rounded-full bg-gray-300 self-start p-2.5 transition-all select-none hover:bg-gray-400 active:bg-gray-400/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-      >
-        <ChevronRight size={20} />
-      </Link>
-    </FusionCard>
+        <p className="text-normal -mt-1 font-normal text-gray-600 flex items-center gap-2">
+          ≈ ${" "}
+          {totalBalance === null ? (
+            <Loader2 className="animate-spin" size={10} />
+          ) : (
+            formatAmount(totalBalance, 2)
+          )}{" "}
+        </p>
+      </div>
+    </div>
   );
 };
 
