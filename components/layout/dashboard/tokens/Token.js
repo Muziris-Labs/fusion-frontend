@@ -130,7 +130,7 @@ export default function Token({ resolvedToken, isLast }) {
               ) : (
                 formatAmount(
                   totalTokenBalance / 10 ** resolvedToken.token.decimals,
-                  4
+                  2
                 )
               )}
             </p>
@@ -140,7 +140,7 @@ export default function Token({ resolvedToken, isLast }) {
             {totalBalance === null ? (
               <Loader2 size={10} className="animate-spin" />
             ) : (
-              formatAmount(totalBalance, 4)
+              formatAmount(totalBalance, 2)
             )}
           </p>
         </div>

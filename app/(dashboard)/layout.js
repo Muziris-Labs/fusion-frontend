@@ -8,6 +8,7 @@ import ChangePasskeyModal from "@/components/modal/ChangePasskeyModal";
 import DeployModal from "@/components/modal/DeployModal";
 import Image from "next/image";
 import TopBar from "@/components/layout/dashboard/TopBar";
+import FusionHolder from "@/components/ui/FusionHolder";
 
 export const metadata = {
   title: "Fusion Wallet",
@@ -36,9 +37,9 @@ const DashboardLayout = ({ children }) => {
         <div className="relative flex min-h-screen">
           <NavBar />
           <div className="flex-1 px-20">
-            <div className="flex flex-col h-full w-full">
+            <div className="flex flex-col h-full w-full relative">
               <TopBar />
-              {children}
+              <FusionHolder>{children}</FusionHolder>
             </div>
           </div>
         </div>

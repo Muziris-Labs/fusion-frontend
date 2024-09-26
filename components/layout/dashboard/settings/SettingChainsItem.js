@@ -101,7 +101,7 @@ const SettingChainsItem = ({ chain }) => {
       <Avatar
         variant="circular"
         alt="user 1"
-        className="border-2 border-white hover:z-10 focus:z-10"
+        className="border-2 scale-90 border-white hover:z-10 focus:z-10"
         src={chain.logo}
         style={{
           opacity: selectedAddress ? 1 : 0.5,
