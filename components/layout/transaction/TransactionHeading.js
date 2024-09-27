@@ -4,12 +4,12 @@ const TransactionHeading = () => {
   return (
     <thead>
       <tr>
-        <th className="px-4 py-2 text-left">Name</th>
-        <th className="px-4 py-2 text-left">Date</th>
-        <th className="px-4 py-2 text-left">Status</th>
-        <th className="px-4 py-2 text-left">Amount</th>
-        <th className="px-4 py-2 text-left">To/From</th>
-        <th className="px-4 py-2 text-left">Actions</th>
+        <th className="py-4 text-left font-normal">Name</th>
+        <th className="px-4 py-4 text-left font-normal">Date</th>
+        <th className="px-4 py-4 text-left font-normal">Status</th>
+        <th className="px-4 py-4 text-left font-normal">Amount</th>
+        <th className="px-4 py-4 text-left font-normal">To/From</th>
+        <th className="px-4 py-4 text-right font-normal">Actions</th>
       </tr>
     </thead>
   );
