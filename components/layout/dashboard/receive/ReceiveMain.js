@@ -27,7 +27,7 @@ export default function ReceiveMain() {
             className="mb-2"
           />
 
-          <div className="font-bold text-7xl w-full -mt-8 flex items-end">
+          <div className="font-bold text-7xl w-full -mt-8 flex items-end leading-[4.2rem]">
             {domain}
             <span className="font-normal text-2xl text-gray-700">
               .fusion.id
@@ -116,14 +116,14 @@ export default function ReceiveMain() {
           theme={"Download QR Code"}
           onClick={() => {
             const qrcode = new QrCodeWithLogo({
-              content: walletAddress,
-              width: 500,
+              content: value,
+              width: size,
               dotsOptions: {
                 color: "#000",
-                type: "fluid",
+                type: "dot-small",
               },
               cornersOptions: {
-                type: "circle",
+                type: "circle-rounded",
                 color: "#000",
               },
             });

@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import QrCodeWithLogo from "qrcode-with-logos";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const QRCodeGenerator = ({
   value = "https://github.com/zxpsuper",
@@ -17,10 +17,10 @@ const QRCodeGenerator = ({
         width: size,
         dotsOptions: {
           color: "#000",
-          type: "fluid",
+          type: "dot-small",
         },
         cornersOptions: {
-          type: "circle",
+          type: "circle-rounded",
           color: "#000",
         },
       },

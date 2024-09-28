@@ -9,6 +9,7 @@ import DeployModal from "@/components/modal/DeployModal";
 import Image from "next/image";
 import TopBar from "@/components/layout/dashboard/TopBar";
 import FusionHolder from "@/components/ui/FusionHolder";
+import TokenModal from "@/components/modal/TokenModal";
 
 export const metadata = {
   title: "Fusion Wallet",
@@ -34,6 +35,7 @@ const DashboardLayout = ({ children }) => {
         <DeployModal />
         <AuthModal />
         <TxLoadModal />
+        <TokenModal />
         <div className="relative flex min-h-screen">
           <NavBar />
           <div className="flex-1 px-20">

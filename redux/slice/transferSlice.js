@@ -12,6 +12,7 @@ const transferSlice = createSlice({
     selectedChain: null,
     selectedToken: null,
     chainFilter: null,
+    tokenModal: false,
   },
 
   reducers: {
@@ -44,6 +45,10 @@ const transferSlice = createSlice({
       state.chainFilter = action.payload;
     },
 
+    toggleTokenModal: (state, action) => {
+      state.tokenModal = !state.tokenModal;
+    },
+
     clearAll: (state, action) => {
       state.step = 0;
       state.amount = "0.0";
@@ -65,6 +70,7 @@ export const {
   setToken,
   setChainFilter,
   clearAll,
+  toggleTokenModal,
 } = transferSlice.actions;
 
 export default transferSlice.reducer;

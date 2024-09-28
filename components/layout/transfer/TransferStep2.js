@@ -5,10 +5,16 @@ import { Button, Input } from "@material-tailwind/react";
 import { ethers } from "ethers";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Info, Loader2 } from "lucide-react";
+import {
+  ArrowRightFromLine,
+  CornerDownLeft,
+  Info,
+  Loader2,
+} from "lucide-react";
 
 import { setRecipient, setStep } from "@/redux/slice/transferSlice";
 import useWallet from "@/hooks/useWallet";
+import SettingItem from "@/components/ui/SettingItem";
 
 const TransferStep2 = () => {
   const dispatch = useDispatch();
@@ -45,6 +51,26 @@ const TransferStep2 = () => {
       abortController.abort();
     };
   }, []);
+
+  const handleNextStep = () => {
+    if (isValid) {
+      dispatch(setStep(3));
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleNextStep();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keypress", handleKeyPress);
+    return () => {
+      document.removeEventListener("keypress", handleKeyPress);
+    };
+  }, [isValid]);
 
   useEffect(() => {
     if (isTyping) {
@@ -119,10 +145,11 @@ const TransferStep2 = () => {
             Enter the recipient you want to transfer to
           </p>
         </div>
-        <div className="w-full">
+        <div className="w-full ">
           <Input
             variant="static"
             placeholder="vitalik.fusion.id"
+            autoFocus
             style={{
               fontSize: "1.15rem",
             }}
@@ -164,15 +191,25 @@ const TransferStep2 = () => {
           </div>
         </div>
 
-        <Button
-          className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
-          onClick={() => {
-            dispatch(setStep(2));
-          }}
-          disabled={!isValid}
+        <SettingItem
+          title="Proceed to Next Step"
+          description="
+            Check if the recipient is valid and proceed to the next step."
+          icon={<ArrowRightFromLine size={22} className="mt-1" />}
+          isLast
         >
-          Next
-        </Button>
+          <Button
+            color="white"
+            className="bg-[#b09dff] border-[1px] flex items-center gap-2 border-black/10 rounded-2xl shadow-md py-3 normal-case font-normal text-sm text-white"
+            onClick={handleNextStep}
+            disabled={!isValid}
+          >
+            Next
+            <div className="w-6 -mr-2 h-6 flex justify-center items-center rounded-lg border-white border">
+              <CornerDownLeft size={12} />
+            </div>
+          </Button>
+        </SettingItem>
       </section>
     </>
   );
