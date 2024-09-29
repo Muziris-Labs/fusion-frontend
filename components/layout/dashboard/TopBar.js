@@ -24,33 +24,41 @@ export default function TopBar() {
   }, [tokenConversionData]);
 
   return (
-    <div className="w-full flex justify-end gap-4 py-14 pb-10">
-      <div className="rounded-2xl p-4 py-3 gap-2 flex items-center justify-center text-gray-600 dark:border-white/10 border-black/10 font-normal text-sm border-[1px] ">
-        <Image
-          src="/block/eth-block.svg"
-          className="opacity-40 dark:invert"
-          width={18}
-          height={18}
-          alt="ETH"
-        />
-        ≈{" "}
-        {ethConversionData ? (
-          formatAmount(ethConversionData, 2)
-        ) : (
-          <Loader2 className="animate-spin" size={16} />
-        )}{" "}
-        USD
+    <div className="w-full flex justify-between gap-4 py-14 pb-10 items-center">
+      <div className="lg:hidden gap-2 items-center flex">
+        <p className="dark:text-white text-xl">Fusion</p>
+        <div className="bg-red-500/20 rounded-xl p-1 px-2 text-xs font-light text-red-500">
+          Testnet
+        </div>
       </div>
-      <Button
-        color="white"
-        className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl dark:border-white/10 shadow-md py-3 normal-case font-normal text-sm text-gray-600"
-        onClick={() => {
-          window.location.href = "/";
-        }}
-      >
-        <LogOut size={16} />
-        Logout
-      </Button>
+      <div className="flex-1 justify-end flex gap-4">
+        <div className="rounded-2xl p-4 py-3 gap-2 hidden lg:flex items-center justify-center text-gray-600 dark:border-white/10 border-black/10 font-normal text-sm border-[1px]">
+          <Image
+            src="/block/eth-block.svg"
+            className="opacity-40 dark:invert"
+            width={18}
+            height={18}
+            alt="ETH"
+          />
+          ≈{" "}
+          {ethConversionData ? (
+            formatAmount(ethConversionData, 2)
+          ) : (
+            <Loader2 className="animate-spin" size={16} />
+          )}{" "}
+          USD
+        </div>
+        <Button
+          color="white"
+          className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl dark:border-white/10 shadow-md py-3 normal-case font-normal text-sm text-gray-600"
+          onClick={() => {
+            window.location.href = "/";
+          }}
+        >
+          <LogOut size={16} />
+          <span className="hidden lg:block">Logout</span>
+        </Button>
+      </div>
     </div>
   );
 }

@@ -90,7 +90,7 @@ export default function Token({ resolvedToken, isLast }) {
           <p className="text-xs font-light">{resolvedToken.token.name}</p>
         </div>
 
-        <div className="flex flex-col w-32 gap-1 items-center">
+        <div className="lg:flex flex-col w-32 gap-1 items-center hidden">
           <div className="flex gap-2 items-center">
             {resolvedToken.chainId.map((chainId, index) => {
               const currentChain = config.chains.find(

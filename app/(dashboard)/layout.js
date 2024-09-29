@@ -38,7 +38,7 @@ const DashboardLayout = ({ children }) => {
         <TokenModal />
         <div className="relative flex min-h-screen dark:bg-black/90">
           <NavBar />
-          <div className="flex-1 px-20">
+          <div className="flex-1 px-8 lg:px-20">
             <div className="flex flex-col h-full w-full relative">
               <TopBar />
               <FusionHolder>{children}</FusionHolder>

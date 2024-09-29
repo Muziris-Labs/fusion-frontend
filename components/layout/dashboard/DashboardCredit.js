@@ -7,9 +7,18 @@ import formatAmount from "@/utils/formatAmount";
 import useWallet from "@/hooks/useWallet";
 import Image from "next/image";
 import { Button, Tooltip } from "@material-tailwind/react";
-import { CircleFadingPlus, Copy, Forward, Loader2 } from "lucide-react";
+import {
+  ArrowDownUp,
+  CircleFadingPlus,
+  Copy,
+  Forward,
+  Loader2,
+  ScanLine,
+  Settings,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import MobileButton from "@/components/ui/MobileButton";
 
 const DashboardCredit = () => {
   const [totalEthBalance, setTotalEthBalance] = React.useState(null);
@@ -70,7 +79,7 @@ const DashboardCredit = () => {
             <Tooltip placement="top" content="Coming Soon">
               <Button
                 color="white"
-                className="bg-[#6b46fe]/10 dark:bg-[#6b46fe]/20 text-[#6b46fe] flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
+                className="bg-[#6b46fe]/10 dark:bg-[#6b46fe]/20 text-[#6b46fe] hidden lg:flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
               >
                 <CircleFadingPlus size={16} />
                 Add Funds
@@ -79,7 +88,7 @@ const DashboardCredit = () => {
 
             <Button
               color="white"
-              className="bg-[#6b46fe]/70  text-white flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
+              className="bg-[#6b46fe]/70  text-white hidden lg:flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
               onClick={() => {
                 router.push(`/transfer?domain=${domain}`);
               }}
@@ -109,6 +118,42 @@ const DashboardCredit = () => {
             formatAmount(totalBalance, 2)
           )}{" "}
         </p>
+      </div>
+
+      <div className="w-full flex items-center mt-5 justify-between lg:hidden">
+        <MobileButton
+          title="Send"
+          onClick={() => {
+            router.push(`/transfer?domain=${domain}`);
+          }}
+        >
+          <Forward size={16} className="text-white" />
+        </MobileButton>
+        <MobileButton
+          title="Receive"
+          onClick={() => {
+            router.push(`/receive?domain=${domain}`);
+          }}
+        >
+          <ScanLine size={16} className="text-white" />
+        </MobileButton>
+        <MobileButton
+          title="History"
+          onClick={() => {
+            router.push(`/transactions?domain=${domain}`);
+          }}
+        >
+          <ArrowDownUp size={16} className="text-white" />
+        </MobileButton>
+
+        <MobileButton
+          title="Settings"
+          onClick={() => {
+            router.push(`/settings?domain=${domain}`);
+          }}
+        >
+          <Settings size={16} className="text-white" />
+        </MobileButton>
       </div>
     </div>
   );
