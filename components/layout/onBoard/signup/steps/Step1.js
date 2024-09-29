@@ -82,13 +82,15 @@ const Step1 = () => {
         <Input
           label="Your Fusion Domain"
           size="lg"
-          className={"rounded-xl rounded-r-none font-outfit"}
+          className={
+            "rounded-xl rounded-r-none dark:text-white dark:focus:border-white dark:focus:border-t-transparent font-outfit"
+          }
           labelProps={{
             className:
-              "peer-placeholder-shown:mt-[5px] peer-focus:before:w-1 before:w-1 peer-placeholder-shown:before:w-3 peer-focus:mt-0 after:rounded-tr-none font-outfit before:border-none",
+              "peer-placeholder-shown:mt-[5px] dark:peer-focus:after:!border-white dark:peer-focus:text-white dark:peer-placeholder-shown:text-white peer-focus:before:w-1 before:w-1 peer-placeholder-shown:before:w-3 peer-focus:mt-0 after:rounded-tr-none font-outfit before:border-none",
           }}
           containerProps={{
-            className: "h-14",
+            className: "h-14 dark:text-white",
           }}
           ref={inputRef}
           value={domain}
@@ -100,7 +102,7 @@ const Step1 = () => {
           variant="text"
           color="blue-gray"
           className={
-            "flex items-center rounded-l-none border border-l-0 border-blue-gray-200 bg-blue-gray-500/10 px-3 py-0 font-outfit text-sm font-normal normal-case "
+            "flex items-center rounded-xl rounded-l-none border border-l-0 dark:bg-white dark:text-black border-blue-gray-200 bg-gray-100/60 px-5 py-0 font-noto text-sm font-normal normal-case"
           }
         >
           .fusion.id
@@ -129,7 +131,7 @@ const Step1 = () => {
       )}
 
       <Button
-        className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
+        className="mt-8 w-full p-5 font-semibold dark:bg-white dark:text-black rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           dispatch(setStep(1));
         }}

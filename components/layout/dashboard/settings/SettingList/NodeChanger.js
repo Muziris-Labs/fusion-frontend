@@ -13,7 +13,7 @@ export default function NodeChanger() {
       description="
       Change the Wallet node type to Mainnet or Testnet. Mainnet is where real transactions are made, while Testnet is for testing purposes.
       "
-      icon={<GitBranch size={22} className="mt-1" />}
+      icon={<GitBranch size={22} className="mt-1 dark:invert" />}
     >
       <div className="flex items-center">
         <ThemeButton theme={node} onClick={() => {}} name="Mainnet" />

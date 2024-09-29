@@ -10,6 +10,7 @@ export default function Socials() {
           alt="Twitter"
           width={18}
           height={20}
+          className="dark:invert"
         />
       </Link>
       <Link href="https://discord.gg/H2rG8nddeD">
@@ -18,6 +19,7 @@ export default function Socials() {
           alt="Discord"
           width={25}
           height={20}
+          className="dark:invert"
         />
       </Link>
     </div>

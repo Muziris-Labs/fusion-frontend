@@ -23,7 +23,7 @@ export default function Step4() {
   const domain = useSelector((state) => state.signup.domain)?.toLowerCase();
 
   return (
-    <div className="flex flex-col z-10 px-4 sm:px-8 py-8 sm:w-[450px] rounded-xl ">
+    <div className="flex flex-col z-10 px-4 sm:px-8 py-8 sm:w-[450px] rounded-xl dark:text-white">
       <h2 className="font-semibold text-3xl">
         {isSuccess
           ? "Wallet Deployed"
@@ -43,7 +43,7 @@ export default function Step4() {
       {!isLoading && !isSuccess && (
         <>
           <Button
-            className="mt-8 w-full p-5 font-semibold flex items-center justify-center rounded-full text-sm font-outfit normal-case"
+            className="mt-8 w-full p-5 flex items-center justify-center font-semibold dark:bg-white dark:text-black rounded-full text-sm font-outfit normal-case"
             onClick={() => deployWallet(setIsLoading, setIsSuccess, setMessage)}
           >
             Deploy Wallet
@@ -52,7 +52,7 @@ export default function Step4() {
           <p className="mt-3 w-full flex justify-center font-outfit text-xs text-gray-600">
             Don't like your domain?{" "}
             <button
-              className="font-bold ml-1 text-black"
+              className="font-bold ml-1 text-black dark:text-white"
               onClick={() => dispatch(setStep(0))}
             >
               Update
@@ -70,7 +70,7 @@ export default function Step4() {
 
       {isSuccess && !isLoading && (
         <Button
-          className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
+          className="mt-8 w-full p-5 flex items-center justify-center font-semibold dark:bg-white dark:text-black rounded-full text-sm font-outfit normal-case"
           onClick={() => {
             router.push(`/dashboard?domain=${domain}`);
             dispatch(clearAll());

@@ -17,14 +17,14 @@ export default function ReceiveMain() {
   const domain = getDomain();
   return (
     <div className="flex flex-col w-full gap-10">
-      <div className="flex w-full justify-between items-center border border-black/10 border-t-0 border-x-0 pb-10">
+      <div className="flex w-full justify-between dark:text-white items-center border border-black/10 border-t-0 border-x-0 pb-10">
         <div className="flex flex-col gap-8">
           <Image
             src="/FusionLogo.svg"
             width={100}
             height={100}
             alt="fusion logo"
-            className="mb-2"
+            className="mb-2 dark:invert"
           />
 
           <div className="font-bold text-7xl w-full -mt-8 flex items-end leading-[4.2rem]">
@@ -34,7 +34,7 @@ export default function ReceiveMain() {
             </span>
             <Button
               color="white"
-              className="bg-transparent border-[1px] flex items-center ml-2 gap-2 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
+              className="bg-transparent border-[1px] flex items-center ml-2 gap-2 dark:border-white/10 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
               onClick={() => {
                 navigator.clipboard.writeText(`${domain}.fusion.id`);
                 toast.success("Domain copied to clipboard");
@@ -49,7 +49,7 @@ export default function ReceiveMain() {
 
             <Button
               color="white"
-              className="bg-transparent border-[1px] flex items-center ml-2 gap-2 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
+              className="bg-transparent border-[1px] flex items-center ml-2 gap-2 dark:border-white/10 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
               onClick={() => {
                 navigator.clipboard.writeText(walletAddress);
                 toast.success("Address copied to clipboard");
@@ -68,7 +68,7 @@ export default function ReceiveMain() {
       <SettingItem
         title="Fusion Domain"
         description="Your unique Fusion domain name is used to identify your wallet address and receive funds from Fusion wallets. "
-        icon={<MapPin size={24} className="mt-1" />}
+        icon={<MapPin size={24} className="mt-1 dark:invert" />}
         onClick={() => {
           navigator.clipboard.writeText(walletAddress);
           toast.success("Address copied to clipboard");
@@ -87,7 +87,7 @@ export default function ReceiveMain() {
       <SettingItem
         title="Wallet Address"
         description="Your wallet address is used to receive funds from other wallets. "
-        icon={<Key size={24} className="mt-1" />}
+        icon={<Key size={24} className="mt-1 dark:invert" />}
         onClick={() => {
           navigator.clipboard.writeText(walletAddress);
           toast.success("Address copied to clipboard");
@@ -106,7 +106,7 @@ export default function ReceiveMain() {
       <SettingItem
         title="QR Code"
         description="Your QR code can be scanned by other wallets to send you funds."
-        icon={<LucideQrCode size={24} className="mt-1" />}
+        icon={<LucideQrCode size={24} className="mt-1 dark:invert" />}
         onClick={() => {
           navigator.clipboard.writeText(walletAddress);
           toast.success("Address copied to clipboard");

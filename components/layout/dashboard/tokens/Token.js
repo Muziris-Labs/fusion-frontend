@@ -70,7 +70,7 @@ export default function Token({ resolvedToken, isLast }) {
   }, [tokenBalanceData, tokenConversionData]);
 
   return (
-    <div className="flex gap-7 items-center">
+    <div className="flex gap-7 dark:text-white items-center">
       <Image
         src={resolvedToken.token.logo}
         width={35}
@@ -122,7 +122,7 @@ export default function Token({ resolvedToken, isLast }) {
               width={18}
               height={18}
               alt="ETH"
-              className="opacity-100"
+              className="opacity-100 dark:invert"
             />
             <p className="text-base font-slight">
               {totalTokenBalance === null ? (

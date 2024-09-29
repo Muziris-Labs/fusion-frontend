@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import ReduxProvider from "@/provider/ReduxProvider";
 
 import BackgroundAnimation from "@/components/ui/BackgroundAnimation";
+import { ThemeProvider } from "next-themes";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -24,18 +25,18 @@ export default function RootLayout({ children }) {
       <body
         className={`${outfit.className} w-screen overflow-x-hidden bg-gray-50`}
       >
-        {/* <BackgroundAnimation /> */}
-
         <ReduxProvider>
-          <Toaster
-            position="bottom-center"
-            richColors
-            closeButton
-            toastOptions={{
-              className: "flex items-center justify-center",
-            }}
-          />
-          {children}
+          <ThemeProvider attribute="class">
+            <Toaster
+              position="bottom-center"
+              richColors
+              closeButton
+              toastOptions={{
+                className: "flex items-center justify-center",
+              }}
+            />
+            {children}
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>

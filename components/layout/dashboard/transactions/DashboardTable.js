@@ -25,7 +25,7 @@ const DashboardTable = ({ size = 3 }) => {
           transactions && transactions.length > 0 ? "flex-start" : "center",
       }}
     >
-      <h1 className="text-2xl font-normal">Transactions</h1>
+      <h1 className="text-2xl font-normal dark:text-white">Transactions</h1>
       {transactions && transactions.length > 0 && (
         <table className="min-w-full mt-4">
           <TransactionHeading />

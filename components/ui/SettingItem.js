@@ -10,7 +10,7 @@ export default function SettingItem({
       {icon}
 
       <div
-        className="flex-1 border border-black/10 border-t-0 border-x-0 pb-10"
+        className="flex-1 border border-black/10 dark:border-white/10 dark:text-white border-t-0 border-x-0 pb-10"
         style={{
           borderBottomWidth: isLast ? "0px" : "1px",
         }}

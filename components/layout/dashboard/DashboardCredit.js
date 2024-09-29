@@ -43,7 +43,7 @@ const DashboardCredit = () => {
 
   return (
     <div
-      className={`flex flex-col w-full flex-none border border-black/10 pb-8 border-t-0 border-x-0`}
+      className={`flex flex-col w-full flex-none border border-black/10 dark:text-white dark:border-white/10 pb-8 border-t-0 border-x-0`}
     >
       <div className="flex flex-col w-full gap-2.5 ">
         <h2 className="font-light">Portfolio Value</h2>
@@ -55,9 +55,9 @@ const DashboardCredit = () => {
               width={30}
               height={30}
               alt="ETH"
-              className="mt-0.5 opacity-80"
+              className="mt-0.5 opacity-80 dark:invert"
             />
-            <p className="text-5xl font-semibold text-black">
+            <p className="text-5xl font-semibold">
               {totalEthBalance === null ? (
                 <Loader2 className="animate-spin" size={50} />
               ) : (
@@ -70,7 +70,7 @@ const DashboardCredit = () => {
             <Tooltip placement="top" content="Coming Soon">
               <Button
                 color="white"
-                className="bg-[#6b46fe]/10 text-[#6b46fe]/80 flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
+                className="bg-[#6b46fe]/10 dark:bg-[#6b46fe]/20 text-[#6b46fe] flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
               >
                 <CircleFadingPlus size={16} />
                 Add Funds
@@ -79,7 +79,7 @@ const DashboardCredit = () => {
 
             <Button
               color="white"
-              className="bg-[#6b46fe]/70 text-white flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
+              className="bg-[#6b46fe]/70  text-white flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
               onClick={() => {
                 router.push(`/transfer?domain=${domain}`);
               }}
@@ -90,7 +90,7 @@ const DashboardCredit = () => {
 
             <Button
               color="white"
-              className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl shadow-md p-3 px-4 normal-case font-normal text-sm text-gray-600"
+              className="bg-transparent border-[1px] flex items-center gap-2 dark:border-white/10 border-black/10 rounded-2xl shadow-md p-3 px-4 normal-case font-normal text-sm text-gray-600"
               onClick={() => {
                 navigator.clipboard.writeText(walletAddress);
                 toast.success("Address copied to clipboard");

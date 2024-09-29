@@ -78,7 +78,7 @@ const usdToEth = (totalBalance, tokenConversionData) => {
   let ethToken = null;
 
   config.chains.forEach((chain) => {
-    let token = chain.tokens.find((token) => token.symbol === "ETH");
+    let token = chain.tokens.find((token) => Number(token.id) === 1027);
     if (token) {
       ethToken = token;
     }
@@ -90,7 +90,7 @@ const usdToEth = (totalBalance, tokenConversionData) => {
 
   tokenConversionData.forEach((chain) => {
     chain.chainData.forEach((conversion) => {
-      if (conversion.address === ethToken.address) {
+      if (conversion.id === ethToken.id) {
         conversionValue = conversion.value;
       }
     });
@@ -105,7 +105,7 @@ const getEthTokenConversion = (tokenConversionData) => {
   let ethToken = null;
 
   config.chains.forEach((chain) => {
-    let token = chain.tokens.find((token) => token.symbol === "ETH");
+    let token = chain.tokens.find((token) => Number(token.id) === 1027);
     if (token) {
       ethToken = token;
     }
@@ -117,7 +117,7 @@ const getEthTokenConversion = (tokenConversionData) => {
 
   tokenConversionData.forEach((chain) => {
     chain.chainData.forEach((conversion) => {
-      if (conversion.address === ethToken.address) {
+      if (conversion.id === ethToken.id) {
         conversionValue = conversion.value;
       }
     });

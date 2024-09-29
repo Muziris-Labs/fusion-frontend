@@ -59,7 +59,7 @@ const Step2 = () => {
       )}
 
       <Button
-        className="mt-8 w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case"
+        className="mt-8 w-full p-5 font-semibold dark:bg-white dark:text-black rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           dispatch(setStep(2));
         }}

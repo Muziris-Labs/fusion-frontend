@@ -12,7 +12,7 @@ const NavLogo = () => {
 
   return (
     <Link href={`/dashboard?domain=${domain}`}>
-      <div className="flex items-center gap-2 font-medium text-xl mb-5">
+      <div className="flex items-center gap-2 font-medium dark:text-white text-xl mb-5">
         Fusion
         <div className="bg-red-500/20 rounded-xl p-1 px-2 text-xs font-light text-red-500">
           Testnet

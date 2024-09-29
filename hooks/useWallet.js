@@ -249,6 +249,7 @@ export default function useWallet() {
               chainData.push({
                 value: conversion,
                 address: token.address,
+                id: token.id,
               });
             })
           );

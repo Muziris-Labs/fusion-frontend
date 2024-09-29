@@ -9,7 +9,7 @@ const LoginContainer = () => {
       <div className="flex flex-col items-center">
         <LoginForm />
 
-        <p className="mt-3 text-xs text-black">
+        <p className="mt-3 text-xs dark:text-white">
           Don't have an account?{" "}
           <Link
             className="bg-gradient-primary-light font-semibold gradient-text hover:cursor-pointer"

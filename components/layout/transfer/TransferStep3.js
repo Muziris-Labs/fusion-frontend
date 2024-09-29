@@ -101,7 +101,7 @@ export default function TransferStep3() {
   }, [txProof]);
 
   return (
-    <section className="flex flex-col h-full w-full gap-10 justify-between items-center">
+    <section className="flex flex-col dark:text-white h-full w-full gap-10 justify-between items-center">
       <div className="flex flex-col gap-1 w-full">
         <h1 className="text-2xl font-semibold">Confirm Transaction</h1>
         <p className="text-sm text-gray-500">
@@ -116,7 +116,7 @@ export default function TransferStep3() {
         </Tooltip>
       </div>
 
-      <div className="flex w-full items-center justify-center gap-2 border border-black/10 pb-14 border-t-0 border-x-0">
+      <div className="flex w-full items-center justify-center gap-2 border dark:border-white/10 border-black/10 pb-14 border-t-0 border-x-0">
         <div className=" flex flex-col items-end">
           <p className="text-6xl font-bold">
             {toggle
@@ -198,14 +198,14 @@ export default function TransferStep3() {
         >
           <Button
             color="white"
-            className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl shadow-md py-3 normal-case font-normal text-sm text-gray-700"
+            className="bg-transparent border-[1px] flex items-center gap-2 dark:border-white/10 border-black/10 rounded-2xl shadow-md py-3 normal-case font-normal text-sm text-gray-700 dark:text-gray-400"
             onClick={() => {
               handleCancel();
             }}
             disabled={isRunning}
           >
             {txProof ? "Reject" : "Back"}
-            <div className="w-6 -mr-2 h-6 flex justify-center items-center rounded-lg border-black border">
+            <div className="w-6 -mr-2 h-6 flex justify-center items-center rounded-lg dark:border-white border-black border">
               <ArrowLeft size={14} />
             </div>
           </Button>

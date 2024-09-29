@@ -14,7 +14,7 @@ const NavItem = ({ href, label, icon }) => {
   const domain = getDomain();
 
   return (
-    <li className="text-left hover:text-black text-gray-600">
+    <li className="text-left hover:text-black dark:hover:text-white text-gray-600">
       <Link
         href={`${href}?domain=${domain}`}
         className="flex gap-4 items-center font-light transition-colors duration-300"

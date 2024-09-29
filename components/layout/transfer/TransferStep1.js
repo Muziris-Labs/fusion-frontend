@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import SettingItem from "@/components/ui/SettingItem";
+import { useTheme } from "next-themes";
 
 export default function TransferStep1() {
   const [amount, setAmount] = useState("0.0");
@@ -24,6 +25,7 @@ export default function TransferStep1() {
   const selectedChain = useSelector((state) => state.transfer.selectedChain);
   const [isValid, setIsValid] = useState(false);
   const tokenBalanceData = useSelector((state) => state.user.tokenBalanceData);
+  const { resolvedTheme } = useTheme();
   const tokenConversionData = useSelector(
     (state) => state.user.tokenConversionData
   );
@@ -102,15 +104,15 @@ export default function TransferStep1() {
   };
 
   return (
-    <section className="flex flex-col h-full w-full gap-10 justify-between items-center">
+    <section className="flex flex-col h-full dark:text-white w-full gap-10 justify-between items-center">
       <div className="flex flex-col gap-1 w-full">
-        <h1 className="text-2xl font-semibold">Enter Amount</h1>
+        <h1 className="text-2xl font-semibold ">Enter Amount</h1>
         <p className="text-sm text-gray-500">
           Enter the amount you want to transfer
         </p>
       </div>
 
-      <div className="flex w-full flex-col items-center gap-2 mt-10 border border-black/10 border-t-0 border-x-0 pb-10">
+      <div className="flex w-full flex-col items-center gap-2 mt-10 border dark:border-white/10 border-black/10 border-t-0 border-x-0 pb-10">
         <div className=" flex justify-between items-center gap-2">
           <Button
             className="rounded-full w-8 h-8 flex justify-center items-center p-0"
@@ -133,7 +135,11 @@ export default function TransferStep1() {
               }
             }}
             style={{
-              color: isValid ? "black" : "red",
+              color: isValid
+                ? resolvedTheme === "light"
+                  ? "black"
+                  : "white"
+                : "red",
             }}
           ></input>
           <Button

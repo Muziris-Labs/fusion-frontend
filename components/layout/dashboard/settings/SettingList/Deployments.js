@@ -15,7 +15,7 @@ export default function Deployments() {
       description="
        Manage your deployments and view their status
       "
-      icon={<Waypoints size={22} className="mt-1" />}
+      icon={<Waypoints size={22} className="mt-1 dark:invert" />}
       isLast
     >
       <div className="flex items-center gap-10">

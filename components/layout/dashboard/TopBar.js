@@ -25,10 +25,10 @@ export default function TopBar() {
 
   return (
     <div className="w-full flex justify-end gap-4 py-14 pb-10">
-      <div className="rounded-2xl p-4 py-3 gap-2 flex items-center justify-center text-gray-600 border-black/10 font-normal text-sm border-[1px] ">
+      <div className="rounded-2xl p-4 py-3 gap-2 flex items-center justify-center text-gray-600 dark:border-white/10 border-black/10 font-normal text-sm border-[1px] ">
         <Image
           src="/block/eth-block.svg"
-          className="opacity-40"
+          className="opacity-40 dark:invert"
           width={18}
           height={18}
           alt="ETH"
@@ -43,7 +43,7 @@ export default function TopBar() {
       </div>
       <Button
         color="white"
-        className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl shadow-md py-3 normal-case font-normal text-sm text-gray-600"
+        className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl dark:border-white/10 shadow-md py-3 normal-case font-normal text-sm text-gray-600"
         onClick={() => {
           window.location.href = "/";
         }}

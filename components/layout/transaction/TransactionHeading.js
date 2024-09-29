@@ -3,7 +3,7 @@ import React from "react";
 const TransactionHeading = () => {
   return (
     <thead>
-      <tr>
+      <tr className="dark:text-white">
         <th className="py-4 text-left font-normal">Name</th>
         <th className="px-4 py-4 text-left font-normal">Date</th>
         <th className="px-4 py-4 text-left font-normal">Status</th>

@@ -33,7 +33,7 @@ const TransactionItem = ({ transaction }) => {
     currentChain &&
     currentToken &&
     transaction.hash && (
-      <tr className="border-t hover:bg-gray-50 my-1">
+      <tr className="border-t hover:bg-gray-50 dark:hover:bg-gray-900 my-1 dark:text-white">
         <td className="py-5 pr-0 flex items-center w-40 gap-3 relative">
           <div className="relative">
             <Image
@@ -70,8 +70,8 @@ const TransactionItem = ({ transaction }) => {
         </td>
 
         <td className="p-1">
-          <div className="bg-green-50 flex items-center px-3 py-1 w-fit rounded-lg text-sm">
-            <span className="inline-block w-2 h-2 rounded-full mr-2 bg-green-500"></span>
+          <div className="bg-green-50 dark:bg-green-500 flex items-center px-3 py-1 w-fit rounded-lg text-sm">
+            <span className="inline-block w-2 h-2 rounded-full mr-2 dark:bg-white bg-green-500"></span>
             <p>Successful</p>
           </div>
         </td>

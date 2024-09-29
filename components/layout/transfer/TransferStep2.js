@@ -138,7 +138,7 @@ const TransferStep2 = () => {
 
   return (
     <>
-      <section className="flex flex-col h-full w-full gap-10 justify-between items-center">
+      <section className="flex flex-col h-full w-full gap-10 dark:text-white justify-between items-center">
         <div className="flex flex-col gap-1 w-full">
           <h1 className="text-2xl font-semibold">Enter Recipient</h1>
           <p className="text-sm text-gray-500">
@@ -153,7 +153,7 @@ const TransferStep2 = () => {
             style={{
               fontSize: "1.15rem",
             }}
-            className="pb-3"
+            className="pb-3 dark:text-white"
             value={recipient}
             onChange={(e) => {
               dispatch(setRecipient(e.target.value));

@@ -17,11 +17,23 @@ export default function Steps() {
           lineClassName="bg-transparent"
           activeLineClassName="bg-transparent"
         >
-          <Step className="relative h-4 w-4 bg-gray-400"></Step>
+          <Step
+            className="relative h-4 w-4 bg-gray-400 dark:bg-gray-700 "
+            activeClassName="dark:bg-white/70"
+            completedClassName="dark:bg-white"
+          ></Step>
 
-          <Step className="relative h-4 w-4 bg-gray-400"></Step>
+          <Step
+            className="relative h-4 w-4 bg-gray-400 dark:bg-gray-700 "
+            activeClassName="dark:bg-white/70"
+            completedClassName="dark:bg-white"
+          ></Step>
 
-          <Step className="relative h-4 w-4 bg-gray-400"></Step>
+          <Step
+            className="relative h-4 w-4 bg-gray-400  dark:bg-gray-700"
+            activeClassName="dark:bg-white/70"
+            completedClassName="dark:bg-white"
+          ></Step>
         </Stepper>
       </div>
     </div>

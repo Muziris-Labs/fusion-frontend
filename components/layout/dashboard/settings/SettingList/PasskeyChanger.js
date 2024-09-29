@@ -15,7 +15,7 @@ export default function PasskeyChanger() {
       description="
        Change your Passkey with a new one. This will require you to authenticate with Email.
       "
-      icon={<Key size={22} className="mt-1" />}
+      icon={<Key size={22} className="mt-1 dark:invert" />}
     >
       <ThemeButton
         theme="Change Passkey"

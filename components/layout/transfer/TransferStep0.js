@@ -42,7 +42,7 @@ export default function TransferStep0() {
   }, [selectedToken, selectedChain, tokenModal]);
 
   return (
-    <section className="flex flex-col h-full w-full gap-10 justify-between items-center">
+    <section className="flex flex-col h-full w-full gap-10 dark:text-white justify-between items-center">
       <div className="flex flex-col gap-1 w-full">
         <h1 className="text-2xl font-semibold">Select a token</h1>
         <p className="text-sm text-gray-500">
@@ -52,13 +52,13 @@ export default function TransferStep0() {
 
       <Button
         color="white"
-        className="bg-transparent border-[1px] flex overflow-hidden items-center gap-2 border-black/20 rounded-2xl shadow-md py-3 normal-case font-normal text-sm text-black w-full h-20"
+        className="bg-transparent dark:text-white dark:border-white/20 border-[1px] flex overflow-hidden items-center gap-2 border-black/20 rounded-2xl shadow-md py-3 normal-case font-normal text-sm text-black w-full h-20"
         onClick={handleToggleTokenDrawer}
       >
         {!selectedToken && !selectedChain && (
           <div className="flex items-center justify-center w-full h-full gap-2">
             Select a token
-            <div className="w-6 -mr-2 h-6 flex justify-center items-center rounded-lg border-black border">
+            <div className="w-6 -mr-2 h-6 flex justify-center items-center rounded-lg dark:border-white border-black border">
               T
             </div>
           </div>
@@ -67,12 +67,8 @@ export default function TransferStep0() {
           <div className="flex h-full w-full justify-between p-2 relative ">
             <div className="flex gap-2">
               <div className="flex flex-col items-start">
-                <p className="text-sm font-bold text-black">
-                  {selectedToken.symbol}
-                </p>
-                <p className="text-xs font-normal text-black">
-                  {selectedChain.name}
-                </p>
+                <p className="text-sm font-bold">{selectedToken.symbol}</p>
+                <p className="text-xs font-normal ">{selectedChain.name}</p>
               </div>
             </div>
 
@@ -86,8 +82,8 @@ export default function TransferStep0() {
 
             <div className="flex gap-2">
               <div className="flex flex-col items-end gap-1">
-                <p className="text-sm font-light text-black">Change Token</p>
-                <div className="w-4 h-4 flex justify-center items-center rounded-md text-xs p-2 border-black border">
+                <p className="text-sm font-light ">Change Token</p>
+                <div className="w-4 h-4 flex justify-center items-center rounded-md dark:border-white text-xs p-2 border-black border">
                   T
                 </div>
               </div>

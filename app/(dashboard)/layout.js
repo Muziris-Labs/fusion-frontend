@@ -36,7 +36,7 @@ const DashboardLayout = ({ children }) => {
         <AuthModal />
         <TxLoadModal />
         <TokenModal />
-        <div className="relative flex min-h-screen">
+        <div className="relative flex min-h-screen dark:bg-black/90">
           <NavBar />
           <div className="flex-1 px-20">
             <div className="flex flex-col h-full w-full relative">

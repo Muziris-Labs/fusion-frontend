@@ -22,7 +22,7 @@ const LoginLayout = ({ children }) => {
         </div>
       }
     >
-      <main className="relative h-screen w-screen flex bg-white font-noto z-10">
+      <main className="relative h-screen w-screen flex bg-white dark:bg-black/90 font-noto z-10">
         <DesignSection />
 
         <MainSection>

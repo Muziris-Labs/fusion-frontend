@@ -27,7 +27,7 @@ const Step3 = () => {
       description="Verify your Email to Deploy your wallet."
     >
       {user && (
-        <div className="w-full border-[1px] border-black flex border-dashed rounded-xl mt-8 p-5 gap-5">
+        <div className="w-full border-[1px] border-black dark:border-white flex border-dashed rounded-xl mt-8 p-5 gap-5">
           <Image
             src={user.picture}
             width={50}
@@ -36,7 +36,9 @@ const Step3 = () => {
             alt="profilepic"
           />
           <div className="flex flex-col justify-between ">
-            <p className="font-semibold text-lg">{user.nickname}</p>
+            <p className="font-semibold text-lg dark:text-white">
+              {user.nickname}
+            </p>
             <p className="font-outfit text-sm text-gray-600">{user.email}</p>
           </div>
         </div>
@@ -64,7 +66,7 @@ const Step3 = () => {
       )}
 
       <Button
-        className="mt-8 w-full p-5 font-semibold flex items-center justify-center rounded-full text-sm font-outfit normal-case"
+        className="mt-8 w-full p-5 flex items-center justify-center font-semibold dark:bg-white dark:text-black rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           if (email) {
             dispatch(setStep(3));
