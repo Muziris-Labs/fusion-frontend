@@ -125,7 +125,7 @@ export default function TransferStep1() {
             <Minus size={16} className="" />
           </Button>
           <input
-            className="text-center text-7xl w-[350px] outline-none bg-transparent"
+            className="text-center text-7xl w-[200px] sm:w-[350px] outline-none bg-transparent"
             value={amount}
             autoFocus
             onChange={(e) => {

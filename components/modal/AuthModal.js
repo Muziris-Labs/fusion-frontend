@@ -58,12 +58,28 @@ export default function AuthModal() {
                 src={user.picture}
                 width={50}
                 height={40}
-                className="rounded-full"
+                className="rounded-full md:block hidden"
                 alt="profilepic"
               />
               <div className="flex flex-col justify-between items-start ">
-                <p className="font-semibold text-lg">{user.nickname}</p>
-                <p className="font-outfit text-sm text-gray-600">
+                <p className="font-semibold text-lg sm:hidden block">
+                  {user.nickname && user.nickname.length > 20 ? (
+                    <span>{user.nickname.slice(0, 20)}...</span>
+                  ) : (
+                    user.nickname
+                  )}
+                </p>
+                <p className="font-semibold text-lg sm:block hidden">
+                  {user.nickname}
+                </p>
+                <p className="font-outfit text-sm text-gray-600 sm:hidden block">
+                  {user.email && user.email.length > 25 ? (
+                    <span>{user.email.slice(0, 25)}...</span>
+                  ) : (
+                    user.email
+                  )}
+                </p>
+                <p className="font-outfit text-sm text-gray-600 sm:block hidden">
                   {user.email}
                 </p>
               </div>

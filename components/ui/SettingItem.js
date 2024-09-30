@@ -6,7 +6,7 @@ export default function SettingItem({
   isLast = false,
 }) {
   return (
-    <div className="w-full flex gap-5">
+    <div className="w-full flex gap-5 flex-col sm:flex-row">
       {icon}
 
       <div
@@ -15,7 +15,7 @@ export default function SettingItem({
           borderBottomWidth: isLast ? "0px" : "1px",
         }}
       >
-        <div className="flex justify-between w-full items-center">
+        <div className="flex flex-col md:flex-row justify-between w-full items-start md:items-center gap-8 md:gap-0">
           <div className="flex flex-col gap-2">
             <h2 className="text-lg">{title}</h2>
             <p className="font-light text-gray-600 text-sm w-80">

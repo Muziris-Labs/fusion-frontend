@@ -10,6 +10,7 @@ import QRCodeGenerator from "@/components/ui/QrCodeGenerator";
 import SettingItem from "@/components/ui/SettingItem";
 import ThemeButton from "@/components/ui/ThemeButton";
 import QrCodeWithLogo from "qrcode-with-logos";
+import shortenAddress from "@/utils/shortenAddress";
 
 export default function ReceiveMain() {
   const { getDomain } = useWallet();
@@ -17,19 +18,23 @@ export default function ReceiveMain() {
   const domain = getDomain();
   return (
     <div className="flex flex-col w-full gap-10">
-      <div className="flex w-full justify-between dark:text-white items-center border border-black/10 border-t-0 border-x-0 pb-10">
+      <div className="flex w-full justify-between dark:text-white items-center border dark:border-white/10 border-black/10 border-t-0 border-x-0 pb-10">
         <div className="flex flex-col gap-8">
           <Image
             src="/FusionLogo.svg"
             width={100}
             height={100}
             alt="fusion logo"
-            className="mb-2 dark:invert"
+            className="mb-2 dark:invert hidden md:block"
           />
 
-          <div className="font-bold text-7xl w-full -mt-8 flex items-end leading-[4.2rem]">
+          <div className="h-full w-56 md:hidden">
+            <QRCodeGenerator value={walletAddress} />
+          </div>
+
+          <div className="font-bold text-3xl md:text-7xl w-full md:-mt-8 flex items-end mt-0 md:leading-[4.2rem]">
             {domain}
-            <span className="font-normal text-2xl text-gray-700">
+            <span className="font-normal text-lg md:text-2xl text-gray-700">
               .fusion.id
             </span>
             <Button
@@ -45,7 +50,12 @@ export default function ReceiveMain() {
           </div>
 
           <div className="font-light -mt-5 flex ">
-            {walletAddress ? walletAddress : "Loading..."}
+            <span className="md:block hidden">
+              {walletAddress ? walletAddress : "Loading..."}
+            </span>
+            <span className="md:hidden">
+              {walletAddress ? shortenAddress(walletAddress) : "Loading..."}
+            </span>
 
             <Button
               color="white"
@@ -60,7 +70,7 @@ export default function ReceiveMain() {
           </div>
         </div>
 
-        <div className="h-full w-56">
+        <div className="h-full w-56 hidden md:block">
           <QRCodeGenerator value={walletAddress} />
         </div>
       </div>

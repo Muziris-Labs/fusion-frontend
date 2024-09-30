@@ -13,7 +13,7 @@ import formatDate from "@/utils/formatDate";
 import formatTime from "@/utils/formatTime";
 import formatAmount from "@/utils/formatAmount";
 import CopyToClipboard from "@/utils/CopyToClipboard";
-import { Button } from "@material-tailwind/react";
+import { Button, Tooltip } from "@material-tailwind/react";
 
 const TransactionItem = ({ transaction }) => {
   const walletAddress = useSelector((state) => state.user.walletAddress);
@@ -34,25 +34,29 @@ const TransactionItem = ({ transaction }) => {
     currentToken &&
     transaction.hash && (
       <tr className="border-t hover:bg-gray-50 dark:hover:bg-gray-900 my-1 dark:text-white">
-        <td className="py-5 pr-0 flex items-center w-40 gap-3 relative">
+        <td className="py-5 pr-0 flex items-center w-14 md:w-40 gap-3 relative">
           <div className="relative">
-            <Image
-              width={40}
-              height={40}
-              src={currentToken.logo}
-              alt={transaction.hash}
-              className="w-10 h-10 mr-2"
-            />
-            <Image
-              width={16}
-              height={16}
-              src={currentChain.logo}
-              alt={transaction.hash}
-              className="absolute -bottom-1 right-0"
-            />
+            <Tooltip content={currentToken.symbol}>
+              <Image
+                width={40}
+                height={40}
+                src={currentToken.logo}
+                alt={transaction.hash}
+                className="w-10 h-10 mr-2"
+              />
+            </Tooltip>
+            <Tooltip content={currentChain.name}>
+              <Image
+                width={16}
+                height={16}
+                src={currentChain.logo}
+                alt={transaction.hash}
+                className="absolute -bottom-1 right-0"
+              />
+            </Tooltip>
           </div>
 
-          <div className="w-24 flex flex-col items-start">
+          <div className="w-24 flex-col items-start hidden md:flex">
             <FusionTooltip label={currentToken.symbol} />
 
             <p className="text-gray-500 text-sm truncate">
@@ -61,7 +65,7 @@ const TransactionItem = ({ transaction }) => {
           </div>
         </td>
 
-        <td className="px-4 py-2 text-left">
+        <td className="px-4 py-2 text-left md:table-cell hidden">
           <p className="text-sm">{formatTime(transaction.timeStamp)}</p>
 
           <p className="text-xs text-gray-500">
@@ -69,8 +73,8 @@ const TransactionItem = ({ transaction }) => {
           </p>
         </td>
 
-        <td className="p-1">
-          <div className="bg-green-50 dark:bg-green-500 flex items-center px-3 py-1 w-fit rounded-lg text-sm">
+        <td className="p-1 xl:table-cell hidden ">
+          <div className="bg-green-50 dark:bg-green-500 my-auto flex items-center px-3 py-1 w-fit rounded-lg text-sm">
             <span className="inline-block w-2 h-2 rounded-full mr-2 dark:bg-white bg-green-500"></span>
             <p>Successful</p>
           </div>
@@ -83,6 +87,9 @@ const TransactionItem = ({ transaction }) => {
               : "text-green-500"
           }`}
         >
+          <p className="text-xs text-gray-500 md:hidden block">
+            {formatDate(transaction.timeStamp)}
+          </p>
           {transaction.from === walletAddress.toLowerCase() ? "-" : "+"}{" "}
           {transaction.tokenDecimal
             ? formatAmount(
@@ -92,7 +99,7 @@ const TransactionItem = ({ transaction }) => {
           {currentToken.symbol}
         </td>
 
-        <td className="px-4 py-2 text-sm">
+        <td className="px-4 py-2 text-sm md:table-cell hidden">
           <CopyToClipboard
             text={
               transaction.from === walletAddress.toLowerCase()

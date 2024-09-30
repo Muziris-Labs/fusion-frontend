@@ -1,17 +1,24 @@
 "use client";
 
 import { Button } from "@material-tailwind/react";
-import { Loader2, LogOut } from "lucide-react";
+import { ArrowLeft, Loader2, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getEthTokenConversion } from "@/utils/conversionUtils";
 import formatAmount from "@/utils/formatAmount";
+import { usePathname, useRouter } from "next/navigation";
+import useWallet from "@/hooks/useWallet";
 
 export default function TopBar() {
   const tokenConversionData = useSelector(
     (state) => state.user.tokenConversionData
   );
+
+  const pathname = usePathname();
+  const router = useRouter();
+  const { getDomain } = useWallet();
+  const domain = getDomain();
 
   const [ethConversionData, setEthConversionData] = useState(null);
 
@@ -25,7 +32,18 @@ export default function TopBar() {
 
   return (
     <div className="w-full flex justify-between gap-4 py-14 pb-10 items-center">
-      <div className="lg:hidden gap-2 items-center flex">
+      <div className="lg:hidden gap-4 items-center flex">
+        {pathname !== "/dashboard" && (
+          <Button
+            color="white"
+            className="bg-transparent border-[1px] flex items-center gap-2 border-black/10 rounded-2xl dark:border-white/10 shadow-md py-3 px-3 normal-case font-normal text-sm text-gray-600"
+            onClick={() => {
+              router.push("/dashboard?domain=" + domain);
+            }}
+          >
+            <ArrowLeft size={16} />
+          </Button>
+        )}
         <p className="dark:text-white text-xl">Fusion</p>
         <div className="bg-red-500/20 rounded-xl p-1 px-2 text-xs font-light text-red-500">
           Testnet
