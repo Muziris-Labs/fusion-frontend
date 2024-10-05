@@ -30,12 +30,6 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "bytes32",
-        "name": "domain",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
         "name": "txVerifier",
         "type": "address"
@@ -61,19 +55,6 @@
     ],
     "name": "SetupFusion",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "DOMAIN",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -650,11 +631,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_domain",
-        "type": "bytes32"
-      },
       {
         "internalType": "address",
         "name": "_txVerifier",

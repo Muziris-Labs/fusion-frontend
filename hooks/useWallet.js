@@ -55,20 +55,18 @@ export default function useWallet() {
 
   const getFusion = async (domain) => {
     try {
-      const provider = new ethers.providers.JsonRpcProvider(baseConfig.rpcUrl);
-
-      const factory = new ethers.Contract(
-        baseConfig.deployments.FusionProxyFactory.address,
-        baseConfig.deployments.FusionProxyFactory.abi,
-        provider
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/pubkey/${domain}.fusion.id`
       );
 
-      const fusionProxy = await factory.getFusionProxy(domain + ".fusion.id");
+      if (response.data.success) {
+        return true;
+      }
 
-      return fusionProxy;
+      return false;
     } catch (error) {
       console.log(error);
-      return ethers.constants.AddressZero;
+      return false;
     }
   };
 
@@ -86,6 +84,32 @@ export default function useWallet() {
 
   const getFusionAddress = async (chain, domain) => {
     try {
+      const domainResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/pubkey/${domain}.fusion.id`
+      );
+
+      if (!domainResponse.data.success) {
+        return ethers.constants.AddressZero;
+      }
+
+      const pubKey_uncompressed = domainResponse.data.pubkey;
+
+      let pubKey = pubKey_uncompressed.slice(4);
+      let pub_key_x = pubKey.substring(0, 64);
+      let pub_key_y = pubKey.substring(64);
+
+      const hashresponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/getPubkeyHash`,
+        {
+          pub_key_x: Array.from(ethers.utils.arrayify("0x" + pub_key_x)),
+          pub_key_y: Array.from(ethers.utils.arrayify("0x" + pub_key_y)),
+        }
+      );
+
+      if (!hashresponse.data.success) {
+        return ethers.constants.AddressZero;
+      }
+
       const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl);
 
       const factory = new ethers.Contract(
@@ -94,7 +118,9 @@ export default function useWallet() {
         provider
       );
 
-      const fusionProxy = await factory.getFusionProxy(domain + ".fusion.id");
+      const fusionProxy = await factory.getFusionProxy(
+        hashresponse.data.pubkeyHash
+      );
 
       return fusionProxy;
     } catch {

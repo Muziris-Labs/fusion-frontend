@@ -39,15 +39,15 @@ const LoginForm = () => {
     if (domain.length < 3) return;
     if (domain.length > 20) return;
 
-    const address = await getFusion(domain.toLowerCase());
+    const isValid = await getFusion(domain.toLowerCase());
 
-    if (address === ethers.constants.AddressZero) {
-      setIsUsed(false);
+    if (isValid) {
+      setIsUsed(true);
       setIsLoading(false);
       return;
     }
 
-    setIsUsed(true);
+    setIsUsed(false);
     setIsLoading(false);
   };
 

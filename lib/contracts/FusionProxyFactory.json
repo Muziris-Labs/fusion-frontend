@@ -5,25 +5,35 @@
         "internalType": "address",
         "name": "CurrentSingleton_",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_baseProxyFactory",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "baseChainId_",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "wormholeRelayer",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "TxVerifier",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "FusionForwarder",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "GasTank",
+        "type": "address"
+      }
+    ],
+    "name": "InitializedRegistry",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -58,123 +68,32 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "enum FusionAddressRegistry.Selector",
+        "name": "selector",
+        "type": "uint8"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "UpdatedRegistry",
+    "type": "event"
+  },
+  {
     "inputs": [],
-    "name": "IsBaseChain",
+    "name": "FusionForwarder",
     "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "domain",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "initializer",
-        "type": "bytes"
-      },
-      {
-        "internalType": "contract IProxyCreationCallback",
-        "name": "callback",
-        "type": "address"
-      }
-    ],
-    "name": "createProxyWithCallback",
-    "outputs": [
-      {
-        "internalType": "contract FusionProxy",
-        "name": "proxy",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "domain",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "initializer",
-        "type": "bytes"
-      }
-    ],
-    "name": "createProxyWithDomain",
-    "outputs": [
-      {
-        "internalType": "contract FusionProxy",
-        "name": "proxy",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes",
-        "name": "proof",
-        "type": "bytes"
-      },
-      {
-        "internalType": "string",
-        "name": "domain",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "initializer",
-        "type": "bytes"
-      },
-      {
-        "internalType": "uint16",
-        "name": "targetChain",
-        "type": "uint16"
-      },
       {
         "internalType": "address",
-        "name": "targetAddress",
+        "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "gasLimit",
-        "type": "uint256"
-      }
-    ],
-    "name": "createProxyWithWormhole",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "domain",
-        "type": "string"
-      }
-    ],
-    "name": "domainExists",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "exists",
-        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -182,12 +101,25 @@
   },
   {
     "inputs": [],
-    "name": "getChainId",
+    "name": "GasTank",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "TxVerifier",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -196,9 +128,28 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "domain",
-        "type": "string"
+        "internalType": "bytes32",
+        "name": "TxHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "createProxyWithTxHash",
+    "outputs": [
+      {
+        "internalType": "contract FusionProxy",
+        "name": "proxy",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "TxHash",
+        "type": "bytes32"
       }
     ],
     "name": "getFusionProxy",
@@ -207,25 +158,6 @@
         "internalType": "address",
         "name": "fusionProxy",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "forwarder",
-        "type": "address"
-      }
-    ],
-    "name": "isTrustedForwarder",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -247,69 +179,22 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
-        "name": "targetChain",
-        "type": "uint16"
+        "internalType": "address",
+        "name": "_txVerifier",
+        "type": "address"
       },
-      {
-        "internalType": "uint256",
-        "name": "gas_limit",
-        "type": "uint256"
-      }
-    ],
-    "name": "quoteCrossChainDeployment",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "cost",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes",
-        "name": "payload",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes[]",
-        "name": "",
-        "type": "bytes[]"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "sourceAddress",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "uint16",
-        "name": "sourceChain",
-        "type": "uint16"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "name": "receiveWormholeMessages",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       {
         "internalType": "address",
-        "name": "forwarder",
+        "name": "_forwarder",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_gasTank",
         "type": "address"
       }
     ],
-    "name": "setupForwarder",
+    "name": "setupRegistry",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -328,16 +213,21 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "trustedForwarder",
-    "outputs": [
+    "inputs": [
+      {
+        "internalType": "enum FusionAddressRegistry.Selector",
+        "name": "selector",
+        "type": "uint8"
+      },
       {
         "internalType": "address",
-        "name": "",
+        "name": "newAddress",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
+    "name": "updateRegistry",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -351,19 +241,6 @@
     "name": "updateSingleton",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "wormholeRelayer",
-    "outputs": [
-      {
-        "internalType": "contract IWormholeRelayer",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   }
 ]

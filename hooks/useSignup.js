@@ -63,7 +63,7 @@ export default function useSignup() {
   const deployWallet = async (setIsLoading, setIsSuccess, setMessage) => {
     try {
       setIsLoading(true);
-      setMessage("Initializing wallet deployment...");
+      setMessage("Indexing your domain...");
 
       const kmsResponse = await axios.post(
         `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/init/passkey`,
@@ -81,52 +81,12 @@ export default function useSignup() {
       );
 
       if (!kmsResponse.data.success) {
-        throw new Error("Failed to initialize wallet deployment.");
-      }
-
-      localStorage.setItem(`${domain}.fusion.id`, kmsResponse.data.key);
-      const signature = kmsResponse.data.signature;
-
-      const pubKey_uncompressed = ethers.utils.recoverPublicKey(
-        ethers.utils.hashMessage("FUSION_SIGN_UP"),
-        signature
-      );
-
-      let pubKey = pubKey_uncompressed.slice(4);
-      let pub_key_x = pubKey.substring(0, 64);
-      let pub_key_y = pubKey.substring(64);
-
-      setMessage("Deploying your smart wallet...");
-
-      const hashresponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/getPubkeyHash`,
-        {
-          pub_key_x: Array.from(ethers.utils.arrayify("0x" + pub_key_x)),
-          pub_key_y: Array.from(ethers.utils.arrayify("0x" + pub_key_y)),
-        }
-      );
-
-      if (!hashresponse.data.success) {
-        throw new Error("Failed to deploy wallet.");
-      }
-
-      const txVerifier = baseConfig.deployments.UltraVerifier.address;
-
-      const deploymentResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/deploy/base`,
-        {
-          domain: domain + ".fusion.id",
-          txHash: hashresponse.data.pubkeyHash,
-          txVerifier,
-        }
-      );
-
-      if (!deploymentResponse.data.success) {
         throw new Error("Failed to deploy wallet.");
       } else {
         setIsSuccess(true);
         setMessage("Wallet deployed successfully.");
         fireMultiple();
+        localStorage.setItem(`${domain}.fusion.id`, kmsResponse.data.key);
       }
     } catch (error) {
       console.log(error);
