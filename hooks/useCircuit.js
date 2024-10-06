@@ -7,7 +7,8 @@ import { JSONRPCClient } from "json-rpc-2.0";
 import oracleProve from "@/lib/circuits/oracle_prove.json";
 
 export default function useCircuit() {
-  const { getTxHash } = useWallet();
+  const { getFusionHash, getDomain } = useWallet();
+  const domain = getDomain();
   const [noir, setNoir] = useState(null);
   const [backend, setBackend] = useState(null);
 
@@ -48,8 +49,7 @@ export default function useCircuit() {
     message,
     signature,
     verifying_address = ethers.constants.AddressZero,
-    signing_address = ethers.constants.AddressZero,
-    selectedChain
+    signing_address = ethers.constants.AddressZero
   ) => {
     if (!noir || !backend) {
       throw new Error("Noir or Backend not initialized");
@@ -65,7 +65,7 @@ export default function useCircuit() {
     let pub_key_y = pubKey.substring(64);
     const sig = Array.from(ethers.utils.arrayify(signature));
     sig.pop();
-    const txHash = await getTxHash(selectedChain);
+    const txHash = await getFusionHash(domain);
     const inputs = {
       pub_key_x: Array.from(ethers.utils.arrayify("0x" + pub_key_x)),
       pub_key_y: Array.from(ethers.utils.arrayify("0x" + pub_key_y)),

@@ -128,6 +128,41 @@ export default function useWallet() {
     }
   };
 
+  const getFusionHash = async (domain) => {
+    try {
+      const domainResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/pubkey/${domain}.fusion.id`
+      );
+
+      if (!domainResponse.data.success) {
+        return false;
+      }
+
+      const pubKey_uncompressed = domainResponse.data.pubkey;
+
+      let pubKey = pubKey_uncompressed.slice(4);
+      let pub_key_x = pubKey.substring(0, 64);
+      let pub_key_y = pubKey.substring(64);
+
+      const hashresponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/getPubkeyHash`,
+        {
+          pub_key_x: Array.from(ethers.utils.arrayify("0x" + pub_key_x)),
+          pub_key_y: Array.from(ethers.utils.arrayify("0x" + pub_key_y)),
+        }
+      );
+
+      if (!hashresponse.data.success) {
+        return false;
+      }
+
+      return hashresponse.data.pubkeyHash;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   const loadAddresses = async () => {
     const domain = getDomain();
 
@@ -142,7 +177,6 @@ export default function useWallet() {
         const isBase = chain.chainId === baseConfig.chainId;
 
         if (isBase && address !== ethers.constants.AddressZero) {
-          console.log(address);
           dispatch(setWalletAddress(address));
           dispatch(setDeployed(true));
         }
@@ -171,10 +205,14 @@ export default function useWallet() {
             return;
           }
 
+          const fusionHash = await getFusionHash(domain);
+
+          if (!fusionHash) {
+            return;
+          }
+
           const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/transactions/${
-              chain.chainId
-            }/${domain + ".fusion.id"}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/transactions/${chain.chainId}/${fusionHash}`
           );
 
           if (response.data.success) {
@@ -204,10 +242,14 @@ export default function useWallet() {
 
       let transaction = history;
 
+      const fusionHash = await getFusionHash(domain);
+
+      if (!fusionHash) {
+        return;
+      }
+
       const response = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_URL
-        }/api/v1/misc/transactions/${chainId}/${domain + ".fusion.id"}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/transactions/${chainId}/${fusionHash}`
       );
 
       if (response.data.success) {
@@ -485,7 +527,6 @@ export default function useWallet() {
 
       return Number(nonce);
     } catch (error) {
-      console.log(error);
       return 0;
     }
   };
@@ -529,5 +570,6 @@ export default function useWallet() {
     getNonce,
     getTxHash,
     setMailUser,
+    getFusionHash,
   };
 }

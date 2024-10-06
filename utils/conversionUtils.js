@@ -10,7 +10,7 @@ const calculateTotalBalance = (tokenConversionData, tokenBalanceData) => {
       );
 
       const currentChain = config.chains.find(
-        (chain) => chain.chainId === chain.chainId
+        (chain) => Number(chain.chainId) === Number(conversionChain.chainId)
       );
 
       if (conversionChain && currentChain) {
@@ -49,7 +49,7 @@ const calculateChainBalance = (
         );
 
         const currentChain = config.chains.find(
-          (chain) => chain.chainId === chain.chainId
+          (chain) => Number(chain.chainId) === Number(conversionChain.chainId)
         );
 
         if (conversionChain && currentChain) {

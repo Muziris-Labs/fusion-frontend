@@ -16,7 +16,7 @@ export default function useExecute() {
   const {
     getDomain,
     initializeProofWallet,
-    getNonce,
+    getFusionHash,
     getFusionAddress,
     reloadTransaction,
   } = useWallet();
@@ -130,12 +130,15 @@ export default function useExecute() {
         signature: signature,
       };
 
+      const txHash = await getFusionHash(domain);
+
       if (selectedToken.address === ethers.constants.AddressZero) {
         const payloadResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/estimate/native/` +
             selectedChain.chainId,
           {
             forwardRequest,
+            txHash,
           }
         );
 
@@ -148,6 +151,7 @@ export default function useExecute() {
             selectedToken.address,
           {
             forwardRequest,
+            txHash,
           }
         );
 
@@ -263,12 +267,15 @@ export default function useExecute() {
         signature: signature,
       };
 
+      const txHash = await getFusionHash(domain);
+
       if (selectedToken.address === ethers.constants.AddressZero) {
         const payloadResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/native/` +
             selectedChain.chainId,
           {
             forwardRequest,
+            txHash,
           }
         );
 
@@ -289,6 +296,7 @@ export default function useExecute() {
             selectedToken.address,
           {
             forwardRequest,
+            txHash,
           }
         );
 
