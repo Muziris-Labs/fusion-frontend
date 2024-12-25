@@ -36,6 +36,7 @@ export default function useChange() {
         userVerification: "required",
         timeout: 60000,
         debug: false,
+        domain: window.location.hostname,
       }
     );
 

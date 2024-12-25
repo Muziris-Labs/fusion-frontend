@@ -8,23 +8,28 @@ import {
   setStep,
   setUser,
 } from "@/redux/slice/SignupSlice";
-import { v4 } from "uuid";
 import { Auth0Client } from "auth0-spa-js";
 import { toast } from "sonner";
 import axios from "axios";
-import { ethers } from "ethers";
-import baseConfig from "@/lib/baseConfig";
 import { useConfetti } from "@/components/ui/fireConfetti";
 
 export default function useSignup() {
   const domain = useSelector((state) => state.signup.domain);
   const passkey = useSelector((state) => state.signup.passkey);
-  const email = useSelector((state) => state.signup.email);
   const { fireMultiple } = useConfetti();
-
   const dispatch = useDispatch();
+  const accessToken = useSelector((state) => state.signup.accessToken);
+
   const handlePasskey = async () => {
-    const challenge = v4();
+    const challengeData = await axios.post(
+      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/challenge/generate`
+    );
+
+    if (!challengeData.data.success) {
+      throw new Error("Failed to generate challenge.");
+    }
+
+    const challenge = challengeData.data.challenge;
 
     const registration = await client.register(
       domain + ".fusion.id",
@@ -34,10 +39,12 @@ export default function useSignup() {
         userVerification: "required",
         timeout: 60000,
         debug: false,
+        domain: window.location.hostname,
       }
     );
 
     registration.challenge = challenge;
+    registration.challengeId = challengeData.data.challengeId;
 
     dispatch(setPasskey(registration));
   };
@@ -65,28 +72,49 @@ export default function useSignup() {
       setIsLoading(true);
       setMessage("Indexing your domain...");
 
-      const kmsResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/init/passkey`,
-        {
-          domain: domain + ".fusion.id",
-          registration: passkey,
-          challenge: passkey.challenge,
-          payload: "FUSION_SIGN_UP",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${email}`,
-          },
-        }
-      );
+      if (!accessToken) {
+        axios.defaults.withCredentials = true;
+        const kmsResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/init/passkey`,
+          {
+            domain: domain + ".fusion.id",
+            registration: passkey,
+            challengeId: passkey.challengeId,
+          }
+        );
 
-      if (!kmsResponse.data.success) {
-        throw new Error("Failed to deploy wallet.");
+        console.log(kmsResponse);
+
+        if (!kmsResponse.data.success) {
+          throw new Error("Failed to deploy wallet.");
+        } else {
+          setIsSuccess(true);
+          setMessage("Wallet deployed successfully.");
+          fireMultiple();
+        }
       } else {
-        setIsSuccess(true);
-        setMessage("Wallet deployed successfully.");
-        fireMultiple();
-        localStorage.setItem(`${domain}.fusion.id`, kmsResponse.data.key);
+        axios.defaults.withCredentials = true;
+        const kmsResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/init/complete/passkey/email`,
+          {
+            domain: domain + ".fusion.id",
+            registration: passkey,
+            challengeId: passkey.challengeId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (!kmsResponse.data.success) {
+          throw new Error("Failed to deploy wallet.");
+        } else {
+          setIsSuccess(true);
+          setMessage("Wallet deployed successfully.");
+          fireMultiple();
+        }
       }
     } catch (error) {
       console.log(error);

@@ -49,7 +49,7 @@ export default function useCircuit() {
     message,
     signature,
     verifying_address = ethers.constants.AddressZero,
-    signing_address = ethers.constants.AddressZero
+    signing_address = ethers.constants.AddressZero,
   ) => {
     if (!noir || !backend) {
       throw new Error("Noir or Backend not initialized");
@@ -58,7 +58,7 @@ export default function useCircuit() {
     const hash = ethers.utils.keccak256(message);
     const pub_key_uncompressed = ethers.utils.recoverPublicKey(
       ethers.utils.hashMessage(ethers.utils.arrayify(hash)),
-      signature
+      signature,
     );
     let pubKey = pub_key_uncompressed.slice(4);
     let pub_key_x = pubKey.substring(0, 64);
@@ -72,8 +72,8 @@ export default function useCircuit() {
       signature: sig,
       hashed_message: Array.from(
         ethers.utils.arrayify(
-          ethers.utils.hashMessage(ethers.utils.arrayify(hash))
-        )
+          ethers.utils.hashMessage(ethers.utils.arrayify(hash)),
+        ),
       ),
       tx_hash: txHash,
       verifying_address: ethers.utils.hexZeroPad(verifying_address, 32),

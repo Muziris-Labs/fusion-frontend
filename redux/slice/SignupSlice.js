@@ -9,6 +9,8 @@ const signupSlice = createSlice({
     passkey: null,
     email: null,
     user: null,
+    requestTime: null,
+    accessToken: null,
   },
 
   reducers: {
@@ -36,6 +38,14 @@ const signupSlice = createSlice({
       state.user = action.payload;
     },
 
+    setRequestTime: (state, action) => {
+      state.requestTime = action.payload;
+    },
+
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    },
+
     clearAll: (state) => {
       state.step = 0;
       state.domain = null;
@@ -54,6 +64,8 @@ export const {
   clearPasskey,
   clearAll,
   setUser,
+  setRequestTime,
+  setAccessToken,
 } = signupSlice.actions;
 
 export default signupSlice.reducer;
