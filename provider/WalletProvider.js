@@ -2,30 +2,35 @@
 
 import useWallet from "@/hooks/useWallet";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function WalletProvider({ children }) {
   const {
     getDomain,
     loadAddresses,
     loadTransactions,
-    loadMarketData,
     loadConversionData,
     listenForBalance,
-    setMailUser,
+    loadUser,
   } = useWallet();
+  const walletAddress = useSelector((state) => state.user.walletAddress);
 
   useEffect(() => {
     const domain = getDomain();
 
     if (domain) {
-      setMailUser();
       loadAddresses();
+      loadUser();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (walletAddress) {
       loadTransactions();
-      loadMarketData();
       loadConversionData();
       listenForBalance();
     }
-  }, []);
+  }, [walletAddress]);
 
   return children;
 }

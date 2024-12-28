@@ -4,11 +4,11 @@ import { useSearchParams } from "next/navigation";
 import config from "@/lib/config";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setDeployed,
   setHistory,
   setMarketData,
   setTokenBalanceData,
   setTokenConversionData,
+  setUser,
   setWallet,
   setWalletAddress,
   setWalletAddresses,
@@ -82,47 +82,19 @@ export default function useWallet() {
     return wallet;
   };
 
-  const getFusionAddress = async (chain, domain) => {
+  const getFusionAddress = async (domain) => {
     try {
-      const domainResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/pubkey/${domain}.fusion.id`
+      const backendResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/index/${
+          domain + ".fusion.id"
+        }`
       );
 
-      if (!domainResponse.data.success) {
-        return ethers.constants.AddressZero;
+      if (!backendResponse.data.success) {
+        throw new Error("Failed to deploy wallet.");
       }
 
-      const pubKey_uncompressed = domainResponse.data.pubkey;
-
-      let pubKey = pubKey_uncompressed.slice(4);
-      let pub_key_x = pubKey.substring(0, 64);
-      let pub_key_y = pubKey.substring(64);
-
-      const hashresponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/getPubkeyHash`,
-        {
-          pub_key_x: Array.from(ethers.utils.arrayify("0x" + pub_key_x)),
-          pub_key_y: Array.from(ethers.utils.arrayify("0x" + pub_key_y)),
-        }
-      );
-
-      if (!hashresponse.data.success) {
-        return ethers.constants.AddressZero;
-      }
-
-      const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl);
-
-      const factory = new ethers.Contract(
-        chain.deployments.FusionProxyFactory.address,
-        chain.deployments.FusionProxyFactory.abi,
-        provider
-      );
-
-      const fusionProxy = await factory.getFusionProxy(
-        hashresponse.data.pubkeyHash
-      );
-
-      return fusionProxy;
+      return backendResponse.data.account.address;
     } catch {
       return ethers.constants.AddressZero;
     }
@@ -168,25 +140,31 @@ export default function useWallet() {
 
     if (!domain) return;
 
-    let addresses = [];
+    const address = await getFusionAddress(domain);
 
-    await Promise.all(
+    dispatch(setWalletAddress(address));
+
+    const addresses = await Promise.all(
       config.chains.map(async (chain) => {
-        const address = await getFusionAddress(chain, domain);
+        const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl);
 
-        const isBase = chain.chainId === baseConfig.chainId;
+        const code = await provider.getCode(address);
 
-        if (isBase && address !== ethers.constants.AddressZero) {
-          dispatch(setWalletAddress(address));
-          dispatch(setDeployed(true));
+        if (code === "0x") {
+          return {
+            chainId: chain.chainId,
+            address: ethers.constants.AddressZero,
+          };
+        } else {
+          return {
+            chainId: chain.chainId,
+            address,
+          };
         }
-
-        addresses = [...addresses, { chainId: chain.chainId, address }];
-        dispatch(setWalletAddresses(addresses));
       })
     );
 
-    return addresses;
+    dispatch(setWalletAddresses(addresses));
   };
 
   const loadTransactions = async () => {
@@ -195,39 +173,19 @@ export default function useWallet() {
 
       if (!domain) return;
 
-      let transaction = [];
+      const walletAddress = await getFusionAddress(domain);
 
-      await Promise.all(
-        config.chains.map(async (chain) => {
-          const walletAddress = await getFusionAddress(chain, domain);
+      if (walletAddress === ethers.constants.AddressZero) {
+        return;
+      }
 
-          if (walletAddress === ethers.constants.AddressZero) {
-            return;
-          }
-
-          const fusionHash = await getFusionHash(domain);
-
-          if (!fusionHash) {
-            return;
-          }
-
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/transactions/${chain.chainId}/${fusionHash}`
-          );
-
-          if (response.data.success) {
-            transaction = [
-              ...transaction,
-              ...response.data.transactions.map((tx) => ({
-                ...tx,
-                chainId: chain.chainId,
-              })),
-            ];
-          }
-        })
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/transactions/${walletAddress}`
       );
 
-      dispatch(setHistory(transaction));
+      if (response.data.success) {
+        dispatch(setHistory(response.data.transactions));
+      }
     } catch (error) {
       console.log(error);
       dispatch(setHistory([]));
@@ -286,7 +244,7 @@ export default function useWallet() {
   const convertBalance = async (id, convert_id) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/conversion?convert_id=${convert_id}&id=${id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/conversion?convert_id=${convert_id}&id=${id}`
       );
 
       if (response.data.status.error_code !== "0") {
@@ -338,13 +296,14 @@ export default function useWallet() {
   const initializeBalance = async () => {
     let balanceData = [];
 
+    const domain = getDomain();
+    const walletAddress = await getFusionAddress(domain);
+
     await Promise.all(
       config.chains.map(async (chain) => {
         let chainData = [];
 
         const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl);
-        const domain = getDomain();
-        const walletAddress = await getFusionAddress(chain, domain);
 
         if (walletAddress !== ethers.constants.AddressZero) {
           const ethBalance = await provider.getBalance(walletAddress);
@@ -398,12 +357,12 @@ export default function useWallet() {
 
     console.log("Listening for balance");
 
+    const domain = getDomain();
+    const walletAddress = await getFusionAddress(domain);
+
     await Promise.all(
       config.chains.map(async (chain) => {
         const WsProvider = new ethers.providers.WebSocketProvider(chain.wsUrl);
-
-        const domain = getDomain();
-        const walletAddress = await getFusionAddress(chain, domain);
 
         if (walletAddress !== ethers.constants.AddressZero) {
           WsProvider.on("block", async () => {
@@ -556,6 +515,20 @@ export default function useWallet() {
     }
   };
 
+  const loadUser = async () => {
+    const domain = getDomain();
+
+    if (!domain) return;
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/user/${domain}.fusion.id`
+    );
+
+    if (response.data.success) {
+      dispatch(setUser(response.data.user));
+    }
+  };
+
   return {
     getFusion,
     getDomain,
@@ -571,5 +544,6 @@ export default function useWallet() {
     getTxHash,
     setMailUser,
     getFusionHash,
+    loadUser,
   };
 }

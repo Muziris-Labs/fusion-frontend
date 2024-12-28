@@ -18,7 +18,7 @@ import { Button, Tooltip } from "@material-tailwind/react";
 const TransactionItem = ({ transaction }) => {
   const walletAddress = useSelector((state) => state.user.walletAddress);
   const currentChain = config.chains.find(
-    (chain) => chain.chainId === transaction.chainId
+    (chain) => chain.chainId === Number(transaction.chainId)
   );
   const currentToken = transaction.tokenSymbol
     ? currentChain.tokens.find(
@@ -42,7 +42,7 @@ const TransactionItem = ({ transaction }) => {
                 height={40}
                 src={currentToken.logo}
                 alt={transaction.hash}
-                className="w-10 h-10 mr-2"
+                className="w-10 h-10 mr-2 ml-2"
               />
             </Tooltip>
             <Tooltip content={currentChain.name}>
@@ -66,10 +66,10 @@ const TransactionItem = ({ transaction }) => {
         </td>
 
         <td className="px-4 py-2 text-left md:table-cell hidden">
-          <p className="text-sm">{formatTime(transaction.timeStamp)}</p>
+          <p className="text-sm">{formatTime(Number(transaction.time))}</p>
 
           <p className="text-xs text-gray-500">
-            {formatDate(transaction.timeStamp)}
+            {formatDate(Number(transaction.time))}
           </p>
         </td>
 
@@ -88,7 +88,7 @@ const TransactionItem = ({ transaction }) => {
           }`}
         >
           <p className="text-xs text-gray-500 md:hidden block">
-            {formatDate(transaction.timeStamp)}
+            {formatDate(transaction.time)}
           </p>
           {transaction.from === walletAddress.toLowerCase() ? "-" : "+"}{" "}
           {transaction.tokenDecimal

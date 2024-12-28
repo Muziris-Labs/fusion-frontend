@@ -8,30 +8,22 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 
 import StepContainer from "./StepContainer";
-import useSignup from "@/hooks/useSignup";
-import { Auth0Client } from "auth0-spa-js";
-import {
-  setAccessToken,
-  setEmail,
-  setRequestTime,
-  setStep,
-  setUser,
-} from "@/redux/slice/SignupSlice";
+import { setAccessToken, setStep } from "@/redux/slice/SignupSlice";
 import OTPInput from "react-otp-input";
 import { toast } from "sonner";
 import useEmail from "@/hooks/useEmail";
+import { useTheme } from "next-themes";
 
 const Step3 = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { handleEmail } = useSignup();
   const [email, setEmail] = useState("");
   const accessToken = useSelector((state) => state.signup.accessToken);
   const dispatch = useDispatch();
   const [code, setCode] = useState("");
   const { requestCode, verifyCode } = useEmail();
   const requestTime = useSelector((state) => state.signup.requestTime);
-
   const [time, setTime] = useState(new Date().getTime());
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,7 +63,7 @@ const Step3 = () => {
             variant="text"
             color="blue-gray"
             className={
-              "flex items-center w-32 font-medium rounded-xl rounded-l-none border border-l-0 dark:bg-white dark:text-black border-white bg-gray-100/60 px-5 py-0 font-noto text-sm normal-case"
+              "flex items-center w-32 font-medium rounded-xl rounded-l-none border border-l-0 dark:bg-white dark:text-black border-black dark:border-white bg-black/80 hover:bg-black/70 dark:hover:bg-white/80 text-white px-5 py-0 font-noto text-sm normal-case"
             }
             onClick={() => {
               const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -102,7 +94,7 @@ const Step3 = () => {
         </div>
       )}
 
-      {!accessToken && (
+      {!accessToken && requestTime && (
         <OTPInput
           onChange={(e) => {
             setCode(e?.toLowerCase());
@@ -119,13 +111,13 @@ const Step3 = () => {
             <input
               {...props}
               style={{
-                color: "white",
+                color: resolvedTheme === "dark" ? "white" : "black",
                 width: "100%",
                 outline: "2px solid transparent",
                 outlineOffset: "2px",
                 background: "transparent",
                 borderWidth: "1px",
-                borderColor: "white",
+                borderColor: resolvedTheme === "dark" ? "white" : "black",
                 borderRadius: "10px",
                 textAlign: "center",
                 height: "60px",
@@ -168,7 +160,7 @@ const Step3 = () => {
         )}
       </Button>
       <Button
-        className="mt-4 w-full p-5 flex items-center justify-center font-semibold dark:border-white dark:text-white border border-black rounded-full text-sm font-outfit normal-case"
+        className="mt-4 w-full p-5 flex items-center justify-center font-semibold bg-transparent text-black  dark:border-white dark:text-white border border-black rounded-full text-sm font-outfit normal-case"
         onClick={() => {
           if (accessToken) {
             dispatch(setAccessToken(null));

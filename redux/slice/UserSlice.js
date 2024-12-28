@@ -9,12 +9,12 @@ const userSlice = createSlice({
     tokenBalanceData: null,
     tokenConversionData: null,
     gasCredit: 0,
-    isDeployed: true,
     history: [],
     wsProvider: null,
     marketData: null,
     wallet: null,
     mailUser: null,
+    user: null,
   },
 
   reducers: {
@@ -38,10 +38,6 @@ const userSlice = createSlice({
       state.gasCredit = action.payload;
     },
 
-    setDeployed: (state, action) => {
-      state.isDeployed = action.payload;
-    },
-
     setHistory: (state, action) => {
       state.history = action.payload;
     },
@@ -61,6 +57,10 @@ const userSlice = createSlice({
     setMailUser: (state, action) => {
       state.mailUser = action.payload;
     },
+
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
 
@@ -70,12 +70,12 @@ export const {
   setTokenBalanceData,
   setTokenConversionData,
   setGasCredit,
-  setDeployed,
   setHistory,
   setWsProvider,
   setMarketData,
   setWallet,
   setMailUser,
+  setUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

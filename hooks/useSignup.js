@@ -83,11 +83,19 @@ export default function useSignup() {
           }
         );
 
-        console.log(kmsResponse);
-
         if (!kmsResponse.data.success) {
           throw new Error("Failed to deploy wallet.");
         } else {
+          const backendResponse = await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/index/${
+              domain + ".fusion.id"
+            }`
+          );
+
+          if (!backendResponse.data.success) {
+            throw new Error("Failed to deploy wallet.");
+          }
+
           setIsSuccess(true);
           setMessage("Wallet deployed successfully.");
           fireMultiple();
@@ -111,6 +119,16 @@ export default function useSignup() {
         if (!kmsResponse.data.success) {
           throw new Error("Failed to deploy wallet.");
         } else {
+          const backendResponse = await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/index/${
+              domain + ".fusion.id"
+            }`
+          );
+
+          if (!backendResponse.data.success) {
+            throw new Error("Failed to deploy wallet.");
+          }
+
           setIsSuccess(true);
           setMessage("Wallet deployed successfully.");
           fireMultiple();

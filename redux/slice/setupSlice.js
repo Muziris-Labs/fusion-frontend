@@ -1,25 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const changeSlice = createSlice({
-  name: "change",
+const setupSlice = createSlice({
+  name: "setup",
 
   initialState: {
     open: false,
     isLoading: false,
     step: 0,
-    passkey: null,
-    email: null,
+    accessToken: null,
+    authentication: null,
     requestTime: null,
   },
 
   reducers: {
-    toggleChangeDrawer: (state) => {
+    toggleSetupDrawer: (state) => {
       state.open = !state.open;
       state.isLoading = false;
-      state.step = 0;
-      state.passkey = null;
-      state.requestTime = null;
-      state.email = null;
     },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
@@ -27,11 +23,11 @@ const changeSlice = createSlice({
     setStep: (state, action) => {
       state.step = action.payload;
     },
-    setPasskey: (state, action) => {
-      state.passkey = action.payload;
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
     },
-    setEmail: (state, action) => {
-      state.email = action.payload;
+    setAuthentication: (state, action) => {
+      state.authentication = action.payload;
     },
     setRequestTime: (state, action) => {
       state.requestTime = action.payload;
@@ -39,22 +35,18 @@ const changeSlice = createSlice({
     clearAll: (state) => {
       state.open = false;
       state.isLoading = false;
-      state.step = 0;
-      state.passkey = null;
-      state.email = null;
-      state.requestTime = null;
     },
   },
 });
 
 export const {
-  toggleChangeDrawer,
+  toggleSetupDrawer,
   setIsLoading,
-  setStep,
-  setPasskey,
-  setEmail,
   clearAll,
+  setStep,
+  setAccessToken,
+  setAuthentication,
   setRequestTime,
-} = changeSlice.actions;
+} = setupSlice.actions;
 
-export default changeSlice.reducer;
+export default setupSlice.reducer;

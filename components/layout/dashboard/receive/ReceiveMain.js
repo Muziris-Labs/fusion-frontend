@@ -126,8 +126,8 @@ export default function ReceiveMain() {
           theme={"Download QR Code"}
           onClick={() => {
             const qrcode = new QrCodeWithLogo({
-              content: value,
-              width: size,
+              content: walletAddress,
+              width: 500,
               dotsOptions: {
                 color: "#000",
                 type: "dot-small",

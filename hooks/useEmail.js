@@ -25,6 +25,7 @@ export default function useEmail() {
         },
       };
 
+      axios.defaults.withCredentials = false;
       await axios.request(options);
 
       dispatch(setRequestTime(new Date().getTime()));
@@ -51,6 +52,7 @@ export default function useEmail() {
         },
       };
 
+      axios.defaults.withCredentials = false;
       const response = await axios.request(options);
 
       dispatch(setAccessToken(response.data.access_token));

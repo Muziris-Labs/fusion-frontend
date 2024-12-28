@@ -1,6 +1,7 @@
 import Deployments from "./SettingList/Deployments";
 import NodeChanger from "./SettingList/NodeChanger";
 import PasskeyChanger from "./SettingList/PasskeyChanger";
+import SetupMail from "./SettingList/SetupMail";
 import ThemeChanger from "./SettingList/ThemeChanger";
 
 export default function SettingsMain() {
@@ -10,6 +11,7 @@ export default function SettingsMain() {
 
       <ThemeChanger />
       <NodeChanger />
+      <SetupMail />
       <PasskeyChanger />
       <Deployments />
     </div>

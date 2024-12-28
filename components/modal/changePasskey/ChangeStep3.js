@@ -23,19 +23,23 @@ export default function ChangeStep3() {
         </p>
       </div>
 
-      <Button
-        className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case flex items-center justify-center"
-        onClick={() => {
-          handleRecovery();
-        }}
-        disabled={!passkey || !email || isLoading}
-      >
-        {isLoading ? (
-          <Loader2 className="animate-spin" size={20} />
-        ) : (
-          "Recover Account"
-        )}
-      </Button>
+      {isLoading && <Loader2 className="animate-spin mt-10 mb-5" size={50} />}
+
+      {!isLoading && (
+        <Button
+          className=" w-full p-5 mt-10 font-semibold rounded-full text-sm font-outfit normal-case flex items-center justify-center"
+          onClick={() => {
+            handleRecovery();
+          }}
+          disabled={!passkey || !email || isLoading}
+        >
+          {isLoading ? (
+            <Loader2 className="animate-spin" size={20} />
+          ) : (
+            "Recover Account"
+          )}
+        </Button>
+      )}
     </>
   );
 }

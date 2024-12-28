@@ -1,23 +1,29 @@
 "use client";
 
-import useChange from "@/hooks/useChange";
-import { setIsLoading, setPasskey, setStep } from "@/redux/slice/changeSlice";
+import useSetup from "@/hooks/useSetup";
+import {
+  setAuthentication,
+  setIsLoading,
+  setStep,
+} from "@/redux/slice/setupSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@material-tailwind/react";
 import { Check, Fingerprint, Loader2Icon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
 
-export default function ChangeStep1() {
-  const passkey = useSelector((state) => state.change.passkey);
-  const isLoading = useSelector((state) => state.change.isLoading);
+export default function SetupStep2() {
+  const passkey = useSelector((state) => state.setup.authentication);
+  const isLoading = useSelector((state) => state.setup.isLoading);
   const dispatch = useDispatch();
-  const { handlePasskey } = useChange();
+  const { handlePasskey } = useSetup();
 
   return (
     <>
       <div className="flex flex-col gap-1 w-full">
-        <h1 className="text-2xl text-left font-semibold">Add New Passkey</h1>
+        <h1 className="text-2xl text-left font-semibold">
+          Verify your passkey
+        </h1>
         <p className="text-sm text-left text-gray-500">
-          Set a new passkey to secure your account
+          Verify your passkey to add a recovery email
         </p>
       </div>
       <div className="w-full mt-10">
@@ -51,7 +57,7 @@ export default function ChangeStep1() {
           <p
             className="mt-2 text-center w-full text-xs text-gray-500 hover:cursor-pointer hover:underline"
             onClick={() => {
-              dispatch(setPasskey(null));
+              dispatch(setAuthentication(null));
             }}
           >
             Clear Passkey
@@ -59,9 +65,9 @@ export default function ChangeStep1() {
         )}
       </div>
       <Button
-        className=" w-full p-5 mt-7 font-semibold rounded-full text-sm font-outfit normal-case"
+        className=" w-full mt-7 p-5 font-semibold rounded-full text-sm font-outfit normal-case"
         onClick={() => {
-          dispatch(setStep(1));
+          dispatch(setStep(2));
         }}
         disabled={!passkey}
       >

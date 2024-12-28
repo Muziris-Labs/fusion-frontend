@@ -1,19 +1,14 @@
 "use client";
-
-import { setStep } from "@/redux/slice/SignupSlice";
-import { Button, Input } from "@material-tailwind/react";
-import { Auth0Client } from "auth0-spa-js";
-import { useDispatch, useSelector } from "react-redux";
-import Image from "next/image";
-import useChange from "@/hooks/useChange";
-import { Loader2 } from "lucide-react";
-import { setIsLoading } from "@/redux/slice/changeSlice";
 import OTPInput from "react-otp-input";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { Button, Input } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLoading } from "@/redux/slice/setupSlice";
+import useSetup from "@/hooks/useSetup";
 
-export default function ChangeStep2() {
-  const { requestCode, verifyCode } = useChange();
+export default function SetupStep1() {
   const [time, setTime] = useState(new Date().getTime());
 
   useEffect(() => {
@@ -23,20 +18,23 @@ export default function ChangeStep2() {
 
     return () => clearInterval(interval);
   }, []);
-  const isLoading = useSelector((state) => state.change.isLoading);
+
+  const { requestCode, verifyCode } = useSetup();
+  const isLoading = useSelector((state) => state.setup.isLoading);
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
-  const requestTime = useSelector((state) => state.change.requestTime);
+  const requestTime = useSelector((state) => state.setup.requestTime);
 
   return (
     <>
       <div className="flex flex-col gap-1 w-full">
-        <h1 className="text-2xl text-left font-semibold">Verify your email</h1>
+        <h1 className="text-2xl text-left font-semibold">Add Recovery</h1>
         <p className="text-sm text-left text-gray-500">
-          Verify your email to prove your identity
+          Add a recovery email to secure your account
         </p>
       </div>
+
       <div className="mt-10 flex w-full">
         <Input
           label="Your Email"

@@ -1,24 +1,34 @@
 "use client";
 
-import { toggleChangeDrawer } from "@/redux/slice/changeSlice";
 import { Dialog, DialogBody, Button } from "@material-tailwind/react";
-import { Loader2Icon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { setStep } from "@/redux/slice/changeSlice";
-import Stepper from "./changePasskey/Stepper";
-import ChangeStep1 from "./changePasskey/ChangeStep1";
-import ChangeStep2 from "./changePasskey/ChangeStep2";
-import ChangeStep3 from "./changePasskey/ChangeStep3";
 
-export default function ChangePasskeyModal() {
-  const open = useSelector((state) => state.change.open);
-  const isLoading = useSelector((state) => state.change.isLoading);
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  setAccessToken,
+  setAuthentication,
+  setRequestTime,
+  setStep,
+  toggleSetupDrawer,
+} from "@/redux/slice/setupSlice";
+import SetupStep1 from "./setupMail/SetupStep1";
+import SetupStep2 from "./setupMail/SetupStep2";
+import SetupStep3 from "./setupMail/SetupStep3";
+import SetupStepper from "./setupMail/Stepper";
+
+export default function SetupMailModal() {
+  const open = useSelector((state) => state.setup.open);
+  const isLoading = useSelector((state) => state.setup.isLoading);
   const dispatch = useDispatch();
-  const step = useSelector((state) => state.change.step);
+  const step = useSelector((state) => state.setup.step);
 
   const handleDrawer = () => {
     if (isLoading) return;
-    dispatch(toggleChangeDrawer());
+    dispatch(toggleSetupDrawer());
+    dispatch(setStep(0));
+    dispatch(setAccessToken(null));
+    dispatch(setAuthentication(null));
+    dispatch(setRequestTime(null));
   };
 
   return (
@@ -36,12 +46,12 @@ export default function ChangePasskeyModal() {
     >
       <DialogBody className="text-center gap-y-4 font-outfit text-black bg-white rounded-3xl w-full max-w-[32rem] p-10">
         <section className="flex flex-col h-full justify-between items-center">
-          {step === 0 && <ChangeStep1 />}
-          {step === 1 && <ChangeStep2 />}
-          {step === 2 && <ChangeStep3 />}
+          {step === 0 && <SetupStep1 />}
+          {step === 1 && <SetupStep2 />}
+          {step === 2 && <SetupStep3 />}
         </section>
         <div className="w-full flex justify-center mt-3">
-          <Stepper />
+          <SetupStepper />
         </div>
       </DialogBody>
     </Dialog>

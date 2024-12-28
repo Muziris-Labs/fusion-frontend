@@ -4,6 +4,7 @@ import {
   setEmail,
   setIsLoading,
   setPasskey,
+  setRequestTime,
   setStep,
   toggleChangeDrawer,
 } from "@/redux/slice/changeSlice";
@@ -26,7 +27,11 @@ export default function useChange() {
   const { fireMultiple } = useConfetti();
 
   const handlePasskey = async () => {
-    const challenge = v4();
+    const challengeData = await axios.post(
+      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/challenge/generate`
+    );
+
+    const challenge = challengeData.data.challenge;
 
     const registration = await client.register(
       domain + ".fusion.id",
@@ -40,36 +45,64 @@ export default function useChange() {
       }
     );
 
-    registration.challenge = challenge;
+    registration.challengeId = challengeData.data.challengeId;
 
     dispatch(setPasskey(registration));
   };
 
-  const handleVerification = async () => {
+  const requestCode = async (email) => {
     try {
-      dispatch(setIsLoading(true));
-      const auth0 = new Auth0Client({
-        domain: process.env.NEXT_PUBLIC_AUTH0_DOMAIN,
-        client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
-        audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE,
-        scope: "read:current_user",
-      });
+      const options = {
+        method: "POST",
+        url: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/passwordless/start`,
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        data: {
+          client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
+          connection: "email",
+          email: email,
+          send: "code",
+        },
+      };
 
-      await auth0.loginWithPopup();
+      axios.defaults.withCredentials = false;
+      await axios.request(options);
 
-      const token = await auth0.getTokenSilently();
+      dispatch(setRequestTime(new Date().getTime()));
+    } catch (error) {
+      toast.error("Failed to send code to email.");
+      console.error(error);
+    }
+  };
 
-      dispatch(setEmail(token));
+  const verifyCode = async (email, code) => {
+    try {
+      const options = {
+        method: "POST",
+        url: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`,
+        headers: { "content-type": "application/json" },
+        data: {
+          grant_type: "http://auth0.com/oauth/grant-type/passwordless/otp",
+          client_id: `${process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}`,
+          audience: `${process.env.NEXT_PUBLIC_AUTH0_AUDIENCE}`,
+          username: email,
+          otp: code,
+          realm: "email",
+          scope: "read:current_user",
+        },
+      };
 
-      const user = await auth0.getUser();
+      axios.defaults.withCredentials = false;
+      const response = await axios.request(options);
 
-      dispatch(setMailUser(user));
+      dispatch(setEmail(response.data.access_token));
 
       dispatch(setStep(2));
     } catch (error) {
+      toast.error("Failed to verify code.");
       console.error(error);
-    } finally {
-      dispatch(setIsLoading(false));
     }
   };
 
@@ -77,12 +110,13 @@ export default function useChange() {
     try {
       dispatch(setIsLoading(true));
 
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/recover`,
+      axios.defaults.withCredentials = true;
+      const initResponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/recover/email/passkey`,
         {
           domain: domain + ".fusion.id",
           registration: passkey,
-          challenge: passkey.challenge,
+          challengeId: passkey.challengeId,
         },
         {
           headers: {
@@ -91,11 +125,10 @@ export default function useChange() {
         }
       );
 
-      if (!res.data.success) {
+      if (!initResponse.data.success) {
         throw new Error("Failed to Authenticate");
       }
 
-      localStorage.setItem(`${domain}.fusion.id`, res.data.key);
       toast.success("Successfully Recovered Passkey");
       dispatch(toggleChangeDrawer());
       fireMultiple();
@@ -106,5 +139,5 @@ export default function useChange() {
     }
   };
 
-  return { handlePasskey, handleVerification, handleRecovery };
+  return { handlePasskey, requestCode, verifyCode, handleRecovery };
 }

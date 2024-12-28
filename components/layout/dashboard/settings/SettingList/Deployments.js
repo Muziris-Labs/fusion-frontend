@@ -7,7 +7,7 @@ export default function Deployments() {
     <SettingItem
       title="Deployments"
       description="
-       Manage your deployments and view their status
+       Check your deployments and view their status
       "
       icon={<Waypoints size={22} className="mt-1 dark:invert" />}
       isLast
