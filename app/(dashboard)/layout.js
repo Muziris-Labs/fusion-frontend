@@ -5,7 +5,6 @@ import WalletProvider from "@/provider/WalletProvider";
 import AuthModal from "@/components/modal/AuthModal";
 import TxLoadModal from "@/components/modal/TxLoadModal";
 import ChangePasskeyModal from "@/components/modal/ChangePasskeyModal";
-import DeployModal from "@/components/modal/DeployModal";
 import Image from "next/image";
 import TopBar from "@/components/layout/dashboard/TopBar";
 import FusionHolder from "@/components/ui/FusionHolder";
@@ -33,7 +32,6 @@ const DashboardLayout = ({ children }) => {
     >
       <WalletProvider>
         <ChangePasskeyModal />
-        <DeployModal />
         <AuthModal />
         <TxLoadModal />
         <TokenModal />

@@ -474,7 +474,7 @@ export default function useWallet() {
 
       const domain = getDomain();
 
-      const walletAddress = await getFusionAddress(currentChain, domain);
+      const walletAddress = await getFusionAddress(domain);
 
       const Fusion = new ethers.Contract(
         walletAddress,

@@ -1,41 +1,5 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "CurrentSingleton_",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "TxVerifier",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "FusionForwarder",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "GasTank",
-        "type": "address"
-      }
-    ],
-    "name": "InitializedRegistry",
-    "type": "event"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
@@ -55,82 +19,21 @@
     "type": "event"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "singleton",
-        "type": "address"
-      }
-    ],
-    "name": "SingletonUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "enum FusionAddressRegistry.Selector",
-        "name": "selector",
-        "type": "uint8"
+        "internalType": "bytes",
+        "name": "RegistryData",
+        "type": "bytes"
       },
       {
-        "indexed": true,
         "internalType": "address",
-        "name": "newAddress",
+        "name": "to",
         "type": "address"
-      }
-    ],
-    "name": "UpdatedRegistry",
-    "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "FusionForwarder",
-    "outputs": [
+      },
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "GasTank",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "TxVerifier",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "TxHash",
-        "type": "bytes32"
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
       }
     ],
     "name": "createProxyWithTxHash",
@@ -145,25 +48,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "TxHash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getFusionProxy",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "fusionProxy",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "proxyCreationCode",
     "outputs": [
@@ -174,73 +58,6 @@
       }
     ],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_txVerifier",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_forwarder",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_gasTank",
-        "type": "address"
-      }
-    ],
-    "name": "setupRegistry",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newGenesis",
-        "type": "address"
-      }
-    ],
-    "name": "transferGenesis",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum FusionAddressRegistry.Selector",
-        "name": "selector",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "newAddress",
-        "type": "address"
-      }
-    ],
-    "name": "updateRegistry",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_singleton",
-        "type": "address"
-      }
-    ],
-    "name": "updateSingleton",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

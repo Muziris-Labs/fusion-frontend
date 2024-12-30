@@ -27,12 +27,13 @@ export default function useExecute() {
   const amount = useSelector((state) => state.transfer.amount);
   const txProof = useSelector((state) => state.proof.txProof);
   const { fireMultiple } = useConfetti();
+  const walletData = useSelector((state) => state.transfer.walletData);
 
   const estimateGas = async () => {
     try {
       const wallet = initializeProofWallet();
 
-      const fusionAddress = await getFusionAddress(selectedChain, domain);
+      const fusionAddress = await getFusionAddress(domain);
 
       const provider = new ethers.providers.JsonRpcProvider(
         selectedChain.rpcUrl
@@ -73,7 +74,7 @@ export default function useExecute() {
       }
 
       const FusionForwarder = new ethers.Contract(
-        selectedChain.deployments.FusionForwarder.address,
+        selectedChain.deployments.FusionForwarder.address.v1,
         selectedChain.deployments.FusionForwarder.abi,
         provider
       );
@@ -109,7 +110,8 @@ export default function useExecute() {
           name: "Fusion Forwarder",
           version: "1",
           chainId: selectedChain.chainId,
-          verifyingContract: selectedChain.deployments.FusionForwarder.address,
+          verifyingContract:
+            selectedChain.deployments.FusionForwarder.address.v1,
         },
         message: rawForwardExexuteData,
       };
@@ -130,15 +132,14 @@ export default function useExecute() {
         signature: signature,
       };
 
-      const txHash = await getFusionHash(domain);
-
       if (selectedToken.address === ethers.constants.AddressZero) {
         const payloadResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/estimate/native/` +
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/estimate/execute/native/` +
             selectedChain.chainId,
           {
             forwardRequest,
-            txHash,
+            domain: domain + ".fusion.id",
+            walletId: walletData.id,
           }
         );
 

@@ -1,5 +1,10 @@
 [
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -29,6 +34,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "FusionReceived",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "address",
         "name": "txVerifier",
@@ -42,12 +66,6 @@
       },
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "gasTank",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "bytes32",
         "name": "txHash",
         "type": "bytes32"
@@ -55,19 +73,6 @@
     ],
     "name": "SetupFusion",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "GasTank",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -253,24 +258,36 @@
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "gasPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "baseGas",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "estimatedFees",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseGas",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "estimatedFees",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "gasRecipient",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Quote.GasQuote",
+        "name": "quote",
+        "type": "tuple"
       }
     ],
     "name": "executeBatchTxWithForwarder",
@@ -364,24 +381,36 @@
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "gasPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "baseGas",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "estimatedFees",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseGas",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "estimatedFees",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "gasRecipient",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Quote.GasQuote",
+        "name": "quote",
+        "type": "tuple"
       }
     ],
     "name": "executeTxWithForwarder",
@@ -642,14 +671,19 @@
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "_gasTank",
-        "type": "address"
-      },
-      {
         "internalType": "bytes32",
         "name": "_txHash",
         "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
       }
     ],
     "name": "setupFusion",
@@ -744,5 +778,9 @@
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]

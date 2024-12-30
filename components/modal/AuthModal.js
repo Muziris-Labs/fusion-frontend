@@ -1,24 +1,40 @@
 "use client";
 
 import useProof from "@/hooks/useProof";
-import { toggleProofDrawer } from "@/redux/slice/proofSlice";
-import { Dialog, DialogBody, Button } from "@material-tailwind/react";
+import { setLoading, toggleProofDrawer } from "@/redux/slice/proofSlice";
+import { Dialog, DialogBody, Button, Input } from "@material-tailwind/react";
 import { Fingerprint, Loader2Icon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
-import { Auth0Client } from "auth0-spa-js";
+import { useEffect, useState } from "react";
+import OTPInput from "react-otp-input";
+import { setWithEmail } from "@/redux/slice/transferSlice";
+import { toast } from "sonner";
 
 export default function AuthModal() {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.proof.proofDrawer);
   const loading = useSelector((state) => state.proof.isLoading);
-  const { generateProofWithPasskey, generateProofWithEmail } = useProof();
+  const { generateProofWithPasskey, requestCode, verifyCode } = useProof();
   const message = useSelector((state) => state.proof.message);
-  const user = useSelector((state) => state.user.mailUser);
+  const withEmail = useSelector((state) => state.transfer.withEmail);
+  const [code, setCode] = useState("");
+  const requestTime = useSelector((state) => state.transfer.refreshTime);
+  const [time, setTime] = useState(new Date().getTime());
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date().getTime());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleDrawer = () => {
     if (loading) return;
     dispatch(toggleProofDrawer());
+    dispatch(setWithEmail(false));
   };
 
   return (
@@ -41,90 +57,163 @@ export default function AuthModal() {
             </p>
           </div>
 
-          <Button
-            color="white"
-            className="mt-7 flex h-40 w-full rounded-full border-px items-center justify-center border-black border-[1px] bg-white px-3"
-            onClick={() => {
-              generateProofWithPasskey();
-            }}
-            disabled={loading}
-          >
-            <Fingerprint className="text-black" size={80} />
-          </Button>
+          {!withEmail && (
+            <>
+              <Button
+                color="white"
+                className="mt-7 flex h-40 w-full rounded-full border-px items-center justify-center border-black border-[1px] bg-white px-3"
+                onClick={() => {
+                  generateProofWithPasskey();
+                }}
+                disabled={loading}
+              >
+                <Fingerprint className="text-black" size={80} />
+              </Button>
 
-          {user && (
-            <div className="w-full border-[1px] border-black flex border-dashed rounded-xl mt-8 p-5 gap-5">
-              <Image
-                src={user.picture}
-                width={50}
-                height={40}
-                className="rounded-full md:block hidden"
-                alt="profilepic"
-              />
-              <div className="flex flex-col justify-between items-start ">
-                <p className="font-semibold text-lg sm:hidden block">
-                  {user.nickname && user.nickname.length > 20 ? (
-                    <span>{user.nickname.slice(0, 20)}...</span>
-                  ) : (
-                    user.nickname
-                  )}
-                </p>
-                <p className="font-semibold text-lg sm:block hidden">
-                  {user.nickname}
-                </p>
-                <p className="font-outfit text-sm text-gray-600 sm:hidden block">
-                  {user.email && user.email.length > 25 ? (
-                    <span>{user.email.slice(0, 25)}...</span>
-                  ) : (
-                    user.email
-                  )}
-                </p>
-                <p className="font-outfit text-sm text-gray-600 sm:block hidden">
-                  {user.email}
-                </p>
+              <div className="flex flex-col gap-2 mt-5 w-full">
+                <Button
+                  className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case border-black border-[1px]"
+                  onClick={() => {
+                    dispatch(setWithEmail(true));
+                  }}
+                  disabled={loading}
+                >
+                  Use E-mail instead
+                </Button>
+                <Button
+                  className=" w-full p-5 font-semibold border-[1px] border-black rounded-full text-sm font-outfit normal-case"
+                  color="white"
+                  onClick={() => {
+                    dispatch(toggleProofDrawer());
+                  }}
+                  disabled={loading}
+                >
+                  Back
+                </Button>{" "}
               </div>
-            </div>
+            </>
           )}
 
-          {user && (
-            <p
-              className="mt-2 -mb-5 text-center w-full text-xs text-gray-500 hover:cursor-pointer hover:underline"
-              onClick={() => {
-                const auth0 = new Auth0Client({
-                  domain: process.env.NEXT_PUBLIC_AUTH0_DOMAIN,
-                  client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
-                  audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE,
-                  scope: "read:current_user",
-                });
+          {withEmail && !loading && (
+            <>
+              <div className="mt-10 flex w-full">
+                <Input
+                  label="Your Email"
+                  size="lg"
+                  className={"rounded-xl rounded-r-none font-outfit"}
+                  labelProps={{
+                    className:
+                      "peer-placeholder-shown:mt-[5px] peer-focus:before:w-1 before:w-1 peer-placeholder-shown:before:w-3 peer-focus:mt-0 after:rounded-tr-none font-outfit before:border-none",
+                  }}
+                  containerProps={{
+                    className: "h-14 dark:text-white",
+                  }}
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
 
-                auth0.logout();
-              }}
-            >
-              Logout
-            </p>
+                <Button
+                  variant="text"
+                  color="blue-gray"
+                  className={
+                    "flex items-center w-32 font-medium rounded-xl rounded-l-none border border-l-0 border-black bg-black/80 hover:bg-black/60 text-white px-5 py-0 font-noto text-sm normal-case"
+                  }
+                  onClick={() => {
+                    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                    if (!emailRegex.test(email)) {
+                      toast.error("Invalid email address.");
+                      return;
+                    }
+
+                    requestCode(email);
+                  }}
+                  disabled={
+                    loading ||
+                    !email ||
+                    (() => {
+                      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                      if (!emailRegex.test(email)) {
+                        return true;
+                      }
+                      return false;
+                    })() ||
+                    (requestTime && time < requestTime + 60000)
+                  }
+                >
+                  {requestTime && time < requestTime + 60000
+                    ? `Resend in ${Math.floor(
+                        (requestTime + 60000 - time) / 1000
+                      )}s`
+                    : "Send OTP"}
+                </Button>
+              </div>
+
+              {requestTime && (
+                <OTPInput
+                  onChange={(e) => {
+                    setCode(e?.toLowerCase());
+                  }}
+                  value={code}
+                  inputStyle="inputStyle"
+                  numInputs={6}
+                  separator={<span></span>}
+                  containerStyle={{
+                    marginLeft: "",
+                    marginTop: "20px",
+                  }}
+                  renderInput={(props) => (
+                    <input
+                      {...props}
+                      style={{
+                        color: "black",
+                        width: "100%",
+                        outline: "2px solid transparent",
+                        outlineOffset: "2px",
+                        background: "transparent",
+                        borderWidth: "1px",
+                        borderColor: "black",
+                        borderRadius: "10px",
+                        textAlign: "center",
+                        height: "60px",
+                        margin: "0 5px",
+
+                        fontSize: "30px",
+                      }}
+                      placeholder="-"
+                    />
+                  )}
+                />
+              )}
+
+              <Button
+                className="mt-5 w-full p-5 flex items-center justify-center font-semibold rounded-full text-sm font-outfit normal-case"
+                onClick={() => {
+                  verifyCode(email, code);
+                }}
+                disabled={loading || !code}
+              >
+                {loading ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  "Verify Email"
+                )}
+              </Button>
+
+              <Button
+                className=" w-full mt-3 p-5 font-semibold border-[1px] border-black rounded-full text-sm font-outfit normal-case"
+                color="white"
+                onClick={() => {
+                  dispatch(toggleProofDrawer());
+                  dispatch(setWithEmail(false));
+                }}
+                disabled={loading}
+              >
+                Back
+              </Button>
+            </>
           )}
-
-          <div className="flex flex-col gap-2 mt-10 w-full">
-            <Button
-              className=" w-full p-5 font-semibold rounded-full text-sm font-outfit normal-case border-black border-[1px]"
-              onClick={() => {
-                generateProofWithEmail();
-              }}
-              disabled={loading}
-            >
-              Use E-mail instead
-            </Button>
-            <Button
-              className=" w-full p-5 font-semibold border-[1px] border-black rounded-full text-sm font-outfit normal-case"
-              color="white"
-              onClick={() => {
-                dispatch(toggleProofDrawer());
-              }}
-              disabled={loading}
-            >
-              Back
-            </Button>
-          </div>
         </DialogBody>
       )}
       {loading && (

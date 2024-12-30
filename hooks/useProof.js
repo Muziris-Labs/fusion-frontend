@@ -12,9 +12,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import useWallet from "./useWallet";
 import { ethers } from "ethers";
-import useCircuit from "./useCircuit";
 import { client } from "@passwordless-id/webauthn";
 import { setMailUser } from "@/redux/slice/UserSlice";
+import {
+  setAccessToken,
+  setAuthentication,
+  setRefreshTime,
+  setWalletData,
+} from "@/redux/slice/transferSlice";
 
 export default function useProof() {
   const dispatch = useDispatch();
@@ -24,39 +29,26 @@ export default function useProof() {
   const selectedToken = useSelector((state) => state.transfer.selectedToken);
   const recipient = useSelector((state) => state.transfer.recipient);
   const amount = useSelector((state) => state.transfer.amount);
-  const { prove } = useCircuit();
-
-  const getChallenge = async () => {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/challenge/${domain}.fusion.id`
-    );
-
-    if (!res.data.success) throw new Error("Failed to Authenticate");
-
-    return res.data.challenge;
-  };
-
-  const getCredentials = async () => {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/credential/${domain}.fusion.id`
-    );
-
-    if (!res.data.success) throw new Error("Failed to Authenticate");
-
-    return res.data.credential;
-  };
 
   const generateProofWithPasskey = async () => {
     try {
       dispatch(setLoading(true));
       dispatch(setMessage("Authenticating..."));
 
-      const challenge = await getChallenge();
+      const challengeData = await axios.post(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/challenge/generate`
+      );
 
-      const credential = await getCredentials();
+      const challenge = challengeData.data.challenge;
+
+      const passkeyResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/credential/` +
+          domain +
+          ".fusion.id"
+      );
 
       const authentication = await client.authenticate(
-        [credential],
+        [passkeyResponse.data.credential],
         challenge,
         {
           authenticatorType: "auto",
@@ -65,6 +57,8 @@ export default function useProof() {
         }
       );
 
+      authentication.challengeId = challengeData.data.challengeId;
+
       const wallet = await initializeProofWallet();
 
       const nonce = await getNonce(selectedChain);
@@ -107,75 +101,45 @@ export default function useProof() {
         };
       }
 
-      const abiCoder = new ethers.utils.AbiCoder();
-
-      const message = abiCoder.encode(
-        ["address", "uint256", "bytes", "uint8", "uint256", "uint256"],
-        [
-          txData.to,
-          txData.value,
-          txData.data,
-          txData.operation,
-          nonce,
-          selectedChain.chainId,
-        ]
+      const walletDataResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/submit/walletData/` +
+          selectedChain.chainId
       );
 
-      const txHash = ethers.utils.keccak256(message);
-
-      const key = localStorage.getItem(`${domain}.fusion.id`);
-
-      const tokenResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/token`,
-        {
-          key: key,
-        }
-      );
-
-      if (!tokenResponse.data.success) {
+      if (!walletDataResponse.data.success) {
         throw new Error("Failed to Authenticate");
       }
 
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/sign`,
+      const walletData = walletDataResponse.data.walletData;
+
+      dispatch(setWalletData(walletData));
+
+      axios.defaults.withCredentials = true;
+      const initResponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/proof/passkey`,
         {
           domain: domain + ".fusion.id",
-          authentication,
-          payload: ethers.utils.arrayify(txHash),
-        },
-        {
-          headers: {
-            "x-api-key": tokenResponse.data.token,
-          },
+          authentication: authentication,
+          challengeId: challengeData.data.challengeId,
+          txData: txData,
+          nonce: nonce,
+          chainId: selectedChain.chainId,
+          token:
+            !selectedToken.address ||
+            selectedToken.address === ethers.constants.AddressZero
+              ? ethers.constants.AddressZero
+              : selectedToken.address,
+          signingAddress: walletData.address,
+          verifyingAddress: wallet.address,
         }
       );
 
-      if (!response.data.success) {
+      if (!initResponse.data.success) {
         throw new Error("Failed to Authenticate");
       }
 
-      const signature = response.data.signature;
-
-      const signerResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/signer`
-      );
-
-      if (!signerResponse.data.success) {
-        throw new Error("Failed to Authenticate");
-      }
-
-      dispatch(setMessage("Generating Proof..."));
-
-      const signing_address = signerResponse.data.signer;
-
-      const proof = await prove(
-        message,
-        signature,
-        wallet.address,
-        signing_address
-      );
-
-      dispatch(setTxProof(proof));
+      dispatch(setTxProof(initResponse.data.proof));
+      dispatch(setAuthentication(authentication));
     } catch (error) {
       toast.error("Failed to Authenticate");
       console.error(error);
@@ -185,11 +149,53 @@ export default function useProof() {
     }
   };
 
-  const generateProofWithEmail = async () => {
+  const requestCode = async (email) => {
+    try {
+      const options = {
+        method: "POST",
+        url: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/passwordless/start`,
+        headers: { "content-type": "application/json" },
+        data: {
+          client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
+          connection: "email",
+          email: email,
+          send: "code",
+        },
+      };
+
+      axios.defaults.withCredentials = false;
+      await axios.request(options);
+
+      dispatch(setRefreshTime(new Date().getTime()));
+    } catch (error) {
+      toast.error("Failed to send code to email.");
+      console.error(error);
+    }
+  };
+
+  const verifyCode = async (email, code) => {
     try {
       dispatch(setLoading(true));
       dispatch(setMessage("Authenticating..."));
 
+      const options = {
+        method: "POST",
+        url: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`,
+        headers: { "content-type": "application/json" },
+        data: {
+          grant_type: "http://auth0.com/oauth/grant-type/passwordless/otp",
+          client_id: `${process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}`,
+          audience: `${process.env.NEXT_PUBLIC_AUTH0_AUDIENCE}`,
+          username: email,
+          otp: code,
+          realm: "email",
+          scope: "read:current_user",
+        },
+      };
+
+      axios.defaults.withCredentials = false;
+      const backendResponse = await axios.request(options);
+
       const wallet = await initializeProofWallet();
 
       const nonce = await getNonce(selectedChain);
@@ -232,76 +238,48 @@ export default function useProof() {
         };
       }
 
-      const abiCoder = new ethers.utils.AbiCoder();
-
-      const message = abiCoder.encode(
-        ["address", "uint256", "bytes", "uint8", "uint256", "uint256"],
-        [
-          txData.to,
-          txData.value,
-          txData.data,
-          txData.operation,
-          nonce,
-          selectedChain.chainId,
-        ]
+      const walletDataResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/submit/walletData/` +
+          selectedChain.chainId
       );
 
-      const txHash = ethers.utils.keccak256(message);
+      if (!walletDataResponse.data.success) {
+        throw new Error("Failed to Authenticate");
+      }
 
-      const auth0 = new Auth0Client({
-        domain: process.env.NEXT_PUBLIC_AUTH0_DOMAIN,
-        client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
-        audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE,
-        scope: "read:current_user",
-      });
+      const walletData = walletDataResponse.data.walletData;
 
-      await auth0.loginWithPopup();
+      dispatch(setWalletData(walletData));
 
-      const token = await auth0.getTokenSilently();
-
-      const user = await auth0.getUser();
-
-      dispatch(setMailUser(user));
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/sign/email`,
+      axios.defaults.withCredentials = true;
+      const initResponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/proof/recovery/email`,
         {
-          domain: `${domain}.fusion.id`,
-          payload: ethers.utils.arrayify(txHash),
+          domain: domain + ".fusion.id",
+          txData: txData,
+          nonce: nonce,
+          chainId: selectedChain.chainId,
+          token:
+            !selectedToken.address ||
+            selectedToken.address === ethers.constants.AddressZero
+              ? ethers.constants.AddressZero
+              : selectedToken.address,
+          signingAddress: walletData.address,
+          verifyingAddress: wallet.address,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${backendResponse.data.access_token}`,
           },
         }
       );
 
-      if (!response.data.success) {
+      if (!initResponse.data.success) {
         throw new Error("Failed to Authenticate");
       }
 
-      const signature = response.data.signature;
-
-      const signerResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/misc/signer`
-      );
-
-      if (!signerResponse.data.success) {
-        throw new Error("Failed to Authenticate");
-      }
-
-      const signing_address = signerResponse.data.signer;
-
-      dispatch(setMessage("Generating Proof..."));
-
-      const proof = await prove(
-        message,
-        signature,
-        wallet.address,
-        signing_address
-      );
-
-      dispatch(setTxProof(proof));
+      dispatch(setTxProof(initResponse.data.proof));
+      dispatch(setAccessToken(backendResponse.data.access_token));
     } catch (error) {
       toast.error("Failed to Authenticate");
       console.error(error);
@@ -311,5 +289,5 @@ export default function useProof() {
     }
   };
 
-  return { generateProofWithPasskey, generateProofWithEmail };
+  return { generateProofWithPasskey, verifyCode, requestCode };
 }

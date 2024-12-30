@@ -13,6 +13,11 @@ const transferSlice = createSlice({
     selectedToken: null,
     chainFilter: null,
     tokenModal: false,
+    authentication: null,
+    accessToken: null,
+    refreshTime: null,
+    withEmail: false,
+    walletData: null,
   },
 
   reducers: {
@@ -49,6 +54,31 @@ const transferSlice = createSlice({
       state.tokenModal = !state.tokenModal;
     },
 
+    setAuthentication: (state, action) => {
+      state.authentication = action.payload;
+    },
+
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    },
+
+    clearCredentials: (state, action) => {
+      state.accessToken = null;
+      state.authentication = null;
+    },
+
+    setRefreshTime: (state, action) => {
+      state.refreshTime = action.payload;
+    },
+
+    setWithEmail: (state, action) => {
+      state.withEmail = action.payload;
+    },
+
+    setWalletData: (state, action) => {
+      state.walletData = action.payload;
+    },
+
     clearAll: (state, action) => {
       state.step = 0;
       state.amount = "0.0";
@@ -57,6 +87,8 @@ const transferSlice = createSlice({
       state.gasAmount = null;
       state.selectedChain = null;
       state.selectedToken = null;
+      state.refreshTime = null;
+      state.withEmail = false;
     },
   },
 });
@@ -71,6 +103,12 @@ export const {
   setChainFilter,
   clearAll,
   toggleTokenModal,
+  setAuthentication,
+  setAccessToken,
+  clearCredentials,
+  setRefreshTime,
+  setWithEmail,
+  setWalletData,
 } = transferSlice.actions;
 
 export default transferSlice.reducer;

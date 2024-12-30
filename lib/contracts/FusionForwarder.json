@@ -163,24 +163,36 @@
         "type": "tuple"
       },
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "gasPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "baseGas",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "estimatedFees",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseGas",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "estimatedFees",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "gasRecipient",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Quote.GasQuote",
+        "name": "quote",
+        "type": "tuple"
       }
     ],
     "name": "execute",
@@ -255,24 +267,36 @@
         "type": "tuple"
       },
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "gasPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "baseGas",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "estimatedFees",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseGas",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "estimatedFees",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "gasRecipient",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Quote.GasQuote",
+        "name": "quote",
+        "type": "tuple"
       }
     ],
     "name": "executeBatch",
