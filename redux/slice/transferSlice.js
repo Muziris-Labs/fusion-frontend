@@ -18,6 +18,7 @@ const transferSlice = createSlice({
     refreshTime: null,
     withEmail: false,
     walletData: null,
+    gasEstimate: null,
   },
 
   reducers: {
@@ -79,6 +80,10 @@ const transferSlice = createSlice({
       state.walletData = action.payload;
     },
 
+    setGasEstimate: (state, action) => {
+      state.gasEstimate = action.payload;
+    },
+
     clearAll: (state, action) => {
       state.step = 0;
       state.amount = "0.0";
@@ -89,6 +94,8 @@ const transferSlice = createSlice({
       state.selectedToken = null;
       state.refreshTime = null;
       state.withEmail = false;
+      state.walletData = null;
+      state.gasEstimate = null;
     },
   },
 });
@@ -109,6 +116,7 @@ export const {
   setRefreshTime,
   setWithEmail,
   setWalletData,
+  setGasEstimate,
 } = transferSlice.actions;
 
 export default transferSlice.reducer;

@@ -5,6 +5,7 @@ const proofSlice = createSlice({
 
   initialState: {
     txProof: null,
+    requestId: null,
     proofDrawer: false,
     isLoading: false,
     message: "Authenticating...",
@@ -27,6 +28,10 @@ const proofSlice = createSlice({
       state.message = action.payload;
     },
 
+    setRequestId: (state, action) => {
+      state.requestId = action.payload;
+    },
+
     clearTxProof: (state) => {
       state.txProof = null;
     },
@@ -39,6 +44,7 @@ export const {
   setLoading,
   setMessage,
   clearTxProof,
+  setRequestId,
 } = proofSlice.actions;
 
 export default proofSlice.reducer;

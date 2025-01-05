@@ -1,6 +1,10 @@
 "use client";
 
-import { clearAll, setGasAmount } from "@/redux/slice/transferSlice";
+import {
+  clearAll,
+  setGasAmount,
+  setGasEstimate,
+} from "@/redux/slice/transferSlice";
 import { useDispatch } from "react-redux";
 import useWallet from "./useWallet";
 import { ethers } from "ethers";
@@ -10,6 +14,7 @@ import { setIsRunning } from "@/redux/slice/TxSlice";
 import { useConfetti } from "@/components/ui/fireConfetti";
 import { toast } from "sonner";
 import { clearTxProof } from "@/redux/slice/proofSlice";
+import useProof from "./useProof";
 
 export default function useExecute() {
   const dispatch = useDispatch();
@@ -20,6 +25,8 @@ export default function useExecute() {
     getFusionAddress,
     reloadTransaction,
   } = useWallet();
+  const requestId = useSelector((state) => state.proof.requestId);
+  const { getFinalProof } = useProof();
   const domain = getDomain();
   const selectedChain = useSelector((state) => state.transfer.selectedChain);
   const selectedToken = useSelector((state) => state.transfer.selectedToken);
@@ -28,6 +35,7 @@ export default function useExecute() {
   const txProof = useSelector((state) => state.proof.txProof);
   const { fireMultiple } = useConfetti();
   const walletData = useSelector((state) => state.transfer.walletData);
+  const gasEstimate = useSelector((state) => state.transfer.gasEstimate);
 
   const estimateGas = async () => {
     try {
@@ -139,22 +147,27 @@ export default function useExecute() {
           {
             forwardRequest,
             domain: domain + ".fusion.id",
-            walletId: walletData.id,
+            walletId: walletData.walletId,
           }
         );
+
+        dispatch(setGasEstimate(payloadResponse.data));
 
         dispatch(setGasAmount(payloadResponse.data.estimateFees));
       } else {
         const payloadResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/estimate/erc20/` +
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/estimate/execute/token/` +
             selectedChain.chainId +
             "/" +
             selectedToken.address,
           {
             forwardRequest,
-            txHash,
+            domain: domain + ".fusion.id",
+            walletId: walletData.walletId,
           }
         );
+
+        dispatch(setGasEstimate(payloadResponse.data));
 
         dispatch(setGasAmount(payloadResponse.data.estimateFees));
       }
@@ -170,7 +183,14 @@ export default function useExecute() {
 
       const wallet = initializeProofWallet();
 
-      const fusionAddress = await getFusionAddress(selectedChain, domain);
+      const finalProof = await getFinalProof(
+        requestId,
+        gasEstimate.gasPrice,
+        gasEstimate.baseGas,
+        txProof
+      );
+
+      const fusionAddress = await getFusionAddress(domain);
 
       const provider = new ethers.providers.JsonRpcProvider(
         selectedChain.rpcUrl
@@ -211,7 +231,7 @@ export default function useExecute() {
       }
 
       const FusionForwarder = new ethers.Contract(
-        selectedChain.deployments.FusionForwarder.address,
+        selectedChain.deployments.FusionForwarder.address.v1,
         selectedChain.deployments.FusionForwarder.abi,
         provider
       );
@@ -222,7 +242,7 @@ export default function useExecute() {
         deadline: Number((Date.now() / 1000).toFixed(0)) + 2000,
         nonce: Number(await FusionForwarder.nonces(wallet.address)),
         gas: 2000000,
-        proof: txProof,
+        proof: finalProof,
         txData: txData,
       };
 
@@ -247,7 +267,8 @@ export default function useExecute() {
           name: "Fusion Forwarder",
           version: "1",
           chainId: selectedChain.chainId,
-          verifyingContract: selectedChain.deployments.FusionForwarder.address,
+          verifyingContract:
+            selectedChain.deployments.FusionForwarder.address.v1,
         },
         message: rawForwardExexuteData,
       };
@@ -268,48 +289,36 @@ export default function useExecute() {
         signature: signature,
       };
 
-      const txHash = await getFusionHash(domain);
-
       if (selectedToken.address === ethers.constants.AddressZero) {
         const payloadResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/native/` +
-            selectedChain.chainId,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/submit/execute/native`,
           {
             forwardRequest,
-            txHash,
+            domain: domain + ".fusion.id",
+            gasEstimateId: gasEstimate.gasEstimateId,
           }
         );
 
-        if (payloadResponse.data.success) {
-          fireMultiple();
-          toast.success("Transaction Successful");
-          dispatch(clearAll());
-          dispatch(clearTxProof());
-          reloadTransaction(selectedChain.chainId);
-        } else {
-          toast.error("Transaction Failed");
+        if (!payloadResponse.data.success) {
+          throw new Error("Transaction Failed");
         }
+
+        console.log(payloadResponse.data);
       } else {
         const payloadResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/execute/erc20/` +
-            selectedChain.chainId +
-            "/" +
-            selectedToken.address,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/submit/execute/token`,
           {
             forwardRequest,
-            txHash,
+            domain: domain + ".fusion.id",
+            gasEstimateId: gasEstimate.gasEstimateId,
           }
         );
 
-        if (payloadResponse.data.success) {
-          fireMultiple();
-          toast.success("Transaction Successful");
-          dispatch(clearAll());
-          dispatch(clearTxProof());
-          reloadTransaction(selectedChain.chainId);
-        } else {
-          toast.error("Transaction Failed");
+        if (!payloadResponse.data.success) {
+          throw new Error("Transaction Failed");
         }
+
+        console.log(payloadResponse.data);
       }
     } catch (error) {
       console.error(error);

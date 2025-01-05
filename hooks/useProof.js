@@ -3,6 +3,7 @@
 import {
   setLoading,
   setMessage,
+  setRequestId,
   setTxProof,
   toggleProofDrawer,
 } from "@/redux/slice/proofSlice";
@@ -135,9 +136,11 @@ export default function useProof() {
       );
 
       if (!initResponse.data.success) {
+        console.log(initResponse.data);
         throw new Error("Failed to Authenticate");
       }
 
+      dispatch(setRequestId(initResponse.data.requestId));
       dispatch(setTxProof(initResponse.data.proof));
       dispatch(setAuthentication(authentication));
     } catch (error) {
@@ -278,6 +281,7 @@ export default function useProof() {
         throw new Error("Failed to Authenticate");
       }
 
+      dispatch(setRequestId(initResponse.data.requestId));
       dispatch(setTxProof(initResponse.data.proof));
       dispatch(setAccessToken(backendResponse.data.access_token));
     } catch (error) {
@@ -289,5 +293,46 @@ export default function useProof() {
     }
   };
 
-  return { generateProofWithPasskey, verifyCode, requestCode };
+  const getFinalProof = async (requestId, gasPrice, baseGas, proof) => {
+    const wallet = initializeProofWallet();
+
+    const proofHash = ethers.utils.keccak256(proof);
+
+    const nonce = await getNonce(selectedChain);
+
+    const chainId = selectedChain.chainId;
+
+    const abiCoder = new ethers.utils.AbiCoder();
+
+    const verifyingMessage = abiCoder.encode(
+      ["string", "uint256", "uint256", "bytes32"],
+      [requestId, nonce, chainId, proofHash]
+    );
+
+    const verifyingMessageHash = ethers.utils.keccak256(verifyingMessage);
+
+    const signature = await wallet.signMessage(
+      ethers.utils.arrayify(verifyingMessageHash)
+    );
+
+    const proofResponse = await axios.post(
+      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/generate/final`,
+      {
+        requestId: requestId,
+        gasPrice: gasPrice,
+        baseGas: baseGas,
+        proof: proof,
+        signature: signature,
+      }
+    );
+
+    if (!proofResponse.data.success) {
+      console.log(proofResponse.data);
+      throw new Error("Failed to Authenticate");
+    }
+
+    return proofResponse.data.proof;
+  };
+
+  return { generateProofWithPasskey, verifyCode, requestCode, getFinalProof };
 }
