@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { Button } from "@material-tailwind/react";
 import { Copy, Key, LucideQrCode, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import Image from "next/image";
 import QRCodeGenerator from "@/components/ui/QrCodeGenerator";
 import SettingItem from "@/components/ui/SettingItem";
 import ThemeButton from "@/components/ui/ThemeButton";
@@ -15,58 +14,81 @@ import shortenAddress from "@/utils/shortenAddress";
 export default function ReceiveMain() {
   const { getDomain } = useWallet();
   const walletAddress = useSelector((state) => state.user.walletAddress);
+  const user = useSelector((state) => state.user.user);
   const domain = getDomain();
   return (
     <div className="flex flex-col w-full gap-10">
       <div className="flex w-full justify-between dark:text-white items-center border dark:border-white/10 border-black/10 border-t-0 border-x-0 pb-10">
-        <div className="flex flex-col gap-8">
-          <Image
+        <div className="flex flex-col gap-8 md:h-[200px]">
+          {/* <Image
             src="/FusionLogo.svg"
             width={100}
             height={100}
             alt="fusion logo"
             className="mb-2 dark:invert hidden md:block"
-          />
+          /> */}
 
           <div className="h-full w-56 md:hidden">
             <QRCodeGenerator value={walletAddress} />
           </div>
 
-          <div className="font-bold text-3xl md:text-7xl w-full md:-mt-8 flex items-end mt-0 md:leading-[4.2rem]">
-            {domain}
-            <span className="font-normal text-lg md:text-2xl text-gray-700">
-              .fusion.id
-            </span>
-            <Button
-              color="white"
-              className="bg-transparent border-[1px] flex items-center ml-2 gap-2 dark:border-white/10 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
-              onClick={() => {
-                navigator.clipboard.writeText(`${domain}.fusion.id`);
-                toast.success("Domain copied to clipboard");
-              }}
-            >
-              <Copy size={10} />
-            </Button>
-          </div>
+          <div className="flex flex-col justify-between h-full">
+            <div className="flex flex-col gap-8">
+              <div className="font-bold text-3xl md:text-7xl w-full flex items-end mt-0 md:leading-[4.2rem]">
+                {domain}
+                <span className="font-normal text-lg md:text-2xl text-gray-700">
+                  .fusion.id
+                </span>
+                <Button
+                  color="white"
+                  className="bg-transparent border-[1px] flex items-center ml-2 gap-2 dark:border-white/10 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${domain}.fusion.id`);
+                    toast.success("Domain copied to clipboard");
+                  }}
+                >
+                  <Copy size={10} />
+                </Button>
+              </div>
 
-          <div className="font-light -mt-5 flex ">
-            <span className="md:block hidden">
-              {walletAddress ? walletAddress : "Loading..."}
-            </span>
-            <span className="md:hidden">
-              {walletAddress ? shortenAddress(walletAddress) : "Loading..."}
-            </span>
+              <div className="font-light -mt-5 flex ">
+                <span className="md:block hidden">
+                  {walletAddress ? walletAddress : "Loading..."}
+                </span>
+                <span className="md:hidden">
+                  {walletAddress ? shortenAddress(walletAddress) : "Loading..."}
+                </span>
 
-            <Button
-              color="white"
-              className="bg-transparent border-[1px] flex items-center ml-2 gap-2 dark:border-white/10 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
-              onClick={() => {
-                navigator.clipboard.writeText(walletAddress);
-                toast.success("Address copied to clipboard");
-              }}
-            >
-              <Copy size={10} />
-            </Button>
+                <Button
+                  color="white"
+                  className="bg-transparent border-[1px] flex items-center ml-2 gap-2 dark:border-white/10 border-black/10 rounded-lg shadow-md p-2 px-2 normal-case font-normal text-sm text-gray-600"
+                  onClick={() => {
+                    navigator.clipboard.writeText(walletAddress);
+                    toast.success("Address copied to clipboard");
+                  }}
+                >
+                  <Copy size={10} />
+                </Button>
+              </div>
+            </div>
+
+            <div className=" flex-col hidden md:flex">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">Created at:</span>
+                <span className="font-normal text-sm">
+                  {user
+                    ? new Date(user._creationTime).toLocaleString()
+                    : "Loading..."}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">Version:</span>
+                <span className="font-normal text-sm">
+                  {user ? user.version : "Loading..."}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 

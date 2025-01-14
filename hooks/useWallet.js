@@ -179,8 +179,10 @@ export default function useWallet() {
         return;
       }
 
+      const isTestnet = !config.chains[0].isMainnet;
+
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/transactions/${walletAddress}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/transactions/${walletAddress}?isTestnet=${isTestnet}`
       );
 
       if (response.data.success) {
