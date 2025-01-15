@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import config from "@/lib/config";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setDefaultToken,
   setHistory,
   setMarketData,
   setTokenBalanceData,
@@ -295,6 +296,30 @@ export default function useWallet() {
     }
   };
 
+  const checkForDefaultToken = async () => {
+    let defaultToken = localStorage.getItem("defaultToken");
+
+    if (defaultToken === null || defaultToken === undefined) {
+      return;
+    }
+
+    defaultToken = JSON.parse(defaultToken);
+
+    let isPresent = false;
+
+    config.chains.forEach((chain) => {
+      chain.tokens.forEach((token) => {
+        if (token.id === defaultToken.id) {
+          isPresent = true;
+        }
+      });
+    });
+
+    if (isPresent) {
+      dispatch(setDefaultToken(defaultToken));
+    }
+  };
+
   const initializeBalance = async () => {
     let balanceData = [];
 
@@ -547,5 +572,6 @@ export default function useWallet() {
     setMailUser,
     getFusionHash,
     loadUser,
+    checkForDefaultToken,
   };
 }

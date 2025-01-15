@@ -74,15 +74,8 @@ const calculateChainBalance = (
   return total;
 };
 
-const usdToEth = (totalBalance, tokenConversionData) => {
-  let ethToken = null;
-
-  config.chains.forEach((chain) => {
-    let token = chain.tokens.find((token) => Number(token.id) === 1027);
-    if (token) {
-      ethToken = token;
-    }
-  });
+const usdToEth = (totalBalance, tokenConversionData, defaultToken) => {
+  let ethToken = defaultToken;
 
   if (!ethToken) return 0;
 
@@ -101,15 +94,8 @@ const usdToEth = (totalBalance, tokenConversionData) => {
   return totalBalance / conversionValue;
 };
 
-const getEthTokenConversion = (tokenConversionData) => {
-  let ethToken = null;
-
-  config.chains.forEach((chain) => {
-    let token = chain.tokens.find((token) => Number(token.id) === 1027);
-    if (token) {
-      ethToken = token;
-    }
-  });
+const getEthTokenConversion = (tokenConversionData, defaultToken) => {
+  let ethToken = defaultToken;
 
   if (!ethToken) return 0;
 

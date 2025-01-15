@@ -12,6 +12,7 @@ export default function WalletProvider({ children }) {
     loadConversionData,
     listenForBalance,
     loadUser,
+    checkForDefaultToken,
   } = useWallet();
   const walletAddress = useSelector((state) => state.user.walletAddress);
 
@@ -21,6 +22,7 @@ export default function WalletProvider({ children }) {
     if (domain) {
       loadAddresses();
       loadUser();
+      checkForDefaultToken();
     }
   }, []);
 

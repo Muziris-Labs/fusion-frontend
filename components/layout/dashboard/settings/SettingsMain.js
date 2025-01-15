@@ -1,3 +1,4 @@
+import ChangeToken from "./ChangeToken";
 import Deployments from "./SettingList/Deployments";
 import NodeChanger from "./SettingList/NodeChanger";
 import PasskeyChanger from "./SettingList/PasskeyChanger";
@@ -14,6 +15,7 @@ export default function SettingsMain() {
       <SetupMail />
       <PasskeyChanger />
       <Deployments />
+      <ChangeToken />
     </div>
   );
 }

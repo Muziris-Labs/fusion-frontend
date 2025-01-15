@@ -1,3 +1,4 @@
+import config from "@/lib/config";
 import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice = createSlice({
@@ -15,6 +16,8 @@ const userSlice = createSlice({
     wallet: null,
     mailUser: null,
     user: null,
+    defaultToken: config.chains[0].tokens[0],
+    defaultTokenModal: false,
   },
 
   reducers: {
@@ -61,6 +64,14 @@ const userSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
     },
+
+    setDefaultToken: (state, action) => {
+      state.defaultToken = action.payload;
+    },
+
+    toggleDefaultTokenModal: (state, action) => {
+      state.defaultTokenModal = !state.defaultTokenModal;
+    },
   },
 });
 
@@ -76,6 +87,8 @@ export const {
   setWallet,
   setMailUser,
   setUser,
+  setDefaultToken,
+  toggleDefaultTokenModal,
 } = userSlice.actions;
 
 export default userSlice.reducer;

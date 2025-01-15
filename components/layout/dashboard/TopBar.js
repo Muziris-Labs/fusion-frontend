@@ -19,16 +19,20 @@ export default function TopBar() {
   const router = useRouter();
   const { getDomain } = useWallet();
   const domain = getDomain();
+  const defaultToken = useSelector((state) => state.user.defaultToken);
 
   const [ethConversionData, setEthConversionData] = useState(null);
 
   useEffect(() => {
     if (tokenConversionData) {
-      const conversionData = getEthTokenConversion(tokenConversionData);
+      const conversionData = getEthTokenConversion(
+        tokenConversionData,
+        defaultToken
+      );
 
       setEthConversionData(conversionData);
     }
-  }, [tokenConversionData]);
+  }, [tokenConversionData, defaultToken]);
 
   return (
     <div className="w-full flex justify-between gap-4 py-14 pb-10 items-center">
@@ -52,7 +56,7 @@ export default function TopBar() {
       <div className="flex-1 justify-end flex gap-4">
         <div className="rounded-2xl p-4 py-3 gap-2 hidden lg:flex items-center justify-center text-gray-600 dark:border-white/10 border-black/10 font-normal text-sm border-[1px]">
           <Image
-            src="/block/eth-block.svg"
+            src={defaultToken.block}
             className="opacity-40 dark:invert"
             width={18}
             height={18}

@@ -10,6 +10,7 @@ export default function TokenSelector({
   chainFilter,
   activeStep = 0,
   selectionStep = 0,
+  isDefaultToken = false,
 }) {
   return config.chains.map((chain) =>
     chainFilter === null || chainFilter === chain.chainId ? (
@@ -29,6 +30,7 @@ export default function TokenSelector({
               selectedChain={selectedChain}
               setToken={setToken}
               disabled={activeStep !== selectionStep}
+              isDefaultToken={isDefaultToken}
             />
           ))}
         </div>

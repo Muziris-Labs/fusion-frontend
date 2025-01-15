@@ -1,5 +1,6 @@
 "use client";
 
+import { toggleDefaultTokenModal } from "@/redux/slice/UserSlice";
 import formatAmount from "@/utils/formatAmount";
 import { Button } from "@material-tailwind/react";
 import { Check } from "lucide-react";
@@ -13,6 +14,7 @@ export default function Tokens({
   setToken,
   selectedChain,
   disabled,
+  isDefaultToken = false,
 }) {
   const isSelected =
     selectedToken?.address === token.address &&
@@ -48,16 +50,30 @@ export default function Tokens({
         className="border-[1px] w-full rounded-2xl border-black flex items-center overflow-hidden font-normal gap-2 px-3 py-2 normal-case"
         color="white"
         style={{
-          borderColor: isSelected ? "#1D4ED8" : "black",
-          borderWidth: isSelected ? "2px" : "1px",
+          borderColor: isDefaultToken
+            ? "black"
+            : isSelected
+            ? "#1D4ED8"
+            : "black",
+          borderWidth: isDefaultToken ? "1px" : isSelected ? "2px" : "1px",
         }}
-        disabled={!currentConversion || !currentBalance || disabled}
+        disabled={
+          isDefaultToken
+            ? false
+            : !currentConversion || !currentBalance || disabled
+        }
         onClick={() => {
           if (!setToken) return;
-          dispatch(setToken({ token, chain }));
+          if (isDefaultToken) {
+            dispatch(setToken(token));
+            dispatch(toggleDefaultTokenModal());
+            localStorage.setItem("defaultToken", JSON.stringify(token));
+          } else {
+            dispatch(setToken({ token, chain }));
+          }
         }}
       >
-        {isSelected && (
+        {!isDefaultToken && isSelected && (
           <div className="p-2 rounded-full bg-[#1D4ED8] rounded-t-none rounded-br-none absolute top-0 right-0">
             <Check size={10} color="white" className="-mt-0.5 ml-1" />
           </div>

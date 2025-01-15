@@ -35,6 +35,8 @@ const DashboardCredit = () => {
   const domain = getDomain();
   const router = useRouter();
 
+  const defaultToken = useSelector((state) => state.user.defaultToken);
+
   useEffect(() => {
     if (tokenBalanceData && tokenConversionData) {
       const totalBalance = calculateTotalBalance(
@@ -44,11 +46,15 @@ const DashboardCredit = () => {
 
       setTotalBalance(totalBalance);
 
-      const totalEthBalance = usdToEth(totalBalance, tokenConversionData);
+      const totalEthBalance = usdToEth(
+        totalBalance,
+        tokenConversionData,
+        defaultToken
+      );
 
       setTotalEthBalance(totalEthBalance);
     }
-  }, [tokenBalanceData, tokenConversionData]);
+  }, [tokenBalanceData, tokenConversionData, defaultToken]);
 
   return (
     <div
@@ -60,7 +66,7 @@ const DashboardCredit = () => {
         <div className="flex w-full justify-between items-center">
           <div className="flex items-center gap-4">
             <Image
-              src="/block/eth-block.svg"
+              src={defaultToken.block}
               width={30}
               height={30}
               alt="ETH"
