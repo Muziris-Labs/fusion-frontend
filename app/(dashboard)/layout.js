@@ -11,6 +11,7 @@ import FusionHolder from "@/components/ui/FusionHolder";
 import TokenModal from "@/components/modal/TokenModal";
 import SetupMailModal from "@/components/modal/SetupMailModal";
 import DefaultTokenModal from "@/components/modal/DefaultTokenModal";
+import RampTokenModal from "@/components/modal/RampTokenModal";
 
 export const metadata = {
   title: "Fusion Wallet",
@@ -38,6 +39,7 @@ const DashboardLayout = ({ children }) => {
         <TokenModal />
         <SetupMailModal />
         <DefaultTokenModal />
+        <RampTokenModal />
         <div className="relative flex min-h-screen dark:bg-black/90">
           <NavBar />
           <div className="flex-1 px-8 lg:px-20">

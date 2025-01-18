@@ -20,14 +20,6 @@ export default function ReceiveMain() {
     <div className="flex flex-col w-full gap-10">
       <div className="flex w-full justify-between dark:text-white items-center border dark:border-white/10 border-black/10 border-t-0 border-x-0 pb-10">
         <div className="flex flex-col gap-8 md:h-[200px]">
-          {/* <Image
-            src="/FusionLogo.svg"
-            width={100}
-            height={100}
-            alt="fusion logo"
-            className="mb-2 dark:invert hidden md:block"
-          /> */}
-
           <div className="h-full w-56 md:hidden">
             <QRCodeGenerator value={walletAddress} />
           </div>
@@ -72,7 +64,7 @@ export default function ReceiveMain() {
               </div>
             </div>
 
-            <div className=" flex-col hidden md:flex">
+            <div className=" flex-col hidden md:flex opacity-50">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-sm">Created at:</span>
                 <span className="font-normal text-sm">

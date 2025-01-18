@@ -9,8 +9,8 @@ import Image from "next/image";
 import { Button, Tooltip } from "@material-tailwind/react";
 import {
   ArrowDownUp,
-  CircleFadingPlus,
   Copy,
+  DollarSign,
   Forward,
   Loader2,
   ScanLine,
@@ -82,15 +82,18 @@ const DashboardCredit = () => {
           </div>
 
           <div className="flex gap-2 items-center">
-            <Tooltip placement="top" content="Coming Soon">
-              <Button
-                color="white"
-                className="bg-[#6b46fe]/10 dark:bg-[#6b46fe]/20 text-[#6b46fe] hidden lg:flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
-              >
-                <CircleFadingPlus size={16} />
-                Add Funds
-              </Button>
-            </Tooltip>
+            {/* <Tooltip placement="top" content="Coming Soon"> */}
+            <Button
+              color="white"
+              className="bg-[#6b46fe]/70 text-white hidden lg:flex items-center gap-2 rounded-2xl shadow-md py-3 normal-case font-normal text-sm"
+              onClick={() => {
+                router.push(`/ramp?domain=${domain}`);
+              }}
+            >
+              <DollarSign size={16} />
+              Add Funds
+            </Button>
+            {/* </Tooltip> */}
 
             <Button
               color="white"

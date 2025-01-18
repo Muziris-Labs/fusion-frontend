@@ -13,6 +13,7 @@ import transferSlice from "./slice/transferSlice.js";
 import changeSlice from "./slice/changeSlice.js";
 import deploySlice from "./slice/deploySlice.js";
 import setupSlice from "./slice/setupSlice.js";
+import rampSlice from "./slice/rampSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const store = configureStore({
     change: changeSlice,
     deploy: deploySlice,
     setup: setupSlice,
+    ramp: rampSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

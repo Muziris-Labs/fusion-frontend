@@ -3,6 +3,8 @@ import NavItem from "./NavItem";
 import NavLogo from "./NavLogo";
 import {
   ArrowDownUp,
+  CircleFadingPlus,
+  DollarSign,
   Forward,
   ScanLine,
   Settings,
@@ -14,6 +16,13 @@ const navList = [
     href: "/dashboard",
     label: "Portfolio",
     icon: <WalletMinimal size={20} />,
+    submenu: [
+      {
+        href: "/ramp",
+        label: "Add Funds",
+        icon: <DollarSign size={16} />,
+      },
+    ],
   },
   { href: "/transfer", label: "Send", icon: <Forward size={20} /> },
   { href: "/receive", label: "Receive", icon: <ScanLine size={20} /> },
@@ -35,6 +44,7 @@ const NavList = () => {
           href={item.href}
           label={item.label}
           icon={item.icon}
+          submenu={item.submenu}
         />
       ))}
     </ul>

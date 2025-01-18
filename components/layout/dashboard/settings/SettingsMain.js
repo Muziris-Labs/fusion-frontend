@@ -7,15 +7,17 @@ import ThemeChanger from "./SettingList/ThemeChanger";
 
 export default function SettingsMain() {
   return (
-    <div className="flex flex-col w-full gap-10">
+    <div className="flex flex-col w-full h-full gap-10">
       <h1 className="text-2xl font-normal mb-5 dark:text-white">Settings</h1>
 
-      <ThemeChanger />
-      <NodeChanger />
-      <SetupMail />
-      <PasskeyChanger />
-      <Deployments />
-      <ChangeToken />
+      <div className="flex flex-col gap-10 flex-1 overflow-y-scroll hide-scroll">
+        <ThemeChanger />
+        <NodeChanger />
+        <SetupMail />
+        <PasskeyChanger />
+        <Deployments />
+        <ChangeToken />
+      </div>
     </div>
   );
 }
