@@ -70,13 +70,13 @@ const DashboardCredit = () => {
               width={30}
               height={30}
               alt="ETH"
-              className="mt-0.5 opacity-80 dark:invert"
+              className="mt-0.5 opacity-80 dark:invert w-[25px] sm:w-[30px]"
             />
-            <p className="text-5xl font-semibold">
+            <p className=" text-4xl sm:text-5xl font-semibold">
               {totalEthBalance === null ? (
                 <Loader2 className="animate-spin" size={50} />
               ) : (
-                formatAmount(totalEthBalance)
+                formatAmount(totalEthBalance, 4)
               )}
             </p>
           </div>
@@ -108,7 +108,7 @@ const DashboardCredit = () => {
 
             <Button
               color="white"
-              className="bg-transparent border-[1px] flex items-center gap-2 dark:border-white/10 border-black/10 rounded-2xl shadow-md p-3 px-4 normal-case font-normal text-sm text-gray-600"
+              className="bg-transparent border-[1px] flex items-center gap-2 dark:border-white/10 border-black/10 rounded-2xl shadow-md p-3 lg:px-4 px02 normal-case font-normal text-sm text-gray-600"
               onClick={() => {
                 navigator.clipboard.writeText(walletAddress);
                 toast.success("Address copied to clipboard");
@@ -156,12 +156,12 @@ const DashboardCredit = () => {
         </MobileButton>
 
         <MobileButton
-          title="Settings"
+          title="Buy"
           onClick={() => {
-            router.push(`/settings?domain=${domain}`);
+            router.push(`/ramp?domain=${domain}`);
           }}
         >
-          <Settings size={16} className="text-white" />
+          <DollarSign size={16} className="text-white" />
         </MobileButton>
       </div>
     </div>

@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { setIsRunning } from "@/redux/slice/TxSlice";
 import { useConfetti } from "@/components/ui/fireConfetti";
 import { toast } from "sonner";
-import { clearTxProof } from "@/redux/slice/proofSlice";
+import { clearTxProof, setTxProof } from "@/redux/slice/proofSlice";
 import useProof from "./useProof";
 
 export default function useExecute() {
@@ -24,6 +24,7 @@ export default function useExecute() {
     getFusionHash,
     getFusionAddress,
     reloadTransaction,
+    loadTransactions,
   } = useWallet();
   const requestId = useSelector((state) => state.proof.requestId);
   const { getFinalProof } = useProof();
@@ -174,6 +175,7 @@ export default function useExecute() {
     } catch (error) {
       dispatch(setGasAmount(null));
       console.error(error);
+      toast.error("Error Estimating Gas");
     }
   };
 
@@ -303,7 +305,18 @@ export default function useExecute() {
           throw new Error("Transaction Failed");
         }
 
-        console.log(payloadResponse.data);
+        const txId = payloadResponse.data.txId;
+
+        try {
+          await checkTransaction(txId);
+          fireMultiple();
+          loadTransactions();
+          dispatch(clearAll());
+          dispatch(clearTxProof());
+          toast.success("Transaction Successful");
+        } catch (error) {
+          throw new Error("Transaction Failed");
+        }
       } else {
         const payloadResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/submit/execute/token`,
@@ -318,11 +331,23 @@ export default function useExecute() {
           throw new Error("Transaction Failed");
         }
 
-        console.log(payloadResponse.data);
+        const txId = payloadResponse.data.txId;
+
+        try {
+          await checkTransaction(txId);
+          fireMultiple();
+          loadTransactions();
+          dispatch(clearAll());
+          dispatch(clearTxProof());
+          toast.success("Transaction Successful");
+        } catch (error) {
+          throw new Error("Transaction Failed");
+        }
       }
     } catch (error) {
       console.error(error);
       toast.error("Transaction Failed");
+      dispatch(setTxProof(null));
     } finally {
       dispatch(setIsRunning(false));
     }
@@ -330,3 +355,35 @@ export default function useExecute() {
 
   return { estimateGas, execute };
 }
+
+const checkTransaction = (txId) => {
+  return new Promise((resolve, reject) => {
+    const intervalId = setInterval(async () => {
+      try {
+        const transactionData = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/transactions/byId/${txId}`
+        );
+
+        if (!transactionData.data.success) {
+          clearInterval(intervalId);
+          reject(new Error("Error Fetching Transaction"));
+          return;
+        }
+
+        const transaction = transactionData.data.transaction;
+
+        if (transaction.status === "success") {
+          clearInterval(intervalId);
+          resolve(transaction);
+        } else if (transaction.status === "failed") {
+          clearInterval(intervalId);
+          reject(new Error("Transaction Failed"));
+        }
+        // If status is pending or any other status, continue checking
+      } catch (error) {
+        clearInterval(intervalId);
+        reject(error);
+      }
+    }, 1000);
+  });
+};

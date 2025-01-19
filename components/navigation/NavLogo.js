@@ -19,7 +19,7 @@ const NavLogo = () => {
         Fusion
         {!isMainnet && (
           <div className="bg-red-500/20 rounded-xl p-1 px-2 text-xs font-light text-red-500">
-            Testnet
+            <p className="sm:block hidden">Testnet</p>
           </div>
         )}
       </div>

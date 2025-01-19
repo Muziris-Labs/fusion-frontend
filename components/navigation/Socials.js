@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Socials() {
   return (
     <div className="flex items-center gap-4 px-9 pb-5">
-      <Link href="https://x.com/fusionwallet">
+      <Link href="https://x.com/fusionwallet" target="_blank">
         <Image
           src="/socials/twitter.png"
           alt="Twitter"
@@ -13,7 +13,7 @@ export default function Socials() {
           className="dark:invert"
         />
       </Link>
-      <Link href="https://discord.gg/H2rG8nddeD">
+      <Link href="https://discord.gg/H2rG8nddeD" target="_blank">
         <Image
           src="/socials/discord.png"
           alt="Discord"

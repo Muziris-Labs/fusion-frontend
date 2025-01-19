@@ -19,7 +19,7 @@ export default function ReceiveMain() {
   return (
     <div className="flex flex-col w-full gap-10">
       <div className="flex w-full justify-between dark:text-white items-center border dark:border-white/10 border-black/10 border-t-0 border-x-0 pb-10">
-        <div className="flex flex-col gap-8 md:h-[200px]">
+        <div className="flex flex-col gap-8 md:h-[225px]">
           <div className="h-full w-56 md:hidden">
             <QRCodeGenerator value={walletAddress} />
           </div>
@@ -135,6 +135,7 @@ export default function ReceiveMain() {
           navigator.clipboard.writeText(walletAddress);
           toast.success("Address copied to clipboard");
         }}
+        isLast
       >
         <ThemeButton
           theme={"Download QR Code"}

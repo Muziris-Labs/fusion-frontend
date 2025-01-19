@@ -76,9 +76,6 @@ export default function TransferStep3() {
     if (event.key === "Enter") {
       event.preventDefault();
       handleApprove();
-    } else if (event.key === "Backspace") {
-      event.preventDefault();
-      handleCancel();
     } else if (event.key === "Escape") {
       event.preventDefault();
       handleCancel();
@@ -110,15 +107,17 @@ export default function TransferStep3() {
       </div>
 
       <div className="flex flex-col gap-1 w-full">
-        <p>Sending</p>
+        <p className="text-sm sm:text-base">Sending</p>
         <Tooltip content={recipient} placement="bottom-start">
-          <p className="font-semibold text-xl">{shortenAddress(recipient)}</p>
+          <p className="font-semibold text-lg sm:text-xl">
+            {shortenAddress(recipient)}
+          </p>
         </Tooltip>
       </div>
 
       <div className="flex w-full items-center justify-center gap-2 border dark:border-white/10 border-black/10 pb-14 border-t-0 border-x-0">
         <div className=" flex flex-col items-end">
-          <p className="text-6xl font-bold">
+          <p className="text-5xl sm:text-6xl font-bold">
             {toggle
               ? formatAmount(Number(amount), 2)
               : (Number(amount) * currentConversion).toFixed(2)}{" "}
@@ -205,8 +204,8 @@ export default function TransferStep3() {
             disabled={isRunning}
           >
             {txProof ? "Reject" : "Back"}
-            <div className="w-6 -mr-2 h-6 flex justify-center items-center rounded-lg dark:border-white border-black border">
-              <ArrowLeft size={14} />
+            <div className="w-6 -mr-2 h-6 text-[10px] flex justify-center items-center rounded-lg dark:border-white border-black border">
+              Esc
             </div>
           </Button>
         </SettingItem>

@@ -27,7 +27,7 @@ const LoginLayout = ({ children }) => {
 
         <MainSection>
           <div className="flex h-full w-full items-center justify-center">
-            <div className="w-fit sm:w-[80%] h-full justify-center flex flex-col lg:items-start items-center">
+            <div className="w-[300px] sm:w-[80%] h-full justify-center flex flex-col lg:items-start items-center">
               {children}
             </div>
           </div>

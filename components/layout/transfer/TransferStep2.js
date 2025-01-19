@@ -28,7 +28,7 @@ const TransferStep2 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const walletAddress = useSelector((state) => state.user.walletAddress);
   const recipient = useSelector((state) => state.transfer.recipient);
-  const { getDomain, getFusion } = useWallet();
+  const { getDomain, getFusion, getFusionAddress } = useWallet();
   const domain = getDomain();
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const TransferStep2 = () => {
       return;
     }
 
-    const address = await getFusion(
+    const address = await getFusionAddress(
       recipient.split(".fusion.id")[0]?.toLowerCase()
     );
 

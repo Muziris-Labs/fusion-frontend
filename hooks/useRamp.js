@@ -1,6 +1,10 @@
+"use client";
+
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 export default function useRamp() {
+  const walletAddress = useSelector((state) => state.user.walletAddress);
   const stablyRamp = async (selectedProvider, selectedToken, amount) => {
     const provider = selectedToken.ramp.providers.find(
       (provider) => provider.id === selectedProvider
@@ -16,7 +20,9 @@ export default function useRamp() {
       "&tonetworks=" +
       provider.networkId +
       "&fromamount=" +
-      amount;
+      amount +
+      "&toaddress=" +
+      walletAddress;
 
     window.open(link, "_blank");
   };

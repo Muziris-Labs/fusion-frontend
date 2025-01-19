@@ -1,6 +1,8 @@
 const Alpha = ({ size }) => {
   return (
-    <h6 className={`text-gray-700 ${size} cursor-default`}>Alpha v0.0.2</h6>
+    <h6 className={`text-gray-700 ${size} cursor-default`}>
+      {process.env.NEXT_PUBLIC_VERSION_INFO}
+    </h6>
   );
 };
 

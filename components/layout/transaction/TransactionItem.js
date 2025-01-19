@@ -38,7 +38,7 @@ const TransactionItem = ({ transaction }) => {
     currentToken &&
     transaction.hash && (
       <div
-        className="border flex flex-col rounded-2xl my-1 dark:text-white p-4"
+        className="border flex flex-col rounded-2xl my-1 dark:text-white p-4 pb-5"
         style={{
           backgroundColor:
             resolvedTheme === "light" ? "#6b46fe06" : "#a28cfa10",
@@ -78,14 +78,19 @@ const TransactionItem = ({ transaction }) => {
           <div className="flex items-center">
             <div className="p-1">
               {transaction.status === "success" ? (
-                <div className="bg-green-50 dark:bg-green-500 my-auto flex items-center px-3 py-1 w-fit rounded-lg text-sm">
-                  <span className="inline-block w-2 h-2 rounded-full mr-2 dark:bg-white bg-green-500"></span>
-                  <p>Successful</p>
+                <div className="bg-green-50 dark:bg-green-500 my-auto flex items-center px-1 sm:px-3 py-1 w-fit rounded-lg text-sm">
+                  <span className="inline-block w-2 h-2 rounded-full mr-0 sm:mr-2 dark:bg-white bg-green-500"></span>
+                  <p className="sm:block hidden">Successful</p>
+                </div>
+              ) : transaction.status === "failed" ? (
+                <div className="bg-red-50 dark:bg-red-500 my-auto flex items-center px-3 py-1 w-fit rounded-lg text-sm">
+                  <span className="inline-block w-2 h-2 rounded-full mr-0 sm:mr-2 dark:bg-white bg-red-500"></span>
+                  <p className="sm:block hidden">Failed</p>
                 </div>
               ) : (
-                <div className="bg-red-50 dark:bg-red-500 my-auto flex items-center px-3 py-1 w-fit rounded-lg text-sm">
-                  <span className="inline-block w-2 h-2 rounded-full mr-2 dark:bg-white bg-red-500"></span>
-                  <p>Failed</p>
+                <div className="bg-gray-200 dark:bg-gray-500 my-auto flex items-center px-3 py-1 w-fit rounded-lg text-sm">
+                  <span className="inline-block w-2 h-2 rounded-full mr-0 sm:mr-2 dark:bg-white bg-black"></span>
+                  <p className="sm:block hidden">{transaction.status}</p>
                 </div>
               )}
             </div>
@@ -100,7 +105,7 @@ const TransactionItem = ({ transaction }) => {
           </div>
         </div>
 
-        <div className="flex w-full justify-between items-end">
+        <div className="flex w-full justify-between items-end text-xs sm:text-base">
           <div className="flex flex-col">
             <div
               className={`px-2 py-2 flex ${
@@ -131,7 +136,7 @@ const TransactionItem = ({ transaction }) => {
                   : "from"}{" "}
               </span>
             </div>
-            <div className="px-2 text-sm">
+            <div className="px-2 text-xs sm:text-sm">
               <CopyToClipboard
                 text={
                   transaction.from.toLowerCase() === walletAddress.toLowerCase()
@@ -143,7 +148,7 @@ const TransactionItem = ({ transaction }) => {
           </div>
 
           {transaction.status === "success" && (
-            <div className="px-4 py-2">
+            <div className="px-4 py-2 pb-0">
               <div className="flex gap-2 justify-end">
                 <Tooltip content="Copy transaction hash">
                   <Button

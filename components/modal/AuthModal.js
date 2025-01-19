@@ -46,13 +46,13 @@ export default function AuthModal() {
         mount: { scale: 1, y: 0 },
         unmount: { scale: 0.9, y: -100 },
       }}
-      className="font-outfit bg-transparent items-center justify-center flex shadow-none"
+      className="font-outfit bg-transparent items-center justify-center flex shadow-none min-w-[90%]"
     >
       {!loading && (
-        <DialogBody className="text-center gap-y-4 font-outfit text-black bg-white rounded-3xl w-full max-w-[32rem] p-10">
+        <DialogBody className="text-center gap-y-4 font-outfit text-black bg-white rounded-3xl w-full max-w-[32rem] sm:p-10">
           <div className="flex flex-col gap-1 w-full items-start">
             <h1 className="text-2xl font-semibold">Approval Required</h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 text-left">
               Generate a proof to sign the transaction
             </p>
           </div>
@@ -217,10 +217,10 @@ export default function AuthModal() {
         </DialogBody>
       )}
       {loading && (
-        <DialogBody className="text-center gap-y-4 font-outfit text-black bg-white rounded-3xl w-full max-w-[32rem] p-10">
+        <DialogBody className="text-center gap-y-4 font-outfit text-black bg-white rounded-3xl w-full max-w-[32rem] sm:p-10">
           <div className="flex flex-col gap-1 w-full items-start">
             <h1 className="text-2xl font-semibold">{message}.</h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 text-left">
               Please wait while we generate the proof
             </p>
           </div>
