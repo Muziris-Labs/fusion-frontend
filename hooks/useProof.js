@@ -273,27 +273,6 @@ export default function useProof() {
   };
 
   const getFinalProof = async (requestId, gasPrice, baseGas, proof) => {
-    const wallet = initializeProofWallet();
-
-    const proofHash = ethers.utils.keccak256(proof);
-
-    const nonce = await getNonce(selectedChain);
-
-    const chainId = selectedChain.chainId;
-
-    const abiCoder = new ethers.utils.AbiCoder();
-
-    const verifyingMessage = abiCoder.encode(
-      ["string", "uint256", "uint256", "bytes32"],
-      [requestId, nonce, chainId, proofHash]
-    );
-
-    const verifyingMessageHash = ethers.utils.keccak256(verifyingMessage);
-
-    const signature = await wallet.signMessage(
-      ethers.utils.arrayify(verifyingMessageHash)
-    );
-
     const proofResponse = await axios.post(
       `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/generate/final`,
       {
@@ -301,7 +280,6 @@ export default function useProof() {
         gasPrice: gasPrice,
         baseGas: baseGas,
         proof: proof,
-        signature: signature,
       }
     );
 
