@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  setDeadline,
   setLoading,
   setMessage,
   setRequestId,
@@ -60,8 +61,6 @@ export default function useProof() {
 
       authentication.challengeId = challengeData.data.challengeId;
 
-      const wallet = await initializeProofWallet();
-
       const nonce = await getNonce(selectedChain);
 
       let txData;
@@ -74,6 +73,7 @@ export default function useProof() {
           value: ethers.utils.parseEther(amount.toFixed(18)).toString(),
           data: "0x",
           operation: 0,
+          gasLimit: 2000000,
         };
       } else {
         const provider = new ethers.providers.JsonRpcProvider(
@@ -99,21 +99,11 @@ export default function useProof() {
               .toString(),
           ]),
           operation: 0,
+          gasLimit: 2000000,
         };
       }
 
-      const walletDataResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/submit/walletData/` +
-          selectedChain.chainId
-      );
-
-      if (!walletDataResponse.data.success) {
-        throw new Error("Failed to Authenticate");
-      }
-
-      const walletData = walletDataResponse.data.walletData;
-
-      dispatch(setWalletData(walletData));
+      const deadline = Math.floor(new Date().getTime() / 1000) + 300;
 
       axios.defaults.withCredentials = true;
       const initResponse = await axios.post(
@@ -130,8 +120,7 @@ export default function useProof() {
             selectedToken.address === ethers.constants.AddressZero
               ? ethers.constants.AddressZero
               : selectedToken.address,
-          signingAddress: walletData.address,
-          verifyingAddress: wallet.address,
+          deadline: deadline,
         }
       );
 
@@ -140,6 +129,7 @@ export default function useProof() {
         throw new Error("Failed to Authenticate");
       }
 
+      dispatch(setDeadline(deadline));
       dispatch(setRequestId(initResponse.data.requestId));
       dispatch(setTxProof(initResponse.data.proof));
       dispatch(setAuthentication(authentication));
@@ -199,8 +189,6 @@ export default function useProof() {
       axios.defaults.withCredentials = false;
       const backendResponse = await axios.request(options);
 
-      const wallet = await initializeProofWallet();
-
       const nonce = await getNonce(selectedChain);
 
       let txData;
@@ -213,6 +201,7 @@ export default function useProof() {
           value: ethers.utils.parseEther(amount.toFixed(18)).toString(),
           data: "0x",
           operation: 0,
+          gasLimit: 2000000,
         };
       } else {
         const provider = new ethers.providers.JsonRpcProvider(
@@ -238,21 +227,11 @@ export default function useProof() {
               .toString(),
           ]),
           operation: 0,
+          gasLimit: 2000000,
         };
       }
 
-      const walletDataResponse = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/submit/walletData/` +
-          selectedChain.chainId
-      );
-
-      if (!walletDataResponse.data.success) {
-        throw new Error("Failed to Authenticate");
-      }
-
-      const walletData = walletDataResponse.data.walletData;
-
-      dispatch(setWalletData(walletData));
+      const deadline = Math.floor(new Date().getTime() / 1000) + 300;
 
       axios.defaults.withCredentials = true;
       const initResponse = await axios.post(
@@ -267,8 +246,7 @@ export default function useProof() {
             selectedToken.address === ethers.constants.AddressZero
               ? ethers.constants.AddressZero
               : selectedToken.address,
-          signingAddress: walletData.address,
-          verifyingAddress: wallet.address,
+          deadline: deadline,
         },
         {
           headers: {
@@ -281,6 +259,7 @@ export default function useProof() {
         throw new Error("Failed to Authenticate");
       }
 
+      dispatch(setDeadline(deadline));
       dispatch(setRequestId(initResponse.data.requestId));
       dispatch(setTxProof(initResponse.data.proof));
       dispatch(setAccessToken(backendResponse.data.access_token));

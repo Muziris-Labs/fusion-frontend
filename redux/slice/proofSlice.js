@@ -9,6 +9,7 @@ const proofSlice = createSlice({
     proofDrawer: false,
     isLoading: false,
     message: "Authenticating...",
+    deadline: null,
   },
 
   reducers: {
@@ -35,6 +36,10 @@ const proofSlice = createSlice({
     clearTxProof: (state) => {
       state.txProof = null;
     },
+
+    setDeadline: (state, action) => {
+      state.deadline = action.payload;
+    },
   },
 });
 
@@ -45,6 +50,7 @@ export const {
   setMessage,
   clearTxProof,
   setRequestId,
+  setDeadline,
 } = proofSlice.actions;
 
 export default proofSlice.reducer;

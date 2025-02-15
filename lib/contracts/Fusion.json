@@ -60,12 +60,6 @@
       },
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "forwarder",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "bytes32",
         "name": "txHash",
         "type": "bytes32"
@@ -206,6 +200,11 @@
             "internalType": "enum Enum.Operation",
             "name": "operation",
             "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasLimit",
+            "type": "uint256"
           }
         ],
         "internalType": "struct Transaction.TransactionData[]",
@@ -246,16 +245,16 @@
             "internalType": "enum Enum.Operation",
             "name": "operation",
             "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasLimit",
+            "type": "uint256"
           }
         ],
         "internalType": "struct Transaction.TransactionData[]",
         "name": "transactions",
         "type": "tuple[]"
-      },
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
       },
       {
         "components": [
@@ -283,6 +282,11 @@
             "internalType": "address",
             "name": "gasRecipient",
             "type": "address"
+          },
+          {
+            "internalType": "uint48",
+            "name": "deadline",
+            "type": "uint48"
           }
         ],
         "internalType": "struct Quote.GasQuote",
@@ -290,7 +294,7 @@
         "type": "tuple"
       }
     ],
-    "name": "executeBatchTxWithForwarder",
+    "name": "executeBatchTxWithProvider",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
@@ -323,6 +327,11 @@
             "internalType": "enum Enum.Operation",
             "name": "operation",
             "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasLimit",
+            "type": "uint256"
           }
         ],
         "internalType": "struct Transaction.TransactionData",
@@ -369,16 +378,16 @@
             "internalType": "enum Enum.Operation",
             "name": "operation",
             "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gasLimit",
+            "type": "uint256"
           }
         ],
         "internalType": "struct Transaction.TransactionData",
         "name": "txData",
         "type": "tuple"
-      },
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
       },
       {
         "components": [
@@ -406,6 +415,11 @@
             "internalType": "address",
             "name": "gasRecipient",
             "type": "address"
+          },
+          {
+            "internalType": "uint48",
+            "name": "deadline",
+            "type": "uint48"
           }
         ],
         "internalType": "struct Quote.GasQuote",
@@ -413,7 +427,7 @@
         "type": "tuple"
       }
     ],
-    "name": "executeTxWithForwarder",
+    "name": "executeTxWithProvider",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
@@ -493,25 +507,6 @@
       }
     ],
     "name": "isModuleEnabled",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "forwarder",
-        "type": "address"
-      }
-    ],
-    "name": "isTrustedForwarder",
     "outputs": [
       {
         "internalType": "bool",
@@ -666,11 +661,6 @@
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "_forwarder",
-        "type": "address"
-      },
-      {
         "internalType": "bytes32",
         "name": "_txHash",
         "type": "bytes32"
@@ -764,19 +754,6 @@
     "name": "tokensReceived",
     "outputs": [],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "trustedForwarder",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

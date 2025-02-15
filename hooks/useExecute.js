@@ -37,13 +37,10 @@ export default function useExecute() {
   const { fireMultiple } = useConfetti();
   const walletData = useSelector((state) => state.transfer.walletData);
   const gasEstimate = useSelector((state) => state.transfer.gasEstimate);
+  const deadline = useSelector((state) => state.proof.deadline);
 
   const estimateGas = async () => {
     try {
-      const wallet = initializeProofWallet();
-
-      const fusionAddress = await getFusionAddress(domain);
-
       const provider = new ethers.providers.JsonRpcProvider(
         selectedChain.rpcUrl
       );
@@ -58,6 +55,7 @@ export default function useExecute() {
           value: ethers.utils.parseEther(amount.toFixed(18)).toString(),
           data: "0x",
           operation: 0,
+          gasLimit: 2000000,
         };
       } else {
         const erc20Contract = new ethers.Contract(
@@ -79,66 +77,14 @@ export default function useExecute() {
               .toString(),
           ]),
           operation: 0,
+          gasLimit: 2000000,
         };
       }
 
-      const FusionForwarder = new ethers.Contract(
-        selectedChain.deployments.FusionForwarder.address.v1,
-        selectedChain.deployments.FusionForwarder.abi,
-        provider
-      );
-
-      const rawForwardExexuteData = {
-        from: wallet.address,
-        recipient: fusionAddress,
-        deadline: Number((Date.now() / 1000).toFixed(0)) + 2000,
-        nonce: Number(await FusionForwarder.nonces(wallet.address)),
-        gas: 2000000,
+      const request = {
         proof: txProof,
+        deadline: deadline,
         txData: txData,
-      };
-
-      const data712 = {
-        types: {
-          Transaction: [
-            { name: "to", type: "address" },
-            { name: "value", type: "uint256" },
-            { name: "data", type: "bytes" },
-            { name: "operation", type: "uint8" },
-          ],
-          ForwardExecute: [
-            { name: "from", type: "address" },
-            { name: "recipient", type: "address" },
-            { name: "deadline", type: "uint256" },
-            { name: "gas", type: "uint256" },
-            { name: "proof", type: "bytes" },
-            { name: "txData", type: "Transaction" },
-          ],
-        },
-        domain: {
-          name: "Fusion Forwarder",
-          version: "1",
-          chainId: selectedChain.chainId,
-          verifyingContract:
-            selectedChain.deployments.FusionForwarder.address.v1,
-        },
-        message: rawForwardExexuteData,
-      };
-
-      const signature = await wallet._signTypedData(
-        data712.domain,
-        data712.types,
-        data712.message
-      );
-
-      const forwardRequest = {
-        from: rawForwardExexuteData.from,
-        recipient: rawForwardExexuteData.recipient,
-        deadline: rawForwardExexuteData.deadline,
-        gas: rawForwardExexuteData.gas,
-        proof: rawForwardExexuteData.proof,
-        txData: rawForwardExexuteData.txData,
-        signature: signature,
       };
 
       if (selectedToken.address === ethers.constants.AddressZero) {
@@ -146,9 +92,8 @@ export default function useExecute() {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/estimate/execute/native/` +
             selectedChain.chainId,
           {
-            forwardRequest,
+            request,
             domain: domain + ".fusion.id",
-            walletId: walletData.walletId,
           }
         );
 
@@ -162,9 +107,8 @@ export default function useExecute() {
             "/" +
             selectedToken.address,
           {
-            forwardRequest,
+            request,
             domain: domain + ".fusion.id",
-            walletId: walletData.walletId,
           }
         );
 
