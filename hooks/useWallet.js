@@ -445,7 +445,7 @@ export default function useWallet() {
               }
 
               const contract = new ethers.Contract(
-                token.address,
+                token.address.toLowerCase(),
                 [
                   "function balanceOf(address) view returns (uint256)",
                   "event Transfer(address indexed from, address indexed to, uint256 value)",
