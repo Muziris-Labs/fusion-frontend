@@ -18,6 +18,7 @@ import { useTheme } from "next-themes";
 
 const TransactionItem = ({ transaction }) => {
   const walletAddress = useSelector((state) => state.user.walletAddress);
+
   const currentChain = config.chains.find(
     (chain) => chain.chainId === Number(transaction.chainId)
   );
@@ -30,13 +31,13 @@ const TransactionItem = ({ transaction }) => {
       : currentChain.tokens.find(
           (token) => token.address === ethers.constants.AddressZero
         );
+
   const { resolvedTheme } = useTheme();
 
   return (
     walletAddress &&
     currentChain &&
-    currentToken &&
-    transaction.hash && (
+    currentToken && (
       <div
         className="border flex flex-col rounded-2xl my-1 dark:text-white p-4 pb-5"
         style={{

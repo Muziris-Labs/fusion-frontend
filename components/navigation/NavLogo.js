@@ -11,7 +11,7 @@ const NavLogo = () => {
 
   const domain = getDomain();
 
-  const isMainnet = config.chains[0].isMainnet;
+  const isMainnet = config?.chains[0]?.isMainnet;
 
   return (
     <Link href={`/dashboard?domain=${domain}`}>

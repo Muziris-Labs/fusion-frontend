@@ -16,7 +16,7 @@ const userSlice = createSlice({
     wallet: null,
     mailUser: null,
     user: null,
-    defaultToken: config.chains[0].tokens[0],
+    defaultToken: null,
     defaultTokenModal: false,
   },
 

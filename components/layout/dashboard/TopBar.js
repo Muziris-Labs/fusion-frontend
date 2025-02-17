@@ -35,7 +35,7 @@ export default function TopBar() {
     }
   }, [tokenConversionData, defaultToken]);
 
-  const isMainnet = config.chains[0].isMainnet;
+  const isMainnet = config?.chains[0]?.isMainnet;
 
   return (
     <div className="w-full flex justify-between gap-4 py-14 pb-10 items-center">
@@ -62,13 +62,15 @@ export default function TopBar() {
       </div>
       <div className="flex-1 justify-end flex gap-4">
         <div className="rounded-2xl p-4 py-3 gap-2 hidden lg:flex items-center justify-center text-gray-600 dark:border-white/10 border-black/10 font-normal text-sm border-[1px]">
-          <Image
-            src={defaultToken.block}
-            className="opacity-40 dark:invert"
-            width={18}
-            height={18}
-            alt="ETH"
-          />
+          {defaultToken && (
+            <Image
+              src={defaultToken?.block}
+              className="opacity-40 dark:invert"
+              width={18}
+              height={18}
+              alt="ETH"
+            />
+          )}
           ≈{" "}
           {ethConversionData ? (
             formatAmount(ethConversionData, 2)
@@ -86,7 +88,7 @@ export default function TopBar() {
             }}
           >
             <Settings size={16} className="ml-0 lg:ml-0.5" />
-            <span className="hidden lg:block">Settingst</span>
+            <span className="hidden lg:block">Settings</span>
           </Button>
         )}
         <Button

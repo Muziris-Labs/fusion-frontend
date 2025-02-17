@@ -300,6 +300,11 @@ export default function useWallet() {
     let defaultToken = localStorage.getItem("defaultToken");
 
     if (defaultToken === null || defaultToken === undefined) {
+      dispatch(setDefaultToken(config.chains[0].tokens[0]));
+      localStorage.setItem(
+        "defaultToken",
+        JSON.stringify(config.chains[0].tokens[0])
+      );
       return;
     }
 
@@ -317,6 +322,8 @@ export default function useWallet() {
 
     if (isPresent) {
       dispatch(setDefaultToken(defaultToken));
+    } else {
+      dispatch(setDefaultToken(config.chains[0].tokens[0]));
     }
   };
 

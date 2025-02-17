@@ -23,7 +23,7 @@ export default function Token({ resolvedToken, isLast }) {
       resolvedToken.chainId.forEach((chainId) => {
         const chain = config.chains.find((chain) => chain.chainId === chainId);
 
-        chain.tokens.forEach((token) => {
+        chain?.tokens.forEach((token) => {
           if (token.id === resolvedToken.token.id) {
             tokens.push({
               chainId: chainId,
@@ -100,12 +100,14 @@ export default function Token({ resolvedToken, isLast }) {
               return (
                 <Image
                   key={index}
-                  src={currentChain.logo}
+                  src={currentChain?.logo}
                   width={30}
                   height={20}
-                  alt={`${currentChain.name} logo`}
+                  alt={`${currentChain?.name} logo`}
                   className={
-                    index === resolvedToken.chainId.length - 1 ? "" : "-mr-5"
+                    index === resolvedToken.chainId.length - 1
+                      ? "rounded-full"
+                      : "-mr-5 rounded-full"
                   }
                 />
               );

@@ -65,13 +65,15 @@ const DashboardCredit = () => {
 
         <div className="flex w-full justify-between items-center">
           <div className="flex items-center gap-4">
-            <Image
-              src={defaultToken.block}
-              width={30}
-              height={30}
-              alt="ETH"
-              className="mt-0.5 opacity-80 dark:invert w-[25px] sm:w-[30px]"
-            />
+            {defaultToken && (
+              <Image
+                src={defaultToken?.block}
+                width={30}
+                height={30}
+                alt="ETH"
+                className="mt-0.5 opacity-80 dark:invert w-[25px] sm:w-[30px]"
+              />
+            )}
             <p className=" text-4xl sm:text-5xl font-semibold">
               {totalEthBalance === null ? (
                 <Loader2 className="animate-spin" size={50} />

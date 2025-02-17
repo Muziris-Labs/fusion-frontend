@@ -1,33 +1,44 @@
+"use client";
+
 import config from "@/lib/config";
 import Token from "./Token";
+import { useState, useEffect } from "react";
 
 export default function TokenList() {
-  const resolvedTokenList = [];
+  const [resolvedTokenList, setResolvedTokenList] = useState([]);
 
-  config.chains.forEach((chain) => {
-    chain.tokens.forEach((token) => {
-      if (resolvedTokenList.length === 0) {
-        resolvedTokenList.push({
-          chainId: [chain.chainId],
-          token: token,
-        });
-        return;
-      }
+  useEffect(() => {
+    if (config.chains.length === 0) return;
 
-      const resolvedToken = resolvedTokenList.find(
-        (resolvedToken) => resolvedToken.token.id === token.id
-      );
+    let resolvedTokenList = [];
 
-      if (resolvedToken) {
-        resolvedToken.chainId.push(chain.chainId);
-      } else {
-        resolvedTokenList.push({
-          chainId: [chain.chainId],
-          token: token,
-        });
-      }
+    config.chains.forEach((chain) => {
+      chain.tokens.forEach((token) => {
+        if (resolvedTokenList.length === 0) {
+          resolvedTokenList.push({
+            chainId: [chain.chainId],
+            token: token,
+          });
+          return;
+        }
+
+        const resolvedToken = resolvedTokenList.find(
+          (resolvedToken) => resolvedToken.token.id === token.id
+        );
+
+        if (resolvedToken) {
+          resolvedToken.chainId.push(chain.chainId);
+        } else {
+          resolvedTokenList.push({
+            chainId: [chain.chainId],
+            token: token,
+          });
+        }
+      });
     });
-  });
+
+    setResolvedTokenList(resolvedTokenList);
+  }, [config]);
 
   return (
     <div className="flex w-full flex-col gap-10 mt-10">
