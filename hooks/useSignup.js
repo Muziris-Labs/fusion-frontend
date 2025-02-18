@@ -39,7 +39,7 @@ export default function useSignup() {
         userVerification: "required",
         timeout: 60000,
         debug: false,
-        domain: window.location.pathname,
+        domain: window.location.hostname,
       }
     );
 
