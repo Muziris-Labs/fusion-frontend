@@ -64,7 +64,7 @@ const TransactionItem = ({ transaction }) => {
                   height={16}
                   src={currentChain.logo}
                   alt={transaction.hash}
-                  className="absolute -bottom-1 right-0"
+                  className="absolute -bottom-1 right-0 rounded-full"
                 />
               </Tooltip>
             </div>
