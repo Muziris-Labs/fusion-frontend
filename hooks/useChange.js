@@ -41,7 +41,7 @@ export default function useChange() {
         userVerification: "required",
         timeout: 60000,
         debug: false,
-        domain: process.env.NEXT_PUBLIC_ORIGIN,
+        domain: window.location.pathname,
       }
     );
 

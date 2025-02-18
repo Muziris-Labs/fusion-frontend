@@ -56,7 +56,7 @@ export default function useProof() {
           authenticatorType: "auto",
           userVerification: "required",
           timeout: 60000,
-          domain: process.env.NEXT_PUBLIC_ORIGIN,
+          domain: window.location.pathname,
         }
       );
 
