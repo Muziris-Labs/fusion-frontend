@@ -56,17 +56,11 @@ export default function useDeploy() {
 
       const challenge = await getChallenge();
 
-      const credential = await getCredentials();
-
-      const authentication = await client.authenticate(
-        [credential],
-        challenge,
-        {
-          authenticatorType: "auto",
-          userVerification: "required",
-          timeout: 60000,
-        }
-      );
+      const authentication = await client.authenticate([], challenge, {
+        authenticatorType: "auto",
+        userVerification: "required",
+        timeout: 60000,
+      });
 
       const provider = new ethers.providers.JsonRpcProvider(baseConfig.rpcUrl);
 

@@ -83,22 +83,12 @@ export default function useSetup() {
 
     const challenge = challengeData.data.challenge;
 
-    const passkeyResponse = await axios.get(
-      `${process.env.NEXT_PUBLIC_KMS_URL}/api/v1/utils/credential/` +
-        domain +
-        ".fusion.id"
-    );
-
-    const authentication = await client.authenticate(
-      [passkeyResponse.data.credential],
-      challenge,
-      {
-        authenticatorType: "auto",
-        userVerification: "required",
-        timeout: 60000,
-        domain: process.env.NEXT_PUBLIC_ORIGIN,
-      }
-    );
+    const authentication = await client.authenticate([], challenge, {
+      authenticatorType: "auto",
+      userVerification: "required",
+      timeout: 60000,
+      domain: process.env.NEXT_PUBLIC_ORIGIN,
+    });
 
     authentication.challengeId = challengeData.data.challengeId;
 
