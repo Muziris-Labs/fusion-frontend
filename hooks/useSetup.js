@@ -96,7 +96,7 @@ export default function useSetup() {
         authenticatorType: "auto",
         userVerification: "required",
         timeout: 60000,
-        domain: window.location.hostname,
+        domain: process.env.NEXT_PUBLIC_ORIGIN,
       }
     );
 

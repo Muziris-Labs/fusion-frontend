@@ -180,6 +180,20 @@ export default function useWallet() {
         return;
       }
 
+      if (config.chains.length === 0) return;
+
+      if (config.chains.length === 1) {
+        const chainId = config.chains[0].chainId;
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v2/transactions/byChain/${walletAddress}?chainId=${chainId}`
+        );
+        if (response.data.success) {
+          dispatch(setHistory(response.data.transactions));
+        }
+
+        return;
+      }
+
       const isTestnet = !config.chains[0].isMainnet;
 
       const response = await axios.get(
